@@ -1,0 +1,1604 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Color &amp; Access Form | Ryan Painting Co.</title>
+<meta name="robots" content="noindex, nofollow">
+<base target="_top">
+<style>
+  :root { --green:#34A853; --green-dark:#2d8f47; --ink:#202124; --muted:#5f6368; --line:#dadce0; --bg:#f6f7f8; --red:#c5221f; --amber:#b06000; }
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body { margin:0; padding:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif; font-size:16px; }
+  .wrap { max-width:640px; margin:0 auto; padding:0 12px 96px; }
+
+  .top { position:sticky; top:0; z-index:30; background:var(--bg); padding:10px 0 8px; border-bottom:1px solid var(--line); }
+  .top h1 { font-size:17px; margin:0 0 2px; }
+  .top .addr { font-size:12.5px; color:var(--muted); }
+  .prog { display:flex; align-items:center; gap:10px; margin-top:8px; }
+  .bar { flex:1; height:6px; background:#e4e6e8; border-radius:3px; overflow:hidden; }
+  .bar i { display:block; height:100%; background:var(--green); border-radius:3px; transition:width .3s; }
+  .prog span { font-size:12.5px; color:var(--muted); white-space:nowrap; }
+
+  h2.room { font-size:13px; text-transform:uppercase; letter-spacing:.6px; color:#fff; background:var(--green);
+    padding:7px 12px; border-radius:8px; margin:18px 0 8px; }
+
+  .card { background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px; margin-bottom:10px; }
+  .card.done { border-left:4px solid var(--green); }
+  .card.cat-trim { background:#eaf5e2; }
+  .card.cat-ceiling { background:#e4eee7; }
+  .card.cat-access { background:#e8f4ec; }
+  h2.room.acc { background:#202124; }
+  h2.room.fold { cursor:pointer; user-select:none; }
+  h2.room.fold:focus-visible { outline:2px solid var(--green-dark); outline-offset:2px; }
+  h2.room .chev { display:inline-block; width:0; height:0; margin-right:8px; vertical-align:1px; border-left:5px solid transparent; border-right:5px solid transparent; border-top:6px solid #fff; transition:transform .15s; }
+  h2.room[aria-expanded="false"] .chev { transform:rotate(-90deg); }
+  .roombody[hidden] { display:none !important; }
+  h2.room .opttag { display:inline-block; margin-left:8px; font-size:10.5px; letter-spacing:.4px; font-weight:700; padding:1px 7px; border-radius:9px; background:rgba(255,255,255,.25); vertical-align:1px; }
+  .legend { display:flex; gap:10px; font-size:12px; color:var(--muted); margin:-4px 0 10px; flex-wrap:wrap; }
+  .legend i { display:inline-block; width:12px; height:12px; border-radius:3px; border:1px solid var(--line); vertical-align:-2px; margin-right:4px; }
+  .card.todo { border-left:4px solid #f0a020; }
+  .tick.todo { color:var(--amber); font-weight:600; }
+  .rbadge { float:right; font-size:11.5px; font-weight:700; padding:2px 9px; border-radius:10px; background:rgba(255,255,255,.25); }
+  .rbadge.full { background:#fff; color:var(--green-dark); }
+  .card .head { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+  .card .surface { font-weight:600; font-size:15.5px; }
+  .card .qty { font-size:12px; color:var(--muted); }
+  .tick { color:var(--green); font-size:14px; font-weight:700; }
+
+  .defaultline { display:flex; justify-content:space-between; align-items:center; margin-top:8px; gap:8px; }
+  .defaultline .val { font-size:14px; color:var(--ink); display:flex; align-items:center; gap:8px; }
+  .linkbtn { background:none; border:none; color:var(--green-dark); font-size:14px; font-weight:600; padding:6px 8px; cursor:pointer; }
+
+  .seg { display:flex; margin-top:10px; border:1px solid var(--line); border-radius:10px; overflow:hidden; }
+  .seg button { flex:1; padding:11px 4px; font-size:13.5px; background:#fff; border:none; color:var(--muted); cursor:pointer; }
+  .seg button.on { background:var(--green); color:#fff; font-weight:600; }
+  .seg button + button { border-left:1px solid var(--line); }
+
+  .field { margin-top:10px; }
+  .field label { display:block; font-size:12px; color:var(--muted); margin-bottom:4px; }
+  input[type=text], select, textarea { width:100%; padding:12px; font-size:16px; border:1px solid var(--line); border-radius:10px; background:#fff; color:var(--ink); }
+  input:focus, select:focus { outline:2px solid var(--green); border-color:var(--green); }
+
+  .ta { position:relative; }
+  .sugg { position:absolute; left:0; right:0; top:100%; z-index:20; background:#fff; border:1px solid var(--line);
+    border-radius:0 0 10px 10px; box-shadow:0 6px 16px rgba(0,0,0,.12); max-height:280px; overflow-y:auto; }
+  .sugg div { display:flex; align-items:center; gap:10px; padding:11px 12px; font-size:14px; border-top:1px solid #f0f1f2; cursor:pointer; }
+  .sugg div:active { background:#eef7f0; }
+  .chip { width:22px; height:22px; border-radius:6px; border:1px solid #bbb; flex:none; }
+  .sugg .nm { flex:1; } .sugg .cd { color:var(--muted); font-size:12.5px; }
+  .picked { display:flex; align-items:center; gap:10px; margin-top:8px; padding:10px 12px; background:#f2f8f4; border:1px solid #cfe7d6; border-radius:10px; font-size:14px; }
+  .picked .cd { color:var(--muted); font-size:12.5px; }
+
+  .flag { margin-top:8px; font-size:12.5px; color:var(--red); font-weight:600; }
+  .softflag { margin-top:8px; font-size:12.5px; color:var(--amber); }
+  .hint { font-size:12px; color:var(--muted); margin-top:6px; }
+
+  .footer { position:fixed; left:0; right:0; bottom:0; z-index:40; background:#fff; border-top:1px solid var(--line); padding:10px 14px calc(10px + env(safe-area-inset-bottom)); }
+  .footer .inner { max-width:640px; margin:0 auto; display:flex; align-items:center; gap:12px; }
+  .footer .state { flex:1; font-size:12.5px; color:var(--muted); }
+  .btn { background:var(--green); color:#fff; border:none; border-radius:10px; padding:13px 20px; font-size:15.5px; font-weight:700; cursor:pointer; }
+  .btn:disabled { background:#c5cac7; cursor:default; }
+  .door { width:100%; text-align:left; padding:16px 18px; border:none; border-radius:12px; color:#fff; cursor:pointer; }
+  .door b { display:block; font-size:16.5px; }
+  .door span { display:block; font-size:13px; opacity:.92; margin-top:4px; font-weight:400; }
+  .door.a { background:#24a149; } .door.b { background:#1d5f2f; } .door.c { background:#72bf46; color:#0f2a17; }
+  .door.c span { opacity:.85; }
+  .pick { display:flex; gap:8px; align-items:center; }
+  .pick select { flex:1; font-size:14px; padding:9px; border:1px solid var(--line); border-radius:8px; }
+
+  .banner { margin:14px 0; padding:12px 14px; border-radius:10px; font-size:13.5px; }
+  .banner.ok { background:#e6f4ea; color:#1e6f36; border:1px solid #b7dfc3; }
+  .banner.info { background:#fff; border:1px solid var(--line); color:var(--muted); }
+  .banner.warn { background:#fff4e0; color:#7a4b00; border:1px solid #f0c27a; }
+  .banner .btn { display:block; width:100%; margin-top:10px; }
+  .footer .btn.ready { flex:2; }
+  .endsubmit { margin:18px 0 90px; text-align:center; }
+  .endsubmit .btn { width:100%; }
+  .save { font-size:11.5px; color:var(--muted); }
+  .err { text-align:center; margin-top:80px; color:var(--muted); padding:0 24px; }
+  .staffbar { position:sticky; top:0; z-index:50; background:#b3261e; color:#fff; font-weight:700; text-align:center; padding:10px 14px; border-radius:0 0 10px 10px; margin-bottom:10px; }
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+  <div id="notfound" style="display:none">
+    <div class="err"><h2>This color form isn't available</h2>
+    <p>The link may be incomplete. Please open it from your Ryan Painting client portal, or reply to your estimate email and we'll sort it.</p></div>
+  </div>
+  <div id="formwrap">
+    <div class="staffbar" id="staffbar" style="display:none">Staff mode: filling in on behalf of the client</div>
+    <div class="top" id="top" style="display:none">
+      <h1>Choose your colors</h1>
+      <div class="addr" id="addr"></div>
+      <div class="prog"><div class="bar"><i id="fill"></i></div><span id="count"></span></div>
+    </div>
+    <div id="body"><div class="err" id="loading">Loading your project…</div></div>
+    <div class="footer" id="foot" style="display:none">
+      <div class="inner">
+        <div class="state" id="state">Progress saves automatically.</div>
+        <button class="btn submitbtn" id="submit" disabled>Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* Hosted copy (GitHub Pages): google.script.run, done with fetch(). credentials:'omit' sends no Google
+   cookies, so the multi-account "unable to open the file" error cannot happen. Built by pages/build_pages.py. */
+(function () {
+  var API = "https://script.google.com/macros/s/AKfycbxoUuxXnSEZyx3FlH0pUz_EbgeZ8Ga46GxiGEGmmaf6DjVV6yfHDhsiCj0q3ZD3n1nZRw/exec";
+  function call(fn, args, ok, fail) {
+    var tries = 0;
+    (function go() {
+      tries++;
+      fetch(API, { method: 'POST', credentials: 'omit', redirect: 'follow',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'rpc', fn: fn, args: args }) })
+        .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+        .then(function (j) {
+          if (!j || !('r' in j)) throw new Error((j && (j.rpc_error || j.error)) || 'bad reply');
+          if (ok) ok(j.r);
+        })
+        .catch(function (e) {
+          if (tries < 2 && (fn === 'getForm' || fn === 'getColourIndex' || fn === 'staffMode') && /HTTP 5|Failed to fetch|NetworkError|Load failed/i.test(String(e && e.message))) return setTimeout(go, 1200);
+          if (fail) fail(e); else if (window.console) console.error(fn, e);
+        });
+    })();
+  }
+  function runner(ok, fail) {
+    return new Proxy({}, { get: function (_, k) {
+      if (k === 'withSuccessHandler') return function (h) { return runner(h, fail); };
+      if (k === 'withFailureHandler') return function (h) { return runner(ok, h); };
+      return function () { call(String(k), Array.prototype.slice.call(arguments), ok, fail); };
+    } });
+  }
+  window.google = { script: { run: runner(null, null) } };
+})();
+</script>
+<script>
+var RP_Q = new URLSearchParams(location.search);
+var TOKEN = (RP_Q.get('t') || '').trim();
+var STAFF = null;   // set once the server confirms the ?staff= key (hosted page)   // staff mode (2026-11-10): sent with every save so the log records 'staff'
+var SHOW_FORM_WHILE_WAITING = false;
+var BOOK_SAMPLES_URL = 'https://meetings.hubspot.com/ryan-streete/interior-color-sample-visit';   // HubSpot meeting type: Color Samples Visit (Ryan, 2026-10-30)
+var MODEL = null, INDEX = null, SHEENS = [];
+
+/* ---------- boot ---------- */
+if (!TOKEN) {
+  document.getElementById('formwrap').style.display = 'none'; document.getElementById('notfound').style.display = '';
+} else {
+  var rpStaff = (RP_Q.get('staff') || '').trim();
+  var rpBoot = function () { google.script.run.withSuccessHandler(onForm).withFailureHandler(fatal).getForm(TOKEN); loadIndex(); };
+  if (!rpStaff) rpBoot();
+  else google.script.run.withSuccessHandler(function (ok) {
+    if (ok) { STAFF = rpStaff; document.getElementById('staffbar').style.display = ''; }
+    rpBoot();
+  }).withFailureHandler(rpBoot).staffMode(rpStaff);
+}
+
+function loadIndex() {
+  try {
+    var cached = localStorage.getItem('cidx_v4');   // v4 (2026-11-14): rows carry LRV [5] and vinyl-safe [6]
+    if (cached) { INDEX = JSON.parse(cached); return; }
+  } catch (e) {}
+  google.script.run.withSuccessHandler(function (arr) {
+    INDEX = arr;
+    try { localStorage.removeItem('cidx_v3'); localStorage.setItem('cidx_v4', JSON.stringify(arr)); } catch (e) {}
+  }).getColourIndex();
+}
+
+function fatal() {
+  document.getElementById('loading').textContent = 'Something went wrong loading the form. Pull to refresh, or try again shortly.';
+}
+
+function onForm(res) {
+  if (res && res.error === 'not found' && document.getElementById('notfound')) {   // hosted page (2026-11-17): bad or old link
+    document.getElementById('loading').style.display = 'none'; document.getElementById('notfound').style.display = ''; return;
+  }
+  if (!res || !res.ok) return fatal();
+  MODEL = res; SHEENS = res.sheens || [];
+  document.getElementById('top').style.display = '';
+  document.getElementById('foot').style.display = '';
+  document.getElementById('addr').textContent = res.address || '';
+  setState(res.status === 'SUBMITTED' ? 'Submitted. Changes save automatically and our team is notified.' : 'Saves as you go. Not yet submitted.');
+  render();
+}
+
+/* ---------- render ---------- */
+function render() {
+  var body = document.getElementById('body');
+  body.innerHTML = '';
+  var SM = MODEL.samples = MODEL.samples || { mode: '', picks: [], all: [], status: '', sets: 0, free: 5, extra_price: 95 };
+  if (MODEL.status !== 'SUBMITTED' && !SM.mode) { body.appendChild(doormanSection()); document.getElementById('foot').style.display = 'none'; return; }
+  if (MODEL.status !== 'SUBMITTED' && SM.mode === 'samples' && !SM.status) { body.appendChild(pickerSection(false)); document.getElementById('foot').style.display = 'none'; return; }
+  document.getElementById('foot').style.display = '';
+  if (MODEL.status !== 'SUBMITTED') {
+    // a way back to the doorman (Ryan, 2026-10-30): choices already made are kept
+    var backRow = el('div', ''); backRow.style.textAlign = 'left'; backRow.style.margin = '2px 0 8px';
+    var backBtn = el('button', 'linkbtn', '‹ Back to the start');
+    backBtn.onclick = function () { MODEL.samples.mode = ''; render(); window.scrollTo(0, 0); google.script.run.setSamplesMode(TOKEN, 'reset', STAFF); };
+    backRow.appendChild(backBtn); body.appendChild(backRow);
+  }
+  if (MODEL.status !== 'SUBMITTED' && SM.mode === 'samples' && SM.status === 'requested' && !SHOW_FORM_WHILE_WAITING) {
+    body.innerHTML = ''; body.appendChild(requestedSection()); document.getElementById('foot').style.display = 'none'; return;
+  }
+  if (MODEL.status !== 'SUBMITTED' && SM.mode === 'samples' && SM.status === 'requested') {
+    body.appendChild(el('div', 'banner info', 'Your sample list is with us: ' + SM.picks.map(pickLabel).join(', ') + '. We will email you when they are on the wall. Nothing is final until you press Submit.'));
+  } else if (MODEL.status !== 'SUBMITTED' && SM.mode === 'samples' && SM.status === 'applied') {
+    var ab = el('div', 'banner ok', 'Your samples are on the wall: ' + SM.picks.map(pickLabel).join(', ') + '. Take a look in your own light, then choose a color for each surface below. The sampled colors appear as one-tap choices. Press Submit when you are happy, and we will set your dates.');
+    var more = el('button', 'linkbtn', 'Want to see more colors first? Another set of up to ' + SM.free + ' is $' + SM.extra_price);
+    more.onclick = function () { body.innerHTML = ''; body.appendChild(pickerSection(true)); window.scrollTo(0, 0); };
+    ab.appendChild(document.createElement('br')); ab.appendChild(more);
+    body.appendChild(ab);
+  } else if (MODEL.status !== 'SUBMITTED' && SM.mode === 'match') {
+    body.appendChild(el('div', 'banner ok', 'We will match the colors that are there, surface by surface, on site. Nothing to look up. If any surface should change, tap it and choose a new color; otherwise answer the access and timing questions at the end and press Submit.'));
+  }
+  if (MODEL.status === 'SUBMITTED') {
+    body.appendChild(el('div', 'banner ok', 'Your colors and access details are submitted — thank you! You can still change anything here; our team is notified of updates automatically.'));
+  } else if (SM.mode === 'ready') {
+    body.appendChild(el('div', 'banner info', (MODEL.kind === 'exterior'
+      ? 'Pick a color for each surface below — they come straight from your estimate. There are no pre-set colors out here: every building is different, so each surface is yours to choose. Everything saves as you tap, and you can come back any time. Missing something? Add it with the button at the bottom.'
+      : 'Pick colors room by room. You don’t need to finish in one go — everything saves as you tap, and you can come back any time. Ceilings are pre-set to our standard white, and trim, doors & window frames share one main trim color, set once at the top, and any room can still go its own way.')
+      + ' One note on accent colors: they carry an additional charge unless clearly included in your estimate — we’ll confirm with you before anything changes.'
+      + ' At the end there are a few quick questions about access and timing, so we can plan your start.'
+      + ' Nothing reaches our team until you press Submit, so do come back and finish when you are ready.'));
+  }
+  // next-step card (2026-11-02): what is left, in one line; filled by refreshProgress so it tracks every save
+  var ns = el('div', ''); ns.id = 'nextStep'; body.appendChild(ns);
+  if (MODEL.status !== 'SUBMITTED' && (SM.mode === 'ready' || SM.mode === 'match')) {
+    var lg = el('div', 'legend'); var l1 = el('span', ''); var i1 = el('i', ''); i1.style.background = '#eaf5e2'; l1.appendChild(i1); l1.appendChild(document.createTextNode('Trim (incl. doors, windows & built-ins)')); var l2 = el('span', ''); var i2 = el('i', ''); i2.style.background = '#e4eee7'; l2.appendChild(i2); l2.appendChild(document.createTextNode('Ceilings')); var l3 = el('span', ''); var i3 = el('i', ''); i3.style.background = '#fff'; l3.appendChild(i3); l3.appendChild(document.createTextNode('Walls and everything else')); lg.appendChild(l1); lg.appendChild(l2); lg.appendChild(l3); body.appendChild(lg);
+  }
+  var G = computeGlobalTrim();
+  if (G) body.appendChild(globalSection(G));
+  var rooms = [];
+  MODEL.rows.forEach(function (r) { if (rooms.indexOf(r.room) < 0) rooms.push(r.room); });
+  var fold = MODEL.kind !== 'exterior';   // exterior forms have one 'room' and stay as they were
+  rooms.forEach(function (room) {
+    var h = el('h2', 'room', room);
+    var badge = el('span', 'rbadge', '');
+    badge.id = 'rb_' + slugify(room);
+    var box = body;
+    if (fold) { box = el('div', ''); makeFold(room, h, box); }
+    h.appendChild(badge);
+    body.appendChild(h);
+    if (box !== body) body.appendChild(box);
+    var roomRows = MODEL.rows.filter(function (r) { return r.room === room; });
+    var famPlaced = false;
+    roomRows.forEach(function (r) {
+      if (G && isTrimFamRow(r)) {
+        // the room's trim-family rows render as one block, at the first row's position
+        if (!famPlaced) { famPlaced = true; box.appendChild(roomTrimBlock(room, roomRows.filter(isTrimFamRow), G)); }
+      } else box.appendChild(card(r));
+    });
+    if (MODEL.kind !== 'exterior' && room !== 'Additional surfaces') box.appendChild(accentLink(room));
+  });
+  body.appendChild(MODEL.kind !== 'exterior' ? addRoomCard() : addSurfaceCard());
+  body.appendChild(accessSection());
+  // 2026-11-16 (Ryan): extras, new-room and extras-changed notes sit at the bottom, just before the big Submit
+  var xb = el('div', ''); xb.id = 'extrasBox'; body.appendChild(xb);
+  if ((MODEL.new_rooms || []).length) body.appendChild(el('div', 'banner info',
+    'New room' + (MODEL.new_rooms.length > 1 ? 's have' : ' has') + ' been added to your project: ' + MODEL.new_rooms.join(', ') +
+    '. Please pick ' + (MODEL.new_rooms.length > 1 ? 'their' : 'its') + ' colors above, then press Submit.'));
+  if (MODEL.status !== 'SUBMITTED' && MODEL.extras && MODEL.extras.awo_pending)
+    body.appendChild(el('div', 'banner info', 'Your extras changed since you submitted. Press Submit again and we’ll send you a revised change order.'));
+  if (MODEL.status !== 'SUBMITTED') body.appendChild(endSubmit());
+  renderExtras();
+  refreshProgress();
+}
+
+/* ---------- whole-home trim (interior) ----------
+   One color for the whole trim family — trim, doors & window frames — chosen once at the
+   top. Per-room rows stay in the data model untouched; the whole-home card just drives
+   every row a client hasn't individually customized (r.overridden). */
+
+var GTRIM = { row_id: '__globaltrim__', room: 'Whole home', surface: 'Trim, doors & window frames',
+  qty_note: 'one color for every room', finish: 'sheen', suggested_sheen: 'Semi-Gloss',
+  is_default: 1, allow_na: 0, note: '', flag: '',
+  choice: '', brand: '', name: '', code: '', hex: '', sheen: '', complete: 0 };
+var ROOM_OPEN = {};
+var ROOM_SHOW = {};
+/** Turn a green section heading into an open/close button for box. key: room name, '__trim' or '__access'. All start closed. */
+function makeFold(key, h, box) {
+  var shown = !!ROOM_SHOW[key];
+  h.className += ' fold';
+  h.insertBefore(el('span', 'chev'), h.firstChild);
+  h.setAttribute('role', 'button'); h.setAttribute('tabindex', '0'); h.setAttribute('aria-expanded', String(shown));
+  box.className += ' roombody'; box.hidden = !shown;
+  var toggle = function () { ROOM_SHOW[key] = box.hidden ? 1 : 0; box.hidden = !ROOM_SHOW[key]; h.setAttribute('aria-expanded', String(!!ROOM_SHOW[key])); };
+  h.onclick = toggle;
+  h.onkeydown = function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } };
+}
+function openAccess() { ROOM_SHOW.__access = 1; rerenderAccess(); var s = document.getElementById('accessSec'); if (s) s.scrollIntoView({ behavior: 'smooth' }); }   // 2026-11-16: interior rooms fold; all start closed, a room the client opens stays open across re-renders
+
+function isTrimFamRow(r) {
+  return /^(Trim|Doors|Window frames)$/.test(r.surface || '') && String(r.row_id).indexOf('added-') !== 0;
+}
+function famRows() { return MODEL.kind === 'exterior' ? [] : MODEL.rows.filter(isTrimFamRow); }
+function trimSig(r) { return [r.choice, r.brand, r.name, r.code, r.sheen].join('|'); }
+function displayColor(r) {
+  if (r.choice === 'standard') return 'Standard white';
+  if (r.choice === 'match') return 'Match existing' + (r.name ? ' — ' + r.name : '');
+  return r.name || '';
+}
+
+/** Refresh GTRIM from the rows: majority value among non-overridden completed rows. */
+function computeGlobalTrim() {
+  var fam = famRows();
+  if (!fam.length) return null;
+  var counts = {}, best = null, bestN = 0;
+  fam.forEach(function (r) {
+    if (r.overridden || !r.complete) return;
+    var k = trimSig(r);
+    counts[k] = (counts[k] || 0) + 1;
+    if (counts[k] > bestN) { bestN = counts[k]; best = r; }
+  });
+  if (best) {
+    ['choice','brand','name','code','hex','sheen','flag'].forEach(function (k) { GTRIM[k] = best[k]; });
+    GTRIM.complete = 1;
+  }
+  return GTRIM;
+}
+
+function globalSection(G) {
+  var frag = document.createDocumentFragment();
+  var th = el('h2', 'room', 'Main trim color');
+  th.appendChild(el('span', 'opttag', 'Optional step'));
+  var tb = el('div', '');
+  makeFold('__trim', th, tb);
+  frag.appendChild(th); frag.appendChild(tb);
+  tb.appendChild(el('div', 'hint', 'Already set to our standard white, so you can skip this. Whatever you choose here goes on the trim in every room where we paint it: baseboards, casing, crown, doors, door and window frames and built-ins. Want a different trim color in one room? Open that room below and tap \u201cDifferent in this room?\u201d. Want just the doors or a built-in in another color? Say so in that room\u2019s trim note.'));
+  var c = card(G);
+  var behind = famRows().filter(function (r) { return !r.overridden && (!r.complete || trimSig(r) !== trimSig(G)); }).length;
+  var custom = famRows().filter(function (r) { return r.overridden; }).length;
+  if (G.complete && behind) {
+    var a = el('button', 'linkbtn', 'Apply this to all rooms (' + behind + ' surface' + (behind === 1 ? '' : 's') + ' to update)');
+    a.onclick = function () {
+      save(G, { choice: G.choice, brand: G.brand, name: G.name, code: G.code, hex: G.hex, sheen: G.sheen });
+    };
+    c.appendChild(a);
+  }
+  if (custom) c.appendChild(el('div', 'hint',
+    custom + ' surface' + (custom === 1 ? ' has' : 's have') + ' a room-specific color — those keep their own choice.'));
+  tb.appendChild(c);
+  return frag;
+}
+
+/** A room's trim-family rows: one collapsed summary while they follow the whole-home
+ *  color; the familiar per-surface cards once opened or customized. */
+function roomTrimBlock(room, fam, G) {
+  var open = ROOM_OPEN[room] || fam.some(function (r) { return r._open; });
+  var synced = G.complete && fam.every(function (r) {
+    return !r.overridden && r.complete && trimSig(r) === trimSig(G);
+  });
+  if (!open && synced) return roomTrimSummary(room, fam, G);
+  var frag = document.createDocumentFragment();
+  fam.forEach(function (r) { frag.appendChild(card(r)); });
+  // the server derives the whole-home value from non-overridden rows — offer the way
+  // back only while at least one such row still exists
+  var hasBase = famRows().some(function (r) { return !r.overridden && r.complete; });
+  if (G.complete && hasBase) {
+    var back = el('button', 'linkbtn', 'Use the main trim color for this room');
+    back.onclick = function () {
+      back.disabled = true;
+      setState('Applying the main trim color…');
+      google.script.run.withSuccessHandler(function (res) {
+        if (res && res.ok) {
+          fam.forEach(function (r) {
+            ['choice','brand','name','code','hex','sheen','flag'].forEach(function (k) { r[k] = res.applied[k]; });
+            r.complete = 1; r.overridden = 0; r._open = false;
+          });
+          ROOM_OPEN[room] = 0;
+          MODEL.outstanding = res.outstanding;
+          if (res.extras) MODEL.extras = res.extras;
+          if (res.status) MODEL.status = res.status;
+          render();
+          setState('This room now uses the main trim color.');
+        } else { back.disabled = false; setState('Couldn’t apply — try again.'); }
+      }).withFailureHandler(function () { back.disabled = false; setState('Couldn’t apply — try again.'); })
+        .rejoinGlobalTrim(TOKEN, room, STAFF);
+    };
+    frag.appendChild(back);
+  }
+  return frag;
+}
+
+function roomTrimSummary(room, fam, G) {
+  var c = el('div', 'card done cat-trim');
+  c.id = 'card_rtrim_' + slugify(room);
+  var head = el('div', 'head');
+  var left = el('div', '');
+  left.appendChild(el('span', 'surface', 'Trim, doors & window frames'));
+  var qty = fam.map(function (r) { return r.qty_note; }).filter(Boolean).join(' · ');
+  if (qty) left.appendChild(el('span', 'qty', ' ' + qty));
+  head.appendChild(left);
+  head.appendChild(el('span', 'tick', '✓ done'));
+  c.appendChild(head);
+  var dl = el('div', 'defaultline');
+  var val = el('div', 'val');
+  var chip = el('span', 'chip'); chip.style.background = G.hex || '#f8f8f4'; chip.style.width = '18px'; chip.style.height = '18px';
+  val.appendChild(chip);
+  val.appendChild(document.createTextNode(displayColor(G) + (G.sheen ? ' · ' + G.sheen : '') + ' — main trim color'));
+  dl.appendChild(val);
+  var btn = el('button', 'linkbtn', 'Different in this room?');
+  btn.onclick = function () { ROOM_OPEN[room] = 1; render(); };
+  dl.appendChild(btn);
+  c.appendChild(dl);
+  var flagged = fam.filter(function (r) { return r.flag; });
+  if (flagged.length) c.appendChild(el('div', /MISMATCH/.test(flagged[0].flag) ? 'flag' : 'softflag', '⚑ ' + flagged[0].flag));
+  return c;
+}
+
+/* Accent colors — the one thing clients add themselves. Each added accent becomes a normal
+   card whose Notes field says where it goes. */
+function addSurfaceCard() {
+  var c = el('div', 'card');
+  c.id = 'card_addsurface';
+  // 2026-11-14: interior accent walls are added inside each room; this card is for anything else
+  var interior = MODEL.kind !== 'exterior';
+  c.appendChild(el('span', 'surface', interior ? 'Something else to paint?' : 'Want an accent color?'));
+  c.appendChild(el('div', 'hint', interior
+    ? 'Accent walls are added in each room above. For anything else, add it here and tell us what it is; anything not on your estimate is an extra, and we’ll confirm the price with you first.'
+    : 'Accent colors carry an additional charge unless clearly included in your estimate — we’ll confirm with you before anything changes.'));
+  var btn = el('button', 'linkbtn', interior ? '+ Add another surface' : '+ Add an accent color');
+  btn.onclick = function () {
+    var label = '';
+    if (interior) { label = prompt('What would you like painted? (e.g. radiator in the hall, built-in shelves)'); if (!label) return; }
+    btn.disabled = true;
+    setState('Adding…');
+    google.script.run.withSuccessHandler(function (res) {
+      btn.disabled = false;
+      if (res && res.ok) {
+        MODEL.rows.push(res.row);
+        ROOM_SHOW[res.row.room] = 1;
+        render();
+        setState('Added — pick the color and tell us where it goes.');
+        var elc = document.getElementById('card_' + res.row.row_id);
+        if (elc) elc.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else setState('Couldn’t add that — try again.');
+    }).withFailureHandler(function () { btn.disabled = false; setState('Couldn’t add that — try again.'); })
+      .addSurface(TOKEN, interior ? 'Other' : 'Accent color', label, STAFF);
+  };
+  c.appendChild(btn);
+  return c;
+}
+
+function catClass(r) { var sf = String(r.surface || ''); if (/ceiling/i.test(sf)) return ' cat-ceiling'; if (/^(Trim|Doors|Window frames)$/.test(sf) || /trim|door|window frame|fascia|soffit|shutter/i.test(sf)) return ' cat-trim'; return ''; }
+function card(r) {
+  var c = el('div', 'card' + (r.complete ? ' done' : ' todo') + catClass(r));
+  c.id = 'card_' + r.row_id;
+  var head = el('div', 'head');
+  var left = el('div', '');
+  left.appendChild(el('span', 'surface', r.surface));
+  if (r.qty_note) left.appendChild(el('span', 'qty', ' ' + r.qty_note));
+  head.appendChild(left);
+  head.appendChild(el('span', r.complete ? 'tick' : 'tick todo', tickText(r)));
+  c.appendChild(head);
+  var xi = isExtraRow(r) ? extraFor(r) : null;
+  if (xi) c.appendChild(el('div', xi.included ? 'hint' : 'softflag', xi.included ? 'Included in your estimate.'
+    : (xi.kind === 'fb' ? 'Genuine Farrow & Ball paint: ' + xi.label.replace(/^Genuine F&B: /, '') + ' adds ' + usd(xi.amount) + ' (' + xi.detail + '), on your change order.'
+      : 'Extra: ' + usd(xi.amount) + ' on your change order, to approve before we paint it.')));
+
+  var collapsed = r.is_default && r.choice === 'standard' && !r._open;
+  if (collapsed) {
+    var dl = el('div', 'defaultline');
+    var val = el('div', 'val');
+    var chip = el('span', 'chip'); chip.style.background = r.hex || '#f8f8f4'; chip.style.width = '18px'; chip.style.height = '18px';
+    val.appendChild(chip);
+    val.appendChild(document.createTextNode('Standard white · ' + (r.sheen || '')));
+    dl.appendChild(val);
+    var btn = el('button', 'linkbtn', 'Change');
+    btn.onclick = function () { r._open = true; rerenderCard(r); };
+    dl.appendChild(btn);
+    c.appendChild(dl);
+    return c;
+  }
+
+  // choice segment
+  var seg = el('div', 'seg');
+  var opts = r.is_default ? [['standard', 'Standard white'], ['match', 'Match existing'], ['new', 'New color']]
+                          : [['match', 'Match existing'], ['new', 'New color']];
+  if (r.allow_na) opts.push(['na', 'N/A']);
+  // 2026-11-14: an honest "not decided yet" instead of a placeholder color; it keeps the surface open
+  if (r.row_id !== '__globaltrim__') opts.push(['deciding', 'Still deciding']);
+  opts.forEach(function (o) {
+    var b = el('button', r.choice === o[0] ? 'on' : '', o[1]);
+    b.onclick = function () {
+      r.choice = o[0];
+      if (o[0] === 'standard') { r.brand = 'Standard'; r.name = 'Off-the-Shelf White'; r.code = ''; r.hex = '#f8f8f4'; r.sheen = r.suggested_sheen || r.sheen; r._open = false; }
+      // "match existing" shouldn't inherit the standard-white identity — blank it so
+      // the card reads "we'll match on site" until a name is volunteered
+      if (o[0] === 'match' && r.brand === 'Standard') { r.brand = ''; r.name = ''; r.code = ''; r.hex = ''; }
+      if (o[0] === 'na') { r.brand = ''; r.name = ''; r.code = ''; r.hex = ''; r.sheen = ''; }
+      save(r, { choice: r.choice, brand: r.brand, name: r.name, code: r.code, hex: r.hex, sheen: r.sheen });
+      rerenderCard(r);
+    };
+    seg.appendChild(b);
+  });
+  c.appendChild(seg);
+
+  if (r.choice !== 'standard' && r.choice !== 'na' && MODEL.samples && MODEL.samples.all && MODEL.samples.all.length) c.appendChild(quickPicks(r));
+  if (isVinylRow(r) && r.choice !== 'na') c.appendChild(el('div', 'hint',
+    'Your siding is vinyl, so we’re only showing colors made for vinyl siding: Benjamin Moore Colors for Vinyl and Sherwin-Williams VinylSafe. Darker colors outside these palettes can warp vinyl.'));
+  if (r.choice === 'deciding') {
+    c.appendChild(el('div', 'hint', 'No problem. This surface stays open until you choose, and it needs a color before you can submit. If you have one in mind, search for it below; picking it sets the color.'));
+    c.appendChild(typeahead(r));
+  } else if (r.choice === 'match') {
+    // matching existing: the color NAME is gold if they know it — spectrophotometer only as fallback
+    c.appendChild(typeahead(r, true));
+    if (r.name) c.appendChild(pickedLine(r));
+    if (r.flag) c.appendChild(el('div', /MISMATCH/.test(r.flag) ? 'flag' : 'softflag', '⚑ ' + r.flag));
+    var lw = lrvWarning(r); if (lw) c.appendChild(lw);
+    c.appendChild(sheenField(r, true));
+  } else if (r.choice === 'new' || !r.choice) {
+    c.appendChild(typeahead(r));
+    if (isVinylRow(r)) c.appendChild(vinylBrowse(r));
+    if (r.name) c.appendChild(pickedLine(r));
+    if (r.flag) c.appendChild(el('div', /MISMATCH/.test(r.flag) ? 'flag' : 'softflag', '⚑ ' + r.flag));
+    var lw2 = lrvWarning(r); if (lw2) c.appendChild(lw2);
+    c.appendChild(sheenField(r, false));
+  }
+  // notes are per-surface things; the whole-home card has no single surface to note on
+  if (r.choice !== 'na' && r.row_id !== '__globaltrim__') {
+    var isAccentRow = /^Accent color/.test(r.surface || ''), isAccentWall = /^Accent wall/.test(r.surface || '');
+    c.appendChild(field(isAccentWall ? 'Which wall?' : isAccentRow ? 'Where does this accent go?' : 'Notes (optional)',
+      noteInput(r, isAccentWall ? 'e.g. the fireplace wall, behind the bed' : isAccentRow ? 'e.g. front door surround, gable trim, left of chimney' : 'Anything we should know about this surface?')));
+  }
+  // client-added rows (accents etc.) can be removed outright
+  if (String(r.row_id).indexOf('added-') === 0) {
+    var rm = el('button', 'linkbtn', 'Remove this');
+    rm.style.color = 'var(--red)';
+    rm.onclick = function () {
+      if (!confirm('Remove "' + r.surface + '" from your selections?')) return;
+      rm.disabled = true;
+      setState('Removing…');
+      google.script.run.withSuccessHandler(function (res) {
+        if (res && res.ok) {
+          MODEL.rows = MODEL.rows.filter(function (t) { return t.row_id !== r.row_id; });
+          if (res.extras) MODEL.extras = res.extras;
+          if (res.status) MODEL.status = res.status;
+          render();
+          setState('Removed.');
+        } else { rm.disabled = false; setState('Couldn’t remove — try again.'); }
+      }).withFailureHandler(function () { rm.disabled = false; setState('Couldn’t remove — try again.'); })
+        .removeSurface(TOKEN, r.row_id, STAFF);
+    };
+    c.appendChild(rm);
+  }
+  return c;
+}
+
+function rerenderCard(r) {
+  // the whole-home card carries section extras (apply-to-all link, hints) — rebuild in full
+  if (r.row_id === '__globaltrim__') { render(); return; }
+  var old = document.getElementById('card_' + r.row_id);
+  if (old) old.parentNode.replaceChild(card(r), old);
+  refreshProgress();
+}
+
+function field(labelText, inputEl) {
+  var f = el('div', 'field');
+  var l = el('label', '', labelText);
+  f.appendChild(l); f.appendChild(inputEl);
+  return f;
+}
+
+function noteInput(r, ph) {
+  var i = document.createElement('input');
+  i.type = 'text'; i.placeholder = ph; i.value = r.note || '';
+  i.onchange = function () { r.note = i.value; save(r, { note: r.note }); };
+  return i;
+}
+
+function isDoorish(r) { return /door/i.test(r.surface || ''); }
+
+function tickText(r) { return r.complete ? '✓ done' : (r.choice === 'deciding' ? 'still deciding' : 'to choose'); }
+
+/* ---------- LRV + vinyl (2026-11-14) ----------
+   INDEX rows are [brand, name, code, hex, category, lrv, vinylSafe]. Vinyl siding rows only offer vinyl-safe
+   colors (Ryan). Every other exterior color under LRV 55 gets the PVC/composite heads-up; the choice is the client's. */
+function isVinylRow(r) { return MODEL.kind === 'exterior' && /^Vinyl siding$/i.test(r.surface || ''); }
+
+function indexEntry(r) {
+  if (!INDEX || !r.name) return null;
+  var code = String(r.code || '').replace(/\s+/g, '').toUpperCase(), nm = String(r.name).toLowerCase();
+  for (var k = 0; k < INDEX.length; k++) {
+    var h = INDEX[k];
+    if (h[0] !== r.brand) continue;
+    if (code ? String(h[2]).replace(/\s+/g, '').toUpperCase() === code : String(h[1]).toLowerCase() === nm) return h;
+  }
+  return null;
+}
+
+function lrvOf(r) {
+  var h = indexEntry(r);
+  if (h && h[5] !== '' && h[5] != null) return Number(h[5]);
+  var hex = String(r.hex || '').replace('#', '');
+  if (!/^[0-9a-f]{6}$/i.test(hex)) return null;
+  var c = [0, 2, 4].map(function (i) { var x = parseInt(hex.substr(i, 2), 16) / 255; return x <= 0.04045 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); });
+  return Math.round(100 * (0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]));
+}
+
+function lrvWarning(r) {
+  if (MODEL.kind !== 'exterior' || !r.name || isVinylRow(r) || r.finish === 'opacity') return null;
+  var h = indexEntry(r);
+  if (h && h[4] === 'stain') return null;                       // stains go on wood
+  if (h && Number(h[6])) return el('div', 'hint', 'Vinyl-safe color: suitable for PVC, vinyl and composite as well as wood.');
+  var lrv = lrvOf(r);
+  if (lrv == null || lrv >= 55) return null;
+  return el('div', 'softflag', 'Heads-up: this color’s light reflectance value (LRV) is ' + lrv + '. Makers of PVC, vinyl and composite trim, such as AZEK, require an LRV of 55 or higher, or a color from a vinyl-safe palette, because darker colors absorb heat and can warp these materials and void their warranty. If these surfaces are wood, this doesn’t apply and the color is fine to use. If they’re PVC, vinyl or composite, please choose a color that suits them.');
+}
+
+function vinylBrowse(r) {
+  var wrap = el('div', 'field');
+  var btn = el('button', 'linkbtn', 'Browse all vinyl-safe colors');
+  var grid = el('div', ''); grid.style.display = 'none';
+  grid.style.cssText += ';display:none;max-height:260px;overflow:auto;margin-top:6px;border:1px solid #dadce0;border-radius:8px;padding:6px';
+  btn.onclick = function () {
+    if (grid.style.display !== 'none') { grid.style.display = 'none'; return; }
+    grid.innerHTML = '';
+    (INDEX || []).filter(function (h) { return Number(h[6]); })
+      .sort(function (a, b) { return (Number(b[5]) || 0) - (Number(a[5]) || 0); })
+      .forEach(function (h) {
+        var d = el('div', ''); d.style.cssText = 'display:flex;align-items:center;gap:8px;padding:4px;cursor:pointer';
+        var chip = el('span', 'chip'); chip.style.background = h[3] || '#fff';
+        d.appendChild(chip);
+        d.appendChild(el('span', 'nm', h[1]));
+        d.appendChild(el('span', 'cd', h[0].replace('Benjamin Moore', 'BM').replace('Sherwin-Williams', 'SW') + ' · ' + h[2]));
+        d.onclick = function () { pickIndexEntry(r, h); };
+        grid.appendChild(d);
+      });
+    grid.style.display = '';
+  };
+  wrap.appendChild(btn); wrap.appendChild(grid);
+  return wrap;
+}
+
+/** The full record locks together: brand, name, code as one unit; the suggested paint sheen is applied
+ *  automatically (never onto a stain product). Shared by the typeahead and the vinyl browser. */
+function pickIndexEntry(r, h) {
+  r.brand = h[0]; r.name = h[1]; r.code = h[2]; r.hex = h[3]; r.flag = '';
+  if (!r.choice || r.choice === 'deciding') r.choice = 'new';
+  if (/^F&B /.test(r.sheen || '') && h[0] !== 'Farrow & Ball') r.sheen = '';   // a genuine-F&B finish only fits an F&B color
+  if (!r.sheen && r.suggested_sheen && h[4] !== 'stain') r.sheen = r.suggested_sheen;
+  save(r, { choice: r.choice, brand: r.brand, name: r.name, code: r.code, hex: r.hex, sheen: r.sheen });
+  rerenderCard(r);
+}
+
+function sheenField(r, optionalLook) {
+  var isOpacity = r.finish === 'opacity';
+  var options = isOpacity ? (MODEL.opacities || []) : SHEENS.slice();
+  // doors — and on exterior forms every surface (stained siding, shingles, wood window
+  // frames…) — can be painted OR stained: offer the stain finishes in the same dropdown
+  if (!isOpacity && (isDoorish(r) || MODEL.kind === 'exterior')) {
+    (MODEL.opacities || []).forEach(function (o) { options.push('Stain — ' + o); });
+  }
+  var s = document.createElement('select');
+  var first = document.createElement('option');
+  first.value = ''; first.textContent = isOpacity ? 'Choose opacity…'
+    : (r.suggested_sheen ? ('Suggested: ' + r.suggested_sheen) : 'Choose sheen…');
+  s.appendChild(first);
+  // 2026-11-14: a Farrow & Ball color can be mixed in our standard paint (no extra) or done in genuine F&B paint
+  // (sheen 'F&B <finish>', priced by Extras.js onto the change order)
+  var isFb = !isOpacity && r.brand === 'Farrow & Ball' && (MODEL.fb_finishes || []).length;
+  function addOpt(parent, val, text) {
+    var o = document.createElement('option'); o.value = val; o.textContent = text;
+    if (r.sheen === val) o.selected = true; parent.appendChild(o);
+  }
+  if (isFb) {
+    var g1 = document.createElement('optgroup'); g1.label = 'Mixed in our standard paint (no extra cost)';
+    options.forEach(function (sh) { addOpt(g1, sh, sh + (sh === r.suggested_sheen ? ' (suggested)' : '')); });
+    var g2 = document.createElement('optgroup'); g2.label = 'Genuine Farrow & Ball paint (extra, on your change order)';
+    MODEL.fb_finishes.forEach(function (f) { addOpt(g2, 'F&B ' + f, 'F&B ' + f); });
+    s.appendChild(g1); s.appendChild(g2);
+  } else options.forEach(function (sh) { addOpt(s, sh, sh + (!isOpacity && sh === r.suggested_sheen ? ' (suggested)' : '')); });
+  s.onchange = function () {
+    r.sheen = s.value || (isOpacity ? '' : (r.suggested_sheen || ''));
+    save(r, { sheen: r.sheen });
+    rerenderCard(r);
+  };
+  var f = field(isOpacity ? 'Opacity' : (isFb ? 'Sheen and paint' : 'Sheen'), s);
+  if (isFb) f.appendChild(el('div', 'hint', 'Farrow & Ball colors can be mixed in our standard paint at no extra cost: a very close match, though genuine F&B paint has a softer, chalkier look. Genuine F&B paint is an extra on your change order; the price shows once you pick a finish.'));
+  if (!r.sheen && r.suggested_sheen) f.appendChild(el('div', 'hint',
+    'We’ll use ' + r.suggested_sheen + ' here unless you pick differently — it’s applied automatically when you choose a color.'));
+  return f;
+}
+
+/* ---------- typeahead ---------- */
+function typeahead(r, forMatch) {
+  var wrap = el('div', 'ta');
+  var i = document.createElement('input');
+  i.type = 'text';
+  i.placeholder = forMatch ? 'Type the color name if you know it' : 'Type a color name — e.g. “white dove”';
+  i.autocomplete = 'off';
+  i.value = '';
+  var box = el('div', 'sugg'); box.style.display = 'none';
+  i.oninput = function () {
+    var q = i.value.trim();
+    if (q.length < 2 || !INDEX) { box.style.display = 'none'; return; }
+    var hits = searchIndex(q, r);
+    box.innerHTML = '';
+    hits.forEach(function (h) {
+      var d = document.createElement('div');
+      var chip = el('span', 'chip'); chip.style.background = h[3] || '#fff';
+      d.appendChild(chip);
+      d.appendChild(el('span', 'nm', h[1]));
+      d.appendChild(el('span', 'cd', h[0].replace('Benjamin Moore', 'BM').replace('Sherwin-Williams', 'SW').replace('Farrow & Ball', 'F&B') + ' · ' + h[2]));
+      d.onclick = function () { box.style.display = 'none'; i.value = ''; pickIndexEntry(r, h); };
+      box.appendChild(d);
+    });
+    // custom entry escape hatch (not on vinyl siding: only the vinyl-safe palettes are offered there)
+    if (!isVinylRow(r)) {
+      var custom = document.createElement('div');
+      custom.appendChild(el('span', 'cd', 'Can’t find it? Enter “' + q + '” manually'));
+      custom.onclick = function () { box.style.display = 'none'; manualEntry(r, q); };
+      box.appendChild(custom);
+    } else if (!hits.length) box.appendChild(el('div', 'cd', 'No vinyl-safe color by that name. Try “Browse all vinyl-safe colors”.'));
+    box.style.display = '';
+  };
+  i.onblur = function () { setTimeout(function () { box.style.display = 'none'; }, 250); };
+  wrap.appendChild(i); wrap.appendChild(box);
+  return field(forMatch ? (r.name ? 'Change the color you told us' : 'Know the color? (optional — we can match it on site if not)')
+                        : (r.name ? 'Search for a different color' : 'Color'), wrap);
+}
+
+function codeRank(code) {
+  // Benjamin Moore sells the same paint under several codes; prefer the modern
+  // collection codes (OC-17 over PM-19 for White Dove — Ryan, 2026-08-26)
+  var m = code.match(/^([A-Za-z]+)-/);
+  var pref = m ? m[1].toUpperCase() : (/^\d/.test(code) ? 'NUM' : 'OTHER');
+  var order = { OC: 1, HC: 2, AF: 3, CSP: 4, CW: 5, CC: 6, AC: 7, NUM: 8 };
+  return order[pref] || 9;
+}
+
+function searchIndex(q, r) {
+  var s = q.toLowerCase().replace(/\s+/g, ' ');
+  // stain products surface where stain makes sense: opacity-finish rows, doors, and all exterior surfaces
+  var stainy = r && (r.finish === 'opacity' || isDoorish(r) || MODEL.kind === 'exterior');
+  var vinylOnly = r && isVinylRow(r);
+  var starts = [], contains = [], codes = [];
+  for (var k = 0; k < INDEX.length && (starts.length < 40); k++) {
+    if (vinylOnly && !Number(INDEX[k][6])) continue;
+    var cat = INDEX[k][4] || '';
+    if (cat === 'stain' && !stainy) continue;       // pure stains only on decks/doors
+    var ranksAsStain = cat === 'stain' || cat === 'both';
+    var nm = INDEX[k][1].toLowerCase(), cd = INDEX[k][2].toLowerCase();
+    if (nm.indexOf(s) === 0) { if (ranksAsStain && r && r.finish === 'opacity') starts.unshift(INDEX[k]); else starts.push(INDEX[k]); }
+    else if (nm.indexOf(s) >= 0) { if (contains.length < 40) contains.push(INDEX[k]); }
+    else if (cd.replace(/\s+/g, '').indexOf(s.replace(/\s+/g, '')) >= 0) { if (codes.length < 8) codes.push(INDEX[k]); }
+  }
+  // one suggestion per brand+name: keep the best-ranked code so clients never
+  // see three White Doves (all codes remain valid for validation server-side)
+  var seen = {}, out = [];
+  starts.concat(contains, codes).forEach(function (h) {
+    var key = h[0] + '|' + h[1].toLowerCase();
+    if (!(key in seen)) { seen[key] = out.length; out.push(h); }
+    else if (codeRank(h[2]) < codeRank(out[seen[key]][2])) out[seen[key]] = h;
+  });
+  return out.slice(0, 8);
+}
+
+function manualEntry(r, seed) {
+  var brand = prompt('Paint brand (e.g. Benjamin Moore, Behr):', r.brand && r.brand !== 'Standard' ? r.brand : '');
+  if (brand === null) return;
+  var name = prompt('Color name:', seed || r.name || '');
+  if (name === null) return;
+  var code = prompt('Color code (optional — we’ll verify it):', r.code || '');
+  if (code === null) code = '';
+  r.brand = brand.trim(); r.name = name.trim(); r.code = code.trim(); r.hex = '';
+  if (!r.choice || r.choice === 'deciding') r.choice = 'new';
+  if (!r.sheen && r.suggested_sheen) r.sheen = r.suggested_sheen;
+  save(r, { choice: r.choice, brand: r.brand, name: r.name, code: r.code, hex: '', sheen: r.sheen });
+  rerenderCard(r);
+}
+
+function pickedLine(r) {
+  var p = el('div', 'picked');
+  var chip = el('span', 'chip'); chip.style.background = r.hex || '#fff';
+  p.appendChild(chip);
+  p.appendChild(el('span', 'nm', r.name));
+  p.appendChild(el('span', 'cd', [r.brand, r.code].filter(Boolean).join(' · ')));
+  return p;
+}
+
+/* ---------- save pipeline ----------
+   Saves are QUEUED, one in flight at a time: rapid taps across many cards used to fire in
+   parallel, pile up on the server's write lock, and time out. Same-row edits coalesce, a
+   failed save retries once automatically, and Submit waits behind the queue. */
+var pending = [], inFlight = false;
+
+/* completeness, computed locally so cards tick "done" instantly — the server's answer
+   (same rules, plus validation flags) reconciles a moment later */
+function clientComplete(r) {
+  if (r.choice === 'standard' || r.choice === 'na' || r.choice === 'match') return 1;
+  if (r.choice === 'new') return (r.name && r.sheen) ? 1 : 0;
+  return 0;
+}
+
+function updateCardState(r) {
+  var cardEl = document.getElementById('card_' + r.row_id);
+  if (cardEl) { cardEl.className = 'card' + (r.complete ? ' done' : ' todo') + catClass(r);
+    var t = cardEl.querySelector('.tick');
+    if (t) { t.className = r.complete ? 'tick' : 'tick todo';
+      t.textContent = tickText(r); } }
+}
+
+function save(r, patch) {
+  if (r.row_id === '__globaltrim__') return saveGlobal(r, patch);
+  // coloring a trim-family row by hand makes it a room-specific override —
+  // the whole-home color stops driving it (server marks the same via updated_by)
+  if (isTrimFamRow(r) && Object.keys(patch).some(function (k) { return k !== 'note'; })) r.overridden = 1;
+  r.complete = clientComplete(r);
+  updateCardState(r);
+  refreshProgress();
+  for (var i = 0; i < pending.length; i++) {
+    if (pending[i].r === r.row_id) {
+      for (var k in patch) pending[i].patch[k] = patch[k];
+      setState('Saving…');
+      return;
+    }
+  }
+  pending.push({ r: r.row_id, row: r, patch: patch, retried: false });
+  setState('Saving…');
+  pump();
+}
+
+/** Whole-home card edits: optimistically mirror onto every non-overridden trim-family
+ *  row so summaries and progress react instantly, then let setGlobalTrim reconcile. */
+function saveGlobal(g, patch) {
+  g.complete = clientComplete(g);
+  famRows().forEach(function (r) {
+    if (r.overridden) return;
+    ['choice','brand','name','code','hex','sheen'].forEach(function (k) { r[k] = g[k]; });
+    r.flag = '';
+    r.complete = clientComplete(r);
+  });
+  for (var i = 0; i < pending.length; i++) {
+    if (pending[i].r === '__globaltrim__') {
+      for (var k in patch) pending[i].patch[k] = patch[k];
+      setState('Saving…'); render();
+      return;
+    }
+  }
+  pending.push({ r: '__globaltrim__', row: g, patch: patch, retried: false, global: true });
+  setState('Saving…');
+  render();
+  pump();
+}
+
+function pump() {
+  if (inFlight || !pending.length) return;
+  var t = pending.shift();
+  inFlight = true;
+  if (t.type === 'submit') { doSubmit(t.btn); return; }
+  if (t.type === 'access') {
+    google.script.run
+      .withSuccessHandler(function (res) {
+        inFlight = false; onAccessSaved(res);
+        if (!pending.length) setState(savedMsg());
+        pump();
+      })
+      .withFailureHandler(function () {
+        inFlight = false;
+        if (!t.retried) { t.retried = true; pending.unshift(t); setTimeout(pump, 1500); return; }
+        setState('Couldn’t save — check your connection. Your last answer may need re-entering.');
+        pump();
+      }).saveAccess(TOKEN, t.answers, STAFF);
+    return;
+  }
+  var runner = google.script.run
+    .withSuccessHandler(function (res) {
+      inFlight = false;
+      if (t.global) onGlobalSaved(t.row, res); else onSaved(t.row, res);
+      if (!pending.length) setState(savedMsg());
+      pump();
+    })
+    .withFailureHandler(function () {
+      inFlight = false;
+      if (!t.retried) { t.retried = true; pending.unshift(t); setTimeout(pump, 1500); return; }
+      setState('Couldn’t save — check your connection. Your last change may need re-entering.');
+      pump();
+    });
+  if (t.global) runner.setGlobalTrim(TOKEN, t.patch, STAFF);
+  else runner.saveField(TOKEN, t.r, t.patch, STAFF);
+}
+
+function onGlobalSaved(g, res) {
+  if (!(res && res.ok)) return;
+  g.flag = res.flag || '';
+  MODEL.outstanding = res.outstanding;
+  if (res.applied) {
+    g.complete = res.complete;
+    famRows().forEach(function (r) {
+      if (r.overridden) return;
+      ['choice','brand','name','code','hex','sheen','flag'].forEach(function (k) { r[k] = res.applied[k]; });
+      r.complete = res.complete;
+    });
+  }
+  if (applyExtras(res)) return;
+  if (res.flag) render(); else refreshProgress();
+}
+
+function onSaved(r, res) {
+  if (!(res && res.ok)) return;
+  r.complete = res.complete; r.flag = res.flag !== undefined ? res.flag : r.flag;
+  MODEL.outstanding = res.outstanding;
+  updateCardState(r);
+  if (applyExtras(res)) return;          // the change order changed the form's status: full redraw
+  if (res.flag || isExtraRow(r)) rerenderCard(r);
+  refreshProgress();
+}
+
+/* ---------- Extras: accent walls + genuine Farrow & Ball (2026-11-14) ----------
+   The server prices everything (Extras.js) and returns the current extras with every save; the page only shows them. */
+function usd(n) { return '$' + Number(n || 0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+function extrasSummary(X) {
+  return (X.items || []).filter(function (i) { return i.amount > 0; })
+    .map(function (i) { return (i.room ? i.room + ' ' : '') + i.label.replace(/^Genuine F&B: /, 'F&B ') + ' ' + usd(i.amount); }).join('; ');
+}
+function isExtraRow(r) { return /^Accent wall/.test(r.surface || '') || /^F&B /.test(r.sheen || ''); }
+
+/** Take the server's extras from a save. Returns true when it re-rendered the whole form. */
+function applyExtras(res) {
+  if (!res || !res.extras) return false;
+  MODEL.extras = res.extras;
+  if (res.status && res.status !== MODEL.status) { MODEL.status = res.status; render(); return true; }
+  renderExtras();
+  return false;
+}
+
+function extraFor(r) {
+  return ((MODEL.extras || {}).items || []).filter(function (i) { return i.row_id === r.row_id || (i.rows || []).indexOf(r.row_id) >= 0; })[0] || null;
+}
+
+function renderExtras() {
+  var box = document.getElementById('extrasBox');
+  if (!box) return;
+  box.innerHTML = '';
+  var X = MODEL.extras || {}, items = (X.items || []).filter(function (i) { return i.amount > 0 && !i.internal; });   // added rooms are priced for Ryan only (2026-11-17)
+  if (!items.length && !X.has_fb && !X.sent_client) return;
+  var c = el('div', 'card');
+  c.appendChild(el('span', 'surface', 'Extras on your change order'));
+  if (items.length) {
+    items.forEach(function (i) {
+      var line = el('div', 'hint', (i.room ? i.room + ': ' : '') + i.label + ' — ' + usd(i.amount));
+      line.title = i.detail || '';
+      c.appendChild(line);
+    });
+    c.appendChild(el('div', '', 'Total: ' + usd(X.total)));
+  } else c.appendChild(el('div', 'hint', 'Nothing extra right now.'));
+  if (X.has_fb) {
+    var lab = el('label', 'hint'); lab.style.display = 'block'; lab.style.marginTop = '6px';
+    var cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = !!X.fb_primer;
+    cb.onchange = function () {
+      cb.disabled = true; setState('Saving…');
+      google.script.run.withSuccessHandler(function (res) { cb.disabled = false; setState(savedMsg()); applyExtras(res); })
+        .withFailureHandler(function () { cb.disabled = false; cb.checked = !cb.checked; setState('Couldn’t save — try again.'); })
+        .setFbPrimer(TOKEN, cb.checked, STAFF);
+    };
+    lab.appendChild(cb);
+    lab.appendChild(document.createTextNode(' Use Farrow & Ball’s own primer & undercoat under the F&B paint (recommended by F&B; added to the change order)'));
+    c.appendChild(lab);
+  }
+  c.appendChild(el('div', 'hint', MODEL.status === 'SUBMITTED' && X.sent_at
+    ? 'We’ve sent these to you as a change order (AWO) to approve. Changing an extra reopens the form so you can re-submit, and we’ll send a revised one.'
+    : 'These are sent to you as a change order (AWO) to approve when you press Submit. Nothing extra is ordered or painted until you approve it.'));
+  box.appendChild(c);
+}
+
+/** "+ Add a room" (interior, 2026-11-14). Staff: a room the project grew to include (the client is emailed if they
+ *  had started). Client: a room not on the estimate; Ryan is alerted to price it. Collapsed until opened. */
+var ROOM_TYPES = ['Bedroom', 'Bathroom', 'Kitchen', 'Living room', 'Dining room', 'Family room', 'Office', 'Hallway / stairs', 'Entry / foyer', 'Laundry', 'Closet', 'Basement', 'Room'];
+
+/** 2026-11-16 (Ryan): one card for anything not on the estimate: a whole room (type + which surfaces) or a single item. */
+function addRoomCard() {
+  var staff = !!STAFF;
+  var c = el('div', 'card'); c.id = 'card_addroom';
+  c.appendChild(el('span', 'surface', staff ? 'Add to the project (staff)' : 'Anything not on your estimate?'));
+  c.appendChild(el('div', 'hint', staff
+    ? 'For a room or item the project now includes (for example after a change order). If the client has started or submitted, they get a short email asking them to pick its colors.'
+    : 'Add a room, or a single item like a radiator or built-in shelves, and choose its colors. It isn’t priced yet: we’ll quote it and send you a change order to approve before we paint it.'));
+  var btns = el('div', ''); btns.style.cssText = 'display:flex;gap:4px;flex-wrap:wrap;margin-top:4px';
+  var openRoom = el('button', 'linkbtn', '+ Add a room');
+  var openItem = el('button', 'linkbtn', '+ Add something else');
+  btns.appendChild(openRoom); btns.appendChild(openItem); c.appendChild(btns);
+
+  // a room: type, optional name, and exactly which surfaces
+  var rp = el('div', ''); rp.style.display = 'none';
+  var type = document.createElement('select');
+  var o0 = document.createElement('option'); o0.value = ''; o0.textContent = 'Choose a room type'; type.appendChild(o0);
+  ROOM_TYPES.forEach(function (t) { var o = document.createElement('option'); o.value = t; o.textContent = t; type.appendChild(o); });
+  rp.appendChild(field('Type of room', type));
+  // 2026-11-17 (Ryan): the size lets us price the room for the change order
+  var size = document.createElement('select');
+  var sizeWrap = field('Size of room', size); sizeWrap.style.display = 'none';
+  var SZ = MODEL.room_sizes || {};
+  type.onchange = function () {
+    size.innerHTML = '';
+    var spec = SZ[type.value];
+    sizeWrap.style.display = spec ? '' : 'none';
+    if (!spec) return;
+    var s0 = document.createElement('option'); s0.value = ''; s0.textContent = 'Choose a size (feet)'; size.appendChild(s0);
+    spec.sizes.forEach(function (z) { var o = document.createElement('option'); o.value = z; o.textContent = z; size.appendChild(o); });
+  };
+  rp.appendChild(sizeWrap);
+  var name = document.createElement('input'); name.type = 'text'; name.placeholder = 'Optional, e.g. Guest bedroom';
+  rp.appendChild(field('Room name', name));
+  var boxes = {};
+  var list = el('div', '');
+  (MODEL.room_surfaces || []).forEach(function (sf) {
+    var lab = el('label', 'hint'); lab.style.cssText = 'display:inline-block;margin:4px 14px 4px 0;font-size:14px;color:var(--ink)';
+    var cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = sf === 'Walls';
+    boxes[sf] = cb; lab.appendChild(cb); lab.appendChild(document.createTextNode(' ' + (sf === 'Trim' ? 'Trim (incl. doors & windows)' : sf))); list.appendChild(lab);
+  });
+  rp.appendChild(field('What should we paint in this room? Tick each one', list));
+  // 2026-11-17 (Ryan): with Trim ticked, the client says how many doors and windows; baseboard comes from the room size
+  var mkCount = function () { var s = document.createElement('select'); var b = document.createElement('option'); b.value = ''; b.textContent = 'Choose'; s.appendChild(b);
+    for (var i = 0; i <= 10; i++) { var o = document.createElement('option'); o.value = String(i); o.textContent = i === 10 ? '10 or more' : String(i); s.appendChild(o); } s.style.width = 'auto'; return s; };
+  var doors = mkCount(), wins = mkCount();
+  var dw = el('div', ''); dw.style.cssText = 'display:flex;gap:16px;flex-wrap:wrap';
+  dw.appendChild(field('Doors to paint', doors)); dw.appendChild(field('Windows to paint', wins));
+  var dwWrap = field('Trim: how many doors and windows? (0 if none)', dw);
+  var syncDw = function () { dwWrap.style.display = boxes.Trim && boxes.Trim.checked ? '' : 'none'; };
+  if (boxes.Trim) boxes.Trim.onchange = syncDw;
+  syncDw();
+  rp.appendChild(dwWrap);
+  var go = el('button', 'linkbtn', staff ? 'Add this room' : 'Add this room (we’ll quote it)');
+  go.onclick = function () {
+    var picks = Object.keys(boxes).filter(function (sf) { return boxes[sf].checked; });
+    if (!type.value) { setState('Choose the type of room.'); return; }
+    if (!staff && SZ[type.value] && !size.value) { setState('Choose the size of the room.'); return; }
+    if (!picks.length) { setState('Tick at least one thing to paint.'); return; }
+    var trimOn = picks.indexOf('Trim') >= 0;
+    if (!staff && trimOn && (doors.value === '' || wins.value === '')) { setState('Tell us how many doors and windows (0 if none).'); return; }
+    go.disabled = true; setState('Adding…');
+    google.script.run.withSuccessHandler(function (res) {
+      go.disabled = false;
+      if (res && res.ok) {
+        res.rows.forEach(function (r) { MODEL.rows.push(r); });
+        if (res.rows[0]) ROOM_SHOW[res.rows[0].room] = 1;
+        if (res.status) MODEL.status = res.status;
+        render();
+        setState(staff ? 'Room added.' : 'Room added. Pick its colors; we’ll be in touch with a price.');
+        var first = document.getElementById('card_' + res.rows[0].row_id);
+        if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else setState(res && res.error === 'exists' ? 'There’s already a room with that name.' : (res && res.error === 'size' ? 'Choose the size of the room.' : (res && res.error === 'trim' ? 'Tell us how many doors and windows (0 if none).' : 'Couldn’t add that room — try again.')));
+    }).withFailureHandler(function () { go.disabled = false; setState('Couldn’t add that room — try again.'); })
+      .addRoom(TOKEN, name.value.trim() || type.value, picks, STAFF, !staff, type.value, size.value,
+        trimOn ? { doors: doors.value, windows: wins.value } : null);
+  };
+  rp.appendChild(go);
+
+  // a single item
+  var ip = el('div', ''); ip.style.display = 'none';
+  var what = document.createElement('input'); what.type = 'text'; what.placeholder = 'e.g. radiator in the hall, built-in shelves';
+  ip.appendChild(field('What would you like painted?', what));
+  var goi = el('button', 'linkbtn', staff ? 'Add it' : 'Add it (we’ll quote it)');
+  goi.onclick = function () {
+    var label = what.value.trim();
+    if (!label) { setState('Tell us what you’d like painted.'); return; }
+    goi.disabled = true; setState('Adding…');
+    google.script.run.withSuccessHandler(function (res) {
+      goi.disabled = false;
+      if (res && res.ok) {
+        MODEL.rows.push(res.row);
+        ROOM_SHOW[res.row.room] = 1;
+        render();
+        setState('Added. Pick the color and tell us where it goes.');
+        var elc = document.getElementById('card_' + res.row.row_id);
+        if (elc) elc.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else setState('Couldn’t add that — try again.');
+    }).withFailureHandler(function () { goi.disabled = false; setState('Couldn’t add that — try again.'); })
+      .addSurface(TOKEN, 'Other', label, STAFF);
+  };
+  ip.appendChild(goi);
+
+  openRoom.onclick = function () { ip.style.display = 'none'; rp.style.display = ''; type.focus(); };
+  openItem.onclick = function () { rp.style.display = 'none'; ip.style.display = ''; what.focus(); };
+  c.appendChild(rp); c.appendChild(ip);
+  return c;
+}
+
+/** "+ Accent wall" under each room (interior). */
+function accentLink(room) {
+  var wrap = el('div', ''); wrap.style.margin = '2px 0 10px';
+  var included = (MODEL.accent_included || []).indexOf(room) >= 0;
+  var btn = el('button', 'linkbtn', '+ Accent wall in this room' + (included ? ' (included in your estimate)' : ''));
+  btn.onclick = function () {
+    if (!included && !confirm('Accent walls are an extra charge unless your estimate includes one for this room. '
+      + 'The price shows on the card once added, and it goes on a change order for you to approve. Add an accent wall to ' + room + '?')) return;
+    btn.disabled = true; setState('Adding…');
+    google.script.run.withSuccessHandler(function (res) {
+      btn.disabled = false;
+      if (res && res.ok) {
+        MODEL.rows.push(res.row);
+        ROOM_SHOW[res.row.room] = 1;
+        if (res.extras) MODEL.extras = res.extras;
+        if (res.status) MODEL.status = res.status;
+        render();
+        setState('Added. Pick the color and tell us which wall.');
+        var elc = document.getElementById('card_' + res.row.row_id);
+        if (elc) elc.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else setState('Couldn’t add that — try again.');
+    }).withFailureHandler(function () { btn.disabled = false; setState('Couldn’t add that — try again.'); })
+      .addSurface(TOKEN, 'Accent wall', '', STAFF, room);
+  };
+  wrap.appendChild(btn);
+  return wrap;
+}
+
+function slugify(s) { return String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-'); }
+
+function refreshProgress() {
+  var total = MODEL.rows.length;
+  var done = MODEL.rows.filter(function (r) { return r.complete; }).length;
+  // per-room badges: "2/4" amber while outstanding, white-on-green "✓" when the room is done
+  var byRoom = {};
+  MODEL.rows.forEach(function (r) {
+    (byRoom[r.room] = byRoom[r.room] || { d: 0, t: 0 }).t++;
+    if (r.complete) byRoom[r.room].d++;
+  });
+  Object.keys(byRoom).forEach(function (room) {
+    var b = document.getElementById('rb_' + slugify(room));
+    if (!b) return;
+    var v = byRoom[room];
+    b.textContent = v.d >= v.t ? '✓ done' : (v.d + '/' + v.t + ' chosen');
+    b.className = v.d >= v.t ? 'rbadge full' : 'rbadge';
+  });
+  var accMiss = accessMissing(MODEL.access || {}, MODEL.kind);
+  var accReq = accessMissing({}, MODEL.kind).length;              // required answers when nothing is filled in yet
+  var accDone = Math.max(0, accReq - Math.min(accMiss.length, accReq));
+  var ab = document.getElementById('rb_access');
+  if (ab) { ab.textContent = accMiss.length ? accMiss.length + ' to answer' : '✓ done'; ab.className = accMiss.length ? 'rbadge' : 'rbadge full'; }
+  var submitted = MODEL.status === 'SUBMITTED';
+  var colorsDone = done >= total;
+  var q = accMiss.length;
+  var ready = colorsDone && !q;
+  // 2026-11-02: the bar fills only when colors AND the access questions are done. A full bar with colors alone
+  // read as "finished", and clients left without pressing Submit (70 Jamaica St).
+  var units = total + accReq;
+  document.getElementById('fill').style.width = (submitted ? 100 : (units ? Math.round(100 * (done + accDone) / units) : 0)) + '%';
+  document.getElementById('count').textContent = submitted ? 'Submitted ✓'
+    : (!colorsDone ? done + ' of ' + total + ' chosen'
+    : (q ? 'Colors done · ' + q + (q === 1 ? ' question' : ' questions') + ' left · then Submit' : 'All filled in · press Submit'));
+  if (submitting) return;   // a submit is in flight; leave the buttons saying so
+  var label = submitted ? 'Submitted ✓' : (!colorsDone ? (total - done) + ' left' : (q ? 'Answer access & timing' : 'Submit to Ryan Painting'));
+  var btns = document.querySelectorAll('.submitbtn');
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].disabled = submitted || !ready;
+    btns[i].textContent = label;
+    btns[i].className = 'btn submitbtn' + (ready && !submitted ? ' ready' : '');
+  }
+  // the next-step card at the top: what is left, and a way to get there
+  var ns = document.getElementById('nextStep');
+  if (ns) {
+    ns.innerHTML = '';
+    if (!submitted && colorsDone && q) {
+      var c1 = el('div', 'banner warn', 'Your colors are all in. ' + (q === 1 ? 'One short question' : q + ' short questions') + ' about access and timing, then press Submit.');
+      var go = el('button', 'btn', 'Go to the questions');
+      go.onclick = openAccess;
+      c1.appendChild(go); ns.appendChild(c1);
+    } else if (!submitted && ready) {
+      var c2 = el('div', 'banner ok', 'Everything is filled in. Press Submit to send it to us. Nothing reaches our team until you do.');
+      var sb3 = el('button', 'btn submitbtn ready', 'Submit to Ryan Painting'); sb3.id = 'submit3';
+      c2.appendChild(sb3); ns.appendChild(c2);
+    }
+  }
+}
+
+document.addEventListener('click', function (e) {
+  if (e.target && e.target.classList && e.target.classList.contains('submitbtn')) {
+    var btn = e.target;
+    if (btn.disabled || submitting) return;
+    var X = MODEL.extras || {};
+    if (X.total > 0 && !confirm('Your selections include extras totalling ' + usd(X.total) + ' (' + extrasSummary(X) + ').\n\n'
+      + 'We’ll send these to you as a change order (AWO) to approve before we order or paint them. Submit now?')) return;
+    submitting = true;
+    setSubmitButtons(pending.length || inFlight ? 'Saving…' : 'Submitting…', true);
+    pending.push({ type: 'submit', btn: btn });   // runs after every queued save has landed
+    pump();
+  }
+});
+
+var submitting = false;
+function setSubmitButtons(text, disabled) {
+  var all = document.querySelectorAll('.submitbtn');
+  for (var i = 0; i < all.length; i++) { all[i].disabled = !!disabled; all[i].textContent = text; }
+}
+
+function doSubmit(btn) {
+  setSubmitButtons('Submitting…', true);
+  google.script.run.withSuccessHandler(function (res) {
+    inFlight = false; submitting = false;
+    if (res && res.ok) { MODEL.status = 'SUBMITTED'; if (res.extras) MODEL.extras = res.extras; pending = pending.filter(function (t) { return t.type !== 'submit'; }); render(); setState('Submitted. Thank you!'); window.scrollTo(0, 0); }
+    else if (res && res.error === 'access') { refreshProgress(); setState('Please finish the access and timing questions, then submit.'); openAccess(); }
+    else { refreshProgress(); setState('Couldn’t submit — please try again.'); }
+    pump();
+  }).withFailureHandler(function () {
+    inFlight = false; submitting = false;
+    refreshProgress(); setState('Couldn’t submit — please try again.');
+    pump();
+  }).submitForm(TOKEN, STAFF);
+}
+
+/* ---------- Samples: the doorman, the picker, quick picks (added 2026-10-30) ----------
+   The page opens with one question. Ready clients go straight to the surfaces. Clients who want to see
+   colors first send a sample list (five free, then $95 per set of five); Sales applies them and the client
+   comes back to choose, with the sampled colors one tap away. "Keep what's there" marks every open surface
+   as match-on-site so nobody who simply wants the same colors feels pushed into samples (Ryan, 2026-10-30). */
+
+function doormanSection() {
+  var sec = el('div', ''); sec.id = 'doorman';
+  sec.appendChild(el('h2', 'room', 'Before we start: do you already know your colors?'));
+  sec.appendChild(el('div', 'hint', 'Pick the one that fits. You can change your mind later.'));
+  function big(cls, title, sub, mode) {
+    var c = el('div', '');
+    var b = el('button', 'door ' + cls, '');
+    b.appendChild(el('b', '', title)); b.appendChild(el('span', '', sub));
+    b.onclick = function () {
+      b.disabled = true;
+      MODEL.samples.mode = mode;
+      if (mode === 'match') {
+        // mirror what the server does, so the page answers instantly; the server catches up in the background
+        MODEL.rows.forEach(function (r) { if (r.complete || r.is_default) return; r.choice = 'match'; r.brand = ''; r.name = ''; r.code = ''; r.hex = ''; if (!r.sheen) r.sheen = r.suggested_sheen || ''; r.complete = 1; });
+      }
+      render(); window.scrollTo(0, 0); setState('Saving…');
+      var tries = 0;
+      (function go() {
+        google.script.run.withSuccessHandler(function (res) {
+          if (res && res.ok) { if (res.samples) MODEL.samples = res.samples; setState(savedMsg()); if (mode === 'match') refreshProgress(); }
+          else setState('Couldn’t save your choice — please tap Start over and try again.');
+        }).withFailureHandler(function () { if (tries++ < 1) setTimeout(go, 1500); else setState('Couldn’t save your choice — check your connection and tap Start over.'); }).setSamplesMode(TOKEN, mode, STAFF);
+      })();
+    };
+    c.appendChild(b); c.style.marginBottom = '10px';
+    return c;
+  }
+  sec.appendChild(big('a', 'Yes, I know my colors', 'Enter them surface by surface. Everything saves as you go.', 'ready'));
+  sec.appendChild(big('b', 'Keep the colors that are there', 'You do not need to know their names. We match them on site, surface by surface.', 'match'));
+  sec.appendChild(big('c', 'Not sure yet, I’d like to see some samples first', 'Tell us up to ' + (MODEL.samples.free || 5) + ' colors and where you are thinking of them. Ryan puts samples on the wall before you decide. The first ' + (MODEL.samples.free || 5) + ' are free.', 'samples'));
+  return sec;
+}
+
+function requestedSection() {
+  var SM = MODEL.samples;
+  var sec = el('div', ''); sec.id = 'requested';
+  sec.appendChild(el('h2', 'room', 'Thank you, your sample list is with us'));
+  var c = el('div', 'card');
+  c.appendChild(el('span', 'surface', 'What you asked to see'));
+  var ul = document.createElement('ul'); ul.style.margin = '8px 0 0 18px'; ul.style.padding = '0';
+  SM.picks.forEach(function (p) { var li = document.createElement('li'); li.textContent = pickLabel(p) + (p && p.where ? ' — ' + p.where : ''); ul.appendChild(li); });
+  c.appendChild(ul); sec.appendChild(c);
+  if (MODEL.kind !== 'exterior' && SM.visit_at) {
+    var bd = el('div', 'card done');
+    bd.appendChild(el('span', 'surface', 'Your sample visit is booked'));
+    var when = new Date(SM.visit_at);
+    bd.appendChild(el('div', 'hint', (isNaN(when.getTime()) ? SM.visit_at : when.toLocaleString('en-US', { weekday: 'long', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit' })) + '. Ryan brings the samples and puts a patch of each where you are thinking of it. Nothing to prepare. Need to change the time? Use the link in your booking confirmation email.'));
+    sec.appendChild(bd);
+  } else if (MODEL.kind !== 'exterior' && BOOK_SAMPLES_URL) {
+    var b = el('div', 'card');
+    b.appendChild(el('span', 'surface', 'Next: a short visit to put them on the wall'));
+    b.appendChild(el('div', 'hint', 'Someone needs to let us in, so pick a time that suits you. About 30 minutes. If you have a lockbox or someone is always there, you can skip this and reply to our email instead. Booked already? This page catches up within the hour.'));
+    var bk = el('a', 'btn', 'Book a time to apply the samples'); bk.href = BOOK_SAMPLES_URL + (MODEL.client_email ? '?email=' + encodeURIComponent(MODEL.client_email) : ''); bk.target = '_blank'; bk.style.display = 'block'; bk.style.textAlign = 'center'; bk.style.marginTop = '12px'; bk.style.textDecoration = 'none';
+    b.appendChild(bk); sec.appendChild(b);
+  } else {
+    var e = el('div', 'card');
+    e.appendChild(el('span', 'surface', 'Next'));
+    e.appendChild(el('div', 'hint', 'We put the samples up outside, no need to let us in. We email you when they are on the wall.'));
+    sec.appendChild(e);
+  }
+  var n = el('div', 'card');
+  n.appendChild(el('span', 'surface', 'Then'));
+  n.appendChild(el('div', 'hint', 'Take a few days to look at them in your own light. When you have decided, come back to this page, choose a color for each surface (the sampled colors are one tap away) and press Submit. That is what sets your dates in motion.'));
+  sec.appendChild(n);
+  var ed = el('button', 'linkbtn', 'Change my sample list'); ed.onclick = function () { var body = document.getElementById('body'); body.innerHTML = ''; body.appendChild(pickerSection(false, true)); window.scrollTo(0, 0); };
+  sec.appendChild(ed);
+  var go = el('button', 'linkbtn', 'I already know some of my colors, let me enter them now'); go.onclick = function () { SHOW_FORM_WHILE_WAITING = true; render(); window.scrollTo(0, 0); };
+  sec.appendChild(go);
+  return sec;
+}
+
+function pickerSection(more, edit) {
+  var SM = MODEL.samples; var free = SM.free || 5, price = SM.extra_price || 95;
+  var prior = edit ? (SM.picks || []) : [];
+  var sec = el('div', ''); sec.id = 'picker';
+  sec.appendChild(el('h2', 'room', edit ? 'Change your sample list' : (more ? 'Another set of samples' : 'Which colors would you like to see?')));
+  sec.appendChild(el('div', 'hint', more
+    ? 'Samples come in sets of up to ' + free + '. This set is $' + price + ', which covers the visit; it will appear as an invoice in your portal. Ryan puts them up as soon as you send the list.'
+    : 'Up to ' + free + '. Start typing a color name or code and pick it from the list, and tell us where you are thinking of it. Not sure of names? Describe what you have in mind at the bottom and Ryan will choose candidates with you. The first ' + free + ' are free.'));
+  // where a sample could go: the surfaces from the estimate, interior or exterior
+  var places = [];
+  (MODEL.rows || []).forEach(function (r) { var p = (r.room && r.room !== 'Whole home' ? r.room + ' — ' : '') + r.surface; if (places.indexOf(p) < 0) places.push(p); });
+  var slots = [];
+  for (var i = 0; i < free; i++) (function (i) {
+    var pr = prior[i] && typeof prior[i] === 'object' ? prior[i] : null;
+    var slot = pr ? { brand: pr.brand || '', name: pr.name || '', code: pr.code || '', hex: pr.hex || '', text: pr.text || pr.name || '', where: pr.where || '' } : { brand: '', name: '', code: '', hex: '', text: '', where: '' };
+    var c = el('div', 'card');
+    c.appendChild(el('span', 'surface', 'Color ' + (i + 1) + (i ? ' (optional)' : '')));
+    var wrap = el('div', 'ta');
+    var inp = document.createElement('input'); inp.type = 'text'; inp.autocomplete = 'off'; inp.placeholder = 'Type a color name or code — e.g. “white dove” or “SW 7008”';
+    var box = el('div', 'sugg'); box.style.display = 'none';
+    var picked = el('div', '');
+    function showPicked() {
+      picked.innerHTML = '';
+      if (!slot.name && !slot.text) return;
+      var p = el('div', 'picked'); var chip = el('span', 'chip'); chip.style.background = slot.hex || '#fff'; p.appendChild(chip);
+      p.appendChild(el('span', 'nm', slot.name || slot.text)); p.appendChild(el('span', 'cd', [slot.brand, slot.code].filter(Boolean).join(' · ')));
+      picked.appendChild(p);
+    }
+    inp.oninput = function () {
+      var q = inp.value.trim(); slot.text = q; slot.name = ''; slot.brand = ''; slot.code = ''; slot.hex = '';
+      if (q.length < 2 || !INDEX) { box.style.display = 'none'; showPicked(); return; }
+      var hits = searchIndex(q, null);
+      box.innerHTML = '';
+      hits.forEach(function (h) {
+        var d = document.createElement('div');
+        var chip = el('span', 'chip'); chip.style.background = h[3] || '#fff'; d.appendChild(chip);
+        d.appendChild(el('span', 'nm', h[1])); d.appendChild(el('span', 'cd', h[0].replace('Benjamin Moore', 'BM').replace('Sherwin-Williams', 'SW').replace('Farrow & Ball', 'F&B') + ' · ' + h[2]));
+        d.onclick = function () { slot.brand = h[0]; slot.name = h[1]; slot.code = h[2]; slot.hex = h[3]; slot.text = h[1] + ' (' + h[2] + ')'; inp.value = slot.text; box.style.display = 'none'; showPicked(); };
+        box.appendChild(d);
+      });
+      var custom = document.createElement('div'); custom.appendChild(el('span', 'cd', 'Not in the list? Keep “' + q + '” as typed')); custom.onclick = function () { box.style.display = 'none'; showPicked(); };
+      box.appendChild(custom); box.style.display = '';
+    };
+    inp.onblur = function () { setTimeout(function () { box.style.display = 'none'; }, 250); };
+    if (pr) { inp.value = slot.text; }
+    wrap.appendChild(inp); wrap.appendChild(box); c.appendChild(wrap); c.appendChild(picked); if (pr) showPicked();
+    var sel = document.createElement('select');
+    var o0 = document.createElement('option'); o0.value = ''; o0.textContent = 'Where are you thinking of it? (optional)'; sel.appendChild(o0);
+    places.forEach(function (p) { var o = document.createElement('option'); o.value = p; o.textContent = p; sel.appendChild(o); });
+    var ox = document.createElement('option'); ox.value = 'Not sure yet'; ox.textContent = 'Not sure yet'; sel.appendChild(ox);
+    if (pr && pr.where) sel.value = pr.where;
+    sel.onchange = function () { slot.where = sel.value; };
+    var pw = el('div', 'pick'); pw.appendChild(sel); c.appendChild(field('', pw));
+    sec.appendChild(c); slots.push(slot);
+  })(i);
+  var note = document.createElement('input'); note.type = 'text'; note.placeholder = 'e.g. a warm white for the living room, something darker for the front door';
+  sec.appendChild(field('Anything to tell us about what you are after? (optional)', note));
+  if (more) {
+    var agree = el('div', 'card'); var cb = document.createElement('input'); cb.type = 'checkbox'; cb.id = 'agree95';
+    var lab = document.createElement('label'); lab.htmlFor = 'agree95'; lab.appendChild(cb); lab.appendChild(document.createTextNode(' I understand this set of samples is $' + price + ', invoiced in my portal.'));
+    agree.appendChild(lab); sec.appendChild(agree);
+  }
+  if (edit && SM.note) note.value = SM.note;
+  var send = el('button', 'btn', edit ? 'Save my changes' : (more ? 'Send my list and accept the $' + price : 'Send my sample list')); send.style.width = '100%';
+  send.onclick = function () {
+    var picks = slots.filter(function (x) { return x.name || x.text; }).map(function (x) { return { brand: x.brand, name: x.name, code: x.code, hex: x.hex, text: x.text, where: x.where }; });
+    if (!picks.length) { if (!note.value.trim()) { setState('Add at least one color, or describe what you are after.'); return; } picks = [{ text: note.value.trim().slice(0, 120), where: '' }]; }
+    if (more && !document.getElementById('agree95').checked) { setState('Please tick the box to accept the $' + price + '.'); return; }
+    send.disabled = true; send.textContent = 'Sending…';
+    var runner = google.script.run.withSuccessHandler(function (res) {
+      if (res && res.ok) { MODEL.samples = res.samples; render(); window.scrollTo(0, 0); setState(edit ? 'Saved. Your updated list is with us.' : 'Sent. We will email you when the samples are up.'); }
+      else { send.disabled = false; send.textContent = edit ? 'Save my changes' : 'Send my sample list'; setState(res && res.error === 'already' ? 'Your list is already with us.' : (res && res.error === 'not_yet' ? 'Your first set is not on the wall yet; another set can be added after that.' : 'Couldn’t send — try again.')); }
+    }).withFailureHandler(function () { send.disabled = false; send.textContent = edit ? 'Save my changes' : 'Send my sample list'; setState('Couldn’t send — try again.'); });
+    if (edit) runner.updateSamples(TOKEN, picks, note.value.trim(), STAFF); else runner.requestSamples(TOKEN, picks, note.value.trim(), !!more, STAFF);
+  };
+  sec.appendChild(send);
+  if (edit) {
+    var cancelE = el('button', 'linkbtn', '‹ Keep my list as it is'); cancelE.onclick = function () { render(); window.scrollTo(0, 0); };
+    sec.appendChild(cancelE);
+  } else if (!more) {
+    var back = el('button', 'linkbtn', '‹ Back to the start'); back.onclick = function () { MODEL.samples.mode = ''; render(); window.scrollTo(0, 0); google.script.run.setSamplesMode(TOKEN, 'reset', STAFF); };
+    sec.appendChild(back);
+  } else {
+    var cancel = el('button', 'linkbtn', '‹ Back to my colors'); cancel.onclick = function () { render(); window.scrollTo(0, 0); };
+    sec.appendChild(cancel);
+  }
+  return sec;
+}
+
+function pickLabel(p) { return (p && typeof p === 'object') ? (p.name || p.text || p.label || '') : String(p || ''); }
+function quickPicks(r) {
+  var wrap = el('div', 'seg');
+  (MODEL.samples.all || []).forEach(function (p) {
+    var lbl = pickLabel(p); if (!lbl) return;
+    var b = el('button', r.name && String(r.name).toLowerCase() === lbl.toLowerCase() ? 'on' : '', lbl + (p && p.where ? ' (' + p.where + ')' : ''));
+    b.onclick = function () { useSample(r, p); };
+    wrap.appendChild(b);
+  });
+  return field('Your sampled colors, one tap', wrap);
+}
+
+function useSample(r, p) {
+  var obj = (p && typeof p === 'object') ? p : { text: String(p || '') };
+  if (obj.name && obj.brand) { r.brand = obj.brand; r.name = obj.name; r.code = obj.code || ''; r.hex = obj.hex || ''; r.flag = ''; }
+  else {
+    var hits = INDEX ? searchIndex(obj.text || obj.name || '', r) : []; var h = hits.length ? hits[0] : null;
+    if (h) { r.brand = h[0]; r.name = h[1]; r.code = h[2]; r.hex = h[3]; r.flag = ''; }
+    else { r.brand = ''; r.name = obj.text || obj.name || ''; r.code = ''; r.hex = ''; }
+  }
+  if (r.choice !== 'match') r.choice = 'new';
+  if (!r.sheen && r.suggested_sheen) r.sheen = r.suggested_sheen;
+  save(r, { choice: r.choice, brand: r.brand, name: r.name, code: r.code, hex: r.hex, sheen: r.sheen });
+  rerenderCard(r);
+}
+
+/* ---------- Access & timing (added 2026-10-29) ----------
+   A short set of questions after the colors: how the crew gets in, what to know on site,
+   and timing. Required before submit. Answers save as you tap through the same queue. */
+
+function accessMissing(a, kind) {
+  var m = []; a = a || {};
+  if (!a.entry) m.push('entry');
+  else if (a.entry !== 'home' && a.entry !== 'open' && !String(a.entry_details || '').trim()) m.push('entry_details');
+  if (!a.alarm) m.push('alarm');
+  if (!a.pets) m.push('pets');
+  if (!a.parking) m.push('parking');
+  if (!a.occupied) m.push('occupied');
+  if (kind === 'exterior') {
+    if (!a.water) m.push('water');
+    if (!a.power) m.push('power');
+    if (!a.neighbor_informed) m.push('neighbor_informed');
+  }
+  if (!a.finish_by) m.push('finish_by');
+  else if (a.finish_by === 'yes') { if (!a.finish_date) m.push('finish_date'); if (!a.finish_reason) m.push('finish_reason'); }
+  if (!a.earliest) m.push('earliest');
+  else if (a.earliest === 'not_before' && !a.earliest_date) m.push('earliest_date');
+  return m;
+}
+
+function patchOf(k, v) { var p = {}; p[k] = v; return p; }
+
+function accessSection() {
+  var sec = el('div', '');
+  sec.id = 'accessSec';
+  var h = el('h2', 'room acc', 'Access & timing');
+  var badge = el('span', 'rbadge', ''); badge.id = 'rb_access'; h.appendChild(badge);
+  sec.appendChild(h);
+  sec.appendChild(el('div', 'hint', 'A few quick answers so we can plan your start. Everything saves as you tap.'));
+  var a = MODEL.access = MODEL.access || {};
+  var ext = MODEL.kind === 'exterior';
+  var miss = accessMissing(a, MODEL.kind);
+  function isMissing(keys) { return keys.some(function (k) { return miss.indexOf(k) >= 0; }); }
+
+  function choiceCard(key, label, opts, detail) {
+    // detail: { key, label, when(value) } — a text answer shown for some choices
+    var c = el('div', 'card cat-access' + (isMissing([key].concat(detail ? [detail.key] : [])) ? ' todo' : ' done'));
+    c.id = 'acc_' + key;
+    var head = el('div', 'head');
+    head.appendChild(el('span', 'surface', label));
+    head.appendChild(el('span', isMissing([key].concat(detail ? [detail.key] : [])) ? 'tick todo' : 'tick', isMissing([key].concat(detail ? [detail.key] : [])) ? 'to answer' : '✓ done'));
+    c.appendChild(head);
+    var seg = el('div', 'seg');
+    opts.forEach(function (o) {
+      var b = el('button', a[key] === o[0] ? 'on' : '', o[1]);
+      b.onclick = function () { a[key] = o[0]; saveAccess(patchOf(key, o[0])); rerenderAccess(); };
+      seg.appendChild(b);
+    });
+    c.appendChild(seg);
+    if (detail && (!detail.when || detail.when(a[key]))) {
+      var i = document.createElement('input');
+      i.type = 'text';
+      i.placeholder = typeof detail.placeholder === 'function' ? (detail.placeholder(a[key]) || '') : (detail.placeholder || '');
+      i.value = a[detail.key] || '';
+      i.onchange = function () { a[detail.key] = i.value; saveAccess(patchOf(detail.key, i.value)); refreshProgress(); };
+      c.appendChild(field(typeof detail.label === 'function' ? detail.label(a[key]) : detail.label, i));
+      if (detail.hint) c.appendChild(el('div', 'hint', typeof detail.hint === 'function' ? detail.hint(a[key]) : detail.hint));
+    }
+    return c;
+  }
+  function dateField(key, label) {
+    var i = document.createElement('input');
+    i.type = 'date'; i.value = a[key] || '';
+    i.onchange = function () { a[key] = i.value; saveAccess(patchOf(key, i.value)); rerenderAccess(); };
+    return field(label, i);
+  }
+
+  sec.appendChild(choiceCard('entry', ext ? 'How does our crew get to the work?' : 'How will our crew get in?',
+    ext ? [['open', 'Open access, no gates'], ['gate_open', 'Gate or fence, unlocked'], ['gate_locked', 'Gate locked'], ['home', 'Someone will let us in'], ['other', 'Other']]
+        : [['home', 'Someone will be there'], ['lockbox', 'Lockbox, hidden key or keypad lock'], ['key', 'Key left with us'], ['other', 'Other']],
+    { key: 'entry_details',
+      label: function (v) { return v === 'lockbox' ? 'Code, and where to find it' : (v === 'key' ? 'How we get the key' : (v === 'gate_locked' ? 'Gate code, or where the key is' : 'Tell us more')); },
+      placeholder: function (v) {
+        if (v === 'lockbox') return 'Lockbox or keypad code, and where the box or hidden key is';
+        if (v === 'key') return 'When and where we can pick it up, or who hands it over';
+        if (v === 'gate_locked') return 'Gate code, or where the key is';
+        if (v === 'gate_open') return 'Which gate, and anything to know';
+        return 'How we get in, and anything to know';
+      },
+      when: function (v) { return v && v !== 'home' && v !== 'open'; } }));
+  sec.appendChild(choiceCard('alarm', 'Alarm system we should know about?', [['no', 'No'], ['yes', 'Yes']],
+    { key: 'alarm_details', label: 'Code or instructions', placeholder: 'How we arm and disarm it', when: function (v) { return v === 'yes'; } }));
+  sec.appendChild(choiceCard('pets', 'Any pets at the property?', [['no', 'No'], ['yes', 'Yes']],
+    { key: 'pets_details', label: 'Tell us about them', placeholder: 'Names, where they will be, anything we should know', when: function (v) { return v === 'yes'; } }));
+  sec.appendChild(choiceCard('parking', 'Parking for the crew', [['driveway', 'Driveway'], ['street', 'Street, no permit'], ['permit', 'Street, permit needed'], ['other', 'Other']],
+    { key: 'parking_details', label: 'Tell us more', placeholder: 'Where to park, or how to get a permit', when: function (v) { return v === 'permit' || v === 'other'; } }));
+  sec.appendChild(choiceCard('occupied', ext ? 'Will anyone be there during the day?' : 'Will anyone be living or working there during the work?',
+    ext ? [['occupied', 'Usually yes'], ['vacant', 'Usually no']] : [['occupied', 'Yes, occupied'], ['vacant', 'No, vacant']]));
+  if (ext) {
+    sec.appendChild(choiceCard('water', 'Outdoor water spigot we can use?', [['yes', 'Yes'], ['no', 'No']],
+      { key: 'water_details', label: 'Where is it?', placeholder: 'e.g. left side of the building by the bulkhead',
+        hint: 'Please check it is turned on and working before we arrive.', when: function (v) { return v === 'yes'; } }));
+    sec.appendChild(choiceCard('power', 'Outdoor power outlet we can use?', [['yes', 'Yes'], ['no', 'No']],
+      { key: 'power_details', label: 'Where is it?', placeholder: 'e.g. back porch, or the garage',
+        hint: 'Please check it works before we arrive.', when: function (v) { return v === 'yes'; } }));
+    var nb = choiceCard('neighbor_informed', "If we need a neighbor's yard for ladder access, as discussed at the walkthrough, have you given them a heads-up?",
+      [['yes', 'Yes, they know'], ['no', 'Not yet'], ['na', 'Not needed for our job']],
+      { key: 'neighbor_details', label: 'Which neighbor, and anything to know', placeholder: 'e.g. right side, the Smiths at number 36',
+        hint: function (v) { return v === 'no' ? 'Please let them know before we start, so nobody is surprised by a ladder in their yard.' : 'Thank you. A quick reminder to them the week before helps too.'; },
+        when: function (v) { return v === 'yes' || v === 'no'; } });
+    sec.appendChild(nb);
+  }
+  // free notes (optional)
+  var nc = el('div', 'card cat-access'); nc.id = 'acc_notes';
+  nc.appendChild(el('span', 'surface', 'Anything else about the property? (optional)'));
+  var ni = document.createElement('input');
+  ni.type = 'text'; ni.placeholder = 'Shared driveway, best entrance, neighbors to warn, anything else'; ni.value = a.notes || '';
+  ni.onchange = function () { a.notes = ni.value; saveAccess(patchOf('notes', ni.value)); };
+  nc.appendChild(field('Notes', ni));
+  sec.appendChild(nc);
+
+  // timing
+  var fc = choiceCard('finish_by', 'Is there a date this needs to be finished by?', [['no', 'No fixed date'], ['yes', 'Yes']]);
+  if (a.finish_by === 'yes') {
+    fc.appendChild(dateField('finish_date', 'Finish by'));
+    var rseg = el('div', 'seg');
+    [['move_in', 'Move-in'], ['closing', 'Closing'], ['event', 'Event'], ['other', 'Other']].forEach(function (o) {
+      var b = el('button', a.finish_reason === o[0] ? 'on' : '', o[1]);
+      b.onclick = function () { a.finish_reason = o[0]; saveAccess(patchOf('finish_reason', o[0])); rerenderAccess(); };
+      rseg.appendChild(b);
+    });
+    fc.appendChild(field('Why that date?', rseg));
+    if (a.finish_reason === 'other') {
+      var ri = document.createElement('input'); ri.type = 'text'; ri.placeholder = 'Tell us more'; ri.value = a.finish_reason_other || '';
+      ri.onchange = function () { a.finish_reason_other = ri.value; saveAccess(patchOf('finish_reason_other', ri.value)); };
+      fc.appendChild(field('Reason', ri));
+    }
+    fc.appendChild(el('div', 'hint', 'We plan the start back from this date and confirm it with you.'));
+  }
+  sec.appendChild(fc);
+  var ec = choiceCard('earliest', 'Earliest you could have us start?', [['asap', 'As soon as you can fit us in'], ['not_before', 'Not before a date']]);
+  if (a.earliest === 'not_before') ec.appendChild(dateField('earliest_date', 'Not before'));
+  sec.appendChild(ec);
+  var ab = el('div', '');
+  Array.prototype.slice.call(sec.childNodes, 1).forEach(function (n) { ab.appendChild(n); });
+  sec.appendChild(ab);
+  makeFold('__access', h, ab);
+  return sec;
+}
+
+/** The big Submit at the end of the page (2026-11-02); since 2026-11-16 it sits after the extras notes, outside Access & timing. */
+function endSubmit() {
+  var sb = el('div', 'endsubmit');
+  sb.appendChild(el('div', 'hint', 'Nothing reaches our team until you press Submit. You can still change anything afterwards.'));
+  var b2 = el('button', 'btn submitbtn', 'Submit'); b2.id = 'submit2'; b2.disabled = true;
+  sb.appendChild(b2);
+  return sb;
+}
+
+function rerenderAccess() {
+  var old = document.getElementById('accessSec');
+  if (old) old.parentNode.replaceChild(accessSection(), old);
+  refreshProgress();
+}
+
+/** Access answers go through the same one-at-a-time queue; patches coalesce into one call. */
+function saveAccess(patch) {
+  for (var i = 0; i < pending.length; i++) {
+    if (pending[i].type === 'access') { for (var k in patch) pending[i].answers[k] = patch[k]; setState('Saving…'); return; }
+  }
+  pending.push({ type: 'access', answers: patch, retried: false });
+  setState('Saving…');
+  pump();
+}
+
+function onAccessSaved(res) {
+  if (!(res && res.ok)) return;
+  MODEL.access_complete = res.complete;
+  MODEL.access_missing = res.missing || [];
+  refreshProgress();
+}
+
+function setState(t) { var s = document.getElementById('state'); if (s) s.textContent = t; }
+/** 2026-11-02: "Saved. Progress saves automatically." read as done. Say plainly that nothing has been sent yet. */
+function savedMsg() { return MODEL && MODEL.status === 'SUBMITTED' ? 'Saved. Our team is notified of changes automatically.' : 'Saved, not yet submitted.'; }
+function el(tag, cls, text) {
+  var d = document.createElement(tag);
+  if (cls) d.className = cls;
+  if (text !== undefined) d.textContent = text;
+  return d;
+}
+</script>
+</body>
+</html>
