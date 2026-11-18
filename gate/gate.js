@@ -1,9 +1,9 @@
 /* Ryan Painting quote form. BUILT FILE, do not edit here.
    Source: estimate-schedule-gate.html in the vault (60-technology/estimate-automation).
-   Build: v3.3 | source sha 11d4fabd52a6 | 2026-11-18 */
+   Build: v3.4 accessibility | source sha c76cf8959eee | 2026-11-18 */
 (function () {
   if (window.__rpGateBuild) { return; }
-  window.__rpGateBuild = "v3.3 11d4fabd52a6";
+  window.__rpGateBuild = "v3.4 accessibility c76cf8959eee";
   var d = document, links = [{"rel": "preconnect", "href": "https://fonts.gstatic.com", "crossOrigin": "anonymous"}, {"href": "https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap", "rel": "stylesheet"}];
   links.forEach(function (a) {
     var l = d.createElement("link");
@@ -12,7 +12,7 @@
   });
   var st = d.createElement("style");
   st.setAttribute("data-rp-gate", "1");
-  st.textContent = "\n  /* Designed for a DARK page section: base text is white; white cards re-assert dark text. */\n  #rp-gate { max-width: 640px; margin: 0 auto; font-family: 'Open Sans', -apple-system, sans-serif;\n    color: #fff; border: 2px solid #000; border-radius: 14px; padding: 24px; }\n  @media (max-width: 560px) { #rp-gate { padding: 16px; } }\n  #rp-gate p, #rp-gate label, #rp-gate summary, #rp-gate h1, #rp-gate h2, #rp-gate h3 { color: inherit; }\n  .rpg-q { font-size: 1.35rem; font-weight: 600; margin: 1.2em 0 0.8em; color: #fff;\n    font-family: 'Familjen Grotesk', 'Open Sans', -apple-system, sans-serif; }\n  .rpg-room .rpg-q, .rpg-panel .rpg-q { color: #1c1e1c; }\n  .rpg-room, .rpg-panel { color: #1c1e1c; }\n  .rpg-opts { display: grid; gap: 10px; grid-template-columns: 1fr 1fr; }\n  @media (max-width: 560px) { .rpg-opts { grid-template-columns: 1fr; } }\n  .rpg-opt { padding: 16px 14px; border: 2px solid #d8d8d8; border-radius: 10px;\n    background: #fff; color: #1c1e1c; cursor: pointer; font-size: 1rem; text-align: center;\n    transition: border-color .15s, background .15s; font-family: inherit; }\n  .rpg-opt:hover { border-color: #70d44b; background: #70d44b; color: #fff; }\n  .rpg-sel2 { border-color: #24a149; background: #f2faf4; }\n  .rpg-opt:focus-visible, .rpg-cta:focus-visible, .rpg-seg:focus-visible { outline: 3px solid #72bf46; outline-offset: 2px; }\n  .rpg-back { background: none; border: none; color: #b9ddb9; cursor: pointer;\n    font-size: .9rem; margin-top: 14px; text-decoration: underline; padding: 0; font-family: inherit; }\n  .rpg-room .rpg-back, .rpg-panel .rpg-back { color: #1d5f2f; }\n  .rpg-cta { display: inline-block; margin-top: 16px; padding: 14px 26px; border: none;\n    border-radius: 8px; background: #000; color: #fff; font-size: 1.05rem;\n    font-weight: 600; cursor: pointer; font-family: inherit; }\n  .rpg-cta:hover { background: #70d44b; }\n  .rpg-panel { border: 1px solid #e2e2e2; border-radius: 12px; padding: 22px; margin-top: 18px; background: #fff; }\n  .rpg-panel ul { padding-left: 20px; }\n  .rpg-price { font-size: 2rem; font-weight: 700; color: #1d5f2f; margin: .3em 0;\n    font-family: 'Familjen Grotesk', 'Open Sans', -apple-system, sans-serif; }\n  .rpg-note { font-size: .85rem; color: #dedede; margin-top: 10px; }\n  .rpg-room .rpg-note, .rpg-panel .rpg-note { color: #666; }\n  .rpg-field { width: 100%; padding: 12px; margin: 6px 0; border: 1.5px solid #ccc;\n    border-radius: 8px; font-size: 1rem; box-sizing: border-box; background: #fff; color: #1c1e1c; font-family: inherit; }\n  .rpg-err { color: #b3261e; font-size: .9rem; font-weight: 600; display: none; background: #fff; border: 1.5px solid #b3261e; border-radius: 8px; padding: 10px 12px; margin-top: 10px; }\n  #rpg-accept, #rpg-accept-final { background: #fff; color: #1d5f2f; border: 2px solid #24a149; }\n  #rpg-accept:hover, #rpg-accept-final:hover { background: #70d44b; border-color: #70d44b; color: #fff; }\n  .rpg-check { width: 44px; height: 44px; border-radius: 50%; background: #e7f6ec; color: #1d5f2f;\n    font-size: 1.4rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; }\n  .rpg-room { border: 1px solid #e2e2e2; border-radius: 12px; padding: 16px; margin: 12px 0; background: #fff; }\n  .rpg-room-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }\n  .rpg-x { background: none; border: none; color: #b3261e; font-size: .8rem; cursor: pointer; text-decoration: underline; font-family: inherit; }\n  .rpg-lbl { display: block; font-size: .82rem; font-weight: 600; color: #efefef; margin-top: 10px; }\n  .rpg-room .rpg-lbl, .rpg-panel .rpg-lbl { color: #4a4f4a; }\n  .rpg-sel { margin-top: 4px; }\n  .rpg-segrow { display: flex; gap: 8px; margin-top: 6px; }\n  .rpg-seg { flex: 1; padding: 10px 6px; border: 2px solid #d8d8d8; border-radius: 8px; background: #fff;\n    color: #1c1e1c; cursor: pointer; font-size: .9rem; font-family: inherit; }\n  .rpg-seg-on { border-color: #24a149; background: #f2faf4; font-weight: 600; }\n  .rpg-inline { display: flex; gap: 18px; margin-top: 10px; flex-wrap: wrap; align-items: center; }\n  .rpg-chk { font-size: .92rem; display: flex; align-items: center; gap: 6px; color: inherit; }\n  .rpg-num { width: 64px; padding: 8px; border: 1.5px solid #ccc; border-radius: 8px; font-size: 1rem;\n    margin-left: 6px; background: #fff; color: #1c1e1c; font-family: inherit; }\n  .rpg-add { display: block; width: 100%; padding: 12px; margin-top: 4px; border: 2px dashed #b9ddb9;\n    border-radius: 10px; background: #fbfefb; color: #1d5f2f; font-weight: 600; cursor: pointer; font-family: inherit; }\n  .rpg-add:hover { border-color: #24a149; }\n  .rpg-bd { margin: 16px 0 4px; border-top: 1px solid #eee; padding-top: 10px; }\n  .rpg-bd summary { cursor: pointer; font-weight: 600; color: #1d5f2f; }\n  .rpg-bd-sec { margin-top: 10px; }\n  .rpg-bd-head { display: flex; justify-content: space-between; font-weight: 600; font-size: .92rem; }\n  .rpg-bd-item { display: flex; justify-content: space-between; font-size: .85rem; color: #666; padding-left: 14px; margin-top: 2px; }\n  .rpg-bd-total { display: flex; justify-content: space-between; font-weight: 700; border-top: 1px solid #e2e2e2;\n    margin-top: 10px; padding-top: 8px; font-variant-numeric: tabular-nums; }\n  .rpg-photo-ok { display: inline-block; background: #e7f6ec; color: #1d5f2f; font-weight: 600;\n    border: 1.5px solid #24a149; border-radius: 8px; padding: 6px 10px; margin-top: 8px; font-size: .88rem; }\n  .rpg-photo-ok a { color: #b3261e; }\n  .rpg-thumbs { margin-top: 6px; }\n  .rpg-thumbs img { width: 54px; height: 54px; object-fit: cover; border-radius: 6px; margin: 0 6px 6px 0; border: 2px solid #24a149; }\n  .rpg-ceil-note { background: #70d44b; color: #fff; font-size: .9rem; font-weight: 600; text-align: center;\n    padding: 10px 14px; border-radius: 8px; margin-top: 12px; }\n  .rpg-ceil-note a { color: #0a2ea8; }\n  #rp-bird { display: none; pointer-events: none; transition: transform 1.6s cubic-bezier(.33,.72,.28,.99); will-change: transform; animation: rpBirdSway 5s ease-in-out infinite; }\n  @keyframes rpBirdSway { 0%,100% { rotate: -2deg; } 50% { rotate: 2.5deg; } }\n  @media (prefers-reduced-motion: reduce) { #rp-bird { transition: none; animation: none; } }\n  @media (max-width: 767px) { #rp-bird { display: none !important; } }\n";
+  st.textContent = "\n  /* Designed for a DARK page section: base text is white; white cards re-assert dark text. */\n  #rp-gate { max-width: 640px; margin: 0 auto; font-family: 'Open Sans', -apple-system, sans-serif;\n    color: #fff; border: 2px solid #000; border-radius: 14px; padding: 24px; }\n  @media (max-width: 560px) { #rp-gate { padding: 16px; } }\n  #rp-gate p, #rp-gate label, #rp-gate summary, #rp-gate h1, #rp-gate h2, #rp-gate h3 { color: inherit; }\n  /* a11y: on a light page section (set by script, e.g. /proposal) the text outside the white cards turns dark */\n  #rp-gate.rpg-light { color: #1c1e1c; }\n  #rp-gate.rpg-light > .rpg-q, #rp-gate.rpg-light > .rpg-lbl, #rp-gate.rpg-light > .rpg-note,\n  #rp-gate.rpg-light > .rpg-inline, #rp-gate.rpg-light > .rpg-chk { color: #1c1e1c; }\n  #rp-gate.rpg-light > .rpg-back { color: #1d5f2f; }\n  .rpg-q { font-size: 1.35rem; font-weight: 600; margin: 1.2em 0 0.8em; color: #fff;\n    font-family: 'Familjen Grotesk', 'Open Sans', -apple-system, sans-serif; }\n  .rpg-room .rpg-q, .rpg-panel .rpg-q { color: #1c1e1c; }\n  .rpg-room, .rpg-panel { color: #1c1e1c; }\n  .rpg-opts { display: grid; gap: 10px; grid-template-columns: 1fr 1fr; }\n  @media (max-width: 560px) { .rpg-opts { grid-template-columns: 1fr; } }\n  .rpg-opt { padding: 16px 14px; border: 2px solid #d8d8d8; border-radius: 10px;\n    background: #fff; color: #1c1e1c; cursor: pointer; font-size: 1rem; text-align: center;\n    transition: border-color .15s, background .15s; font-family: inherit; }\n  .rpg-opt:hover { border-color: #70d44b; background: #70d44b; color: #000; }\n  .rpg-sel2 { border-color: #24a149; background: #f2faf4; }\n  /* a11y: one focus ring for every control; dark ring with a thin white gap shows on the green section and on white cards */\n  #rp-gate :focus-visible { outline: 3px solid #1c1e1c; outline-offset: 2px; box-shadow: 0 0 0 2px #fff; }\n  #rp-gate .rpg-q:focus { outline: none; box-shadow: none; }\n  .rpg-back { background: none; border: none; color: #fff; cursor: pointer;\n    font-size: .9rem; margin-top: 14px; text-decoration: underline; padding: 0; font-family: inherit; }\n  .rpg-room .rpg-back, .rpg-panel .rpg-back { color: #1d5f2f; }\n  .rpg-cta { display: inline-block; margin-top: 16px; padding: 14px 26px; border: none;\n    border-radius: 8px; background: #000; color: #fff; font-size: 1.05rem;\n    font-weight: 600; cursor: pointer; font-family: inherit; }\n  .rpg-cta:hover { background: #70d44b; color: #000; }\n  .rpg-panel { border: 1px solid #e2e2e2; border-radius: 12px; padding: 22px; margin-top: 18px; background: #fff; }\n  .rpg-panel ul { padding-left: 20px; }\n  .rpg-price { font-size: 2rem; font-weight: 700; color: #1d5f2f; margin: .3em 0;\n    font-family: 'Familjen Grotesk', 'Open Sans', -apple-system, sans-serif; }\n  .rpg-note { font-size: .85rem; color: #fff; margin-top: 10px; }\n  .rpg-room .rpg-note, .rpg-panel .rpg-note { color: #666; }\n  .rpg-field { width: 100%; padding: 12px; margin: 6px 0; border: 1.5px solid #ccc;\n    border-radius: 8px; font-size: 1rem; box-sizing: border-box; background: #fff; color: #1c1e1c; font-family: inherit; }\n  .rpg-err { color: #b3261e; font-size: .9rem; font-weight: 600; display: none; background: #fff; border: 1.5px solid #b3261e; border-radius: 8px; padding: 10px 12px; margin-top: 10px; }\n  #rpg-accept, #rpg-accept-final { background: #fff; color: #1d5f2f; border: 2px solid #24a149; }\n  #rpg-accept:hover, #rpg-accept-final:hover { background: #70d44b; border-color: #70d44b; color: #000; }\n  .rpg-check { width: 44px; height: 44px; border-radius: 50%; background: #e7f6ec; color: #1d5f2f;\n    font-size: 1.4rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; }\n  .rpg-room { border: 1px solid #e2e2e2; border-radius: 12px; padding: 16px; margin: 12px 0; background: #fff; }\n  .rpg-room-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }\n  .rpg-x { background: none; border: none; color: #b3261e; font-size: .8rem; cursor: pointer; text-decoration: underline; font-family: inherit; }\n  .rpg-lbl { display: block; font-size: .82rem; font-weight: 600; color: #fff; margin-top: 10px; }\n  .rpg-room .rpg-lbl, .rpg-panel .rpg-lbl { color: #4a4f4a; }\n  .rpg-sel { margin-top: 4px; }\n  .rpg-segrow { display: flex; gap: 8px; margin-top: 6px; }\n  .rpg-seg { flex: 1; padding: 10px 6px; border: 2px solid #d8d8d8; border-radius: 8px; background: #fff;\n    color: #1c1e1c; cursor: pointer; font-size: .9rem; font-family: inherit; }\n  .rpg-seg-on { border-color: #24a149; background: #f2faf4; font-weight: 600; }\n  .rpg-inline { display: flex; gap: 18px; margin-top: 10px; flex-wrap: wrap; align-items: center; }\n  .rpg-chk { font-size: .92rem; display: flex; align-items: center; gap: 6px; color: inherit; }\n  .rpg-num { width: 64px; padding: 8px; border: 1.5px solid #ccc; border-radius: 8px; font-size: 1rem;\n    margin-left: 6px; background: #fff; color: #1c1e1c; font-family: inherit; }\n  .rpg-add { display: block; width: 100%; padding: 12px; margin-top: 4px; border: 2px dashed #b9ddb9;\n    border-radius: 10px; background: #fbfefb; color: #1d5f2f; font-weight: 600; cursor: pointer; font-family: inherit; }\n  .rpg-add:hover { border-color: #24a149; }\n  .rpg-bd { margin: 16px 0 4px; border-top: 1px solid #eee; padding-top: 10px; }\n  .rpg-bd summary { cursor: pointer; font-weight: 600; color: #1d5f2f; }\n  .rpg-bd-sec { margin-top: 10px; }\n  .rpg-bd-head { display: flex; justify-content: space-between; font-weight: 600; font-size: .92rem; }\n  .rpg-bd-item { display: flex; justify-content: space-between; font-size: .85rem; color: #666; padding-left: 14px; margin-top: 2px; }\n  .rpg-bd-total { display: flex; justify-content: space-between; font-weight: 700; border-top: 1px solid #e2e2e2;\n    margin-top: 10px; padding-top: 8px; font-variant-numeric: tabular-nums; }\n  .rpg-photo-ok { display: inline-block; background: #e7f6ec; color: #1d5f2f; font-weight: 600;\n    border: 1.5px solid #24a149; border-radius: 8px; padding: 6px 10px; margin-top: 8px; font-size: .88rem; }\n  .rpg-photo-ok a { color: #b3261e; }\n  .rpg-thumbs { margin-top: 6px; }\n  .rpg-thumbs img { width: 54px; height: 54px; object-fit: cover; border-radius: 6px; margin: 0 6px 6px 0; border: 2px solid #24a149; }\n  .rpg-ceil-note { background: #70d44b; color: #1c1e1c; font-size: .9rem; font-weight: 600; text-align: center;\n    padding: 10px 14px; border-radius: 8px; margin-top: 12px; }\n  .rpg-ceil-note a { color: #0a2ea8; }\n  #rp-bird { display: none; pointer-events: none; transition: transform 1.6s cubic-bezier(.33,.72,.28,.99); will-change: transform; animation: rpBirdSway 5s ease-in-out infinite; }\n  @keyframes rpBirdSway { 0%,100% { rotate: -2deg; } 50% { rotate: 2.5deg; } }\n  @media (prefers-reduced-motion: reduce) { #rp-bird { transition: none; animation: none; } }\n  @media (max-width: 767px) { #rp-bird { display: none !important; } }\n";
   d.head.appendChild(st);
 })();
 
@@ -1198,6 +1198,26 @@
     quote: null, images: [], projectId: newProjectId()
   };
   var root = document.getElementById("rp-gate");
+  /* a11y: this tool is styled for a dark page section (white text). Work out the colour actually
+     behind it; on a light one, such as the /proposal page, add a class that switches the text
+     outside the white cards to dark. */
+  (function () {
+    try {
+      var el = root, bg = null;
+      while (el && el !== document.documentElement && !bg) {
+        var c = getComputedStyle(el).backgroundColor.match(/[0-9.]+/g);
+        if (c && (c.length < 4 || +c[3] > 0.9)) bg = c;
+        if (!bg && el.tagName === "SECTION") {
+          var sb = el.querySelector(".section-background");
+          var c2 = sb && getComputedStyle(sb).backgroundColor.match(/[0-9.]+/g);
+          if (c2 && (c2.length < 4 || +c2[3] > 0.9)) bg = c2;
+        }
+        el = el.parentElement;
+      }
+      if (!bg) bg = [255, 255, 255];
+      if ((0.2126 * bg[0] + 0.7152 * bg[1] + 0.0722 * bg[2]) / 255 > 0.6) root.classList.add("rpg-light");
+    } catch (e) {}
+  })();
 
   /* ============ OPERATOR MODE ============
      Ryan opens ?edit=RPQ-...&k=<operator key> to correct a quote a client got wrong
@@ -1249,12 +1269,125 @@
   /* Re-renders of the SAME screen (add/remove room, size/condition/rush toggles) must not
      scroll — only genuine screen changes do. Screen identity = leading markup fingerprint. */
   var curScreen = "";
+  /* a11y: smooth scrolling only when the visitor has not asked for reduced motion */
+  function scrollOpts() {
+    var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    return { behavior: reduce ? "auto" : "smooth", block: "start" };
+  }
+  /* a11y: an innerHTML swap drops keyboard focus to the top of the page. Remember which
+     control had focus (by id, or by its data-* attributes) so the same control can be
+     re-focused after a same-screen re-render. */
+  function focusKey() {
+    var a = document.activeElement;
+    if (!a || a === document.body || !root.contains(a)) return null;
+    if (a.id) return { sel: "#" + a.id, idx: 0 };
+    var sel = a.tagName.toLowerCase();
+    if (a.className && typeof a.className === "string") {
+      var c0 = a.className.split(/\s+/)[0];
+      if (c0) sel += "." + c0;
+    }
+    var n = 0;
+    for (var i = 0; i < a.attributes.length; i++) {
+      var at = a.attributes[i];
+      if (at.name.indexOf("data-") === 0) { sel += "[" + at.name + '="' + String(at.value).replace(/["\\]/g, "\\$&") + '"]'; n++; }
+    }
+    if (n) return { sel: sel, idx: 0 };
+    /* no id or data-* (e.g. the wall-condition choices): fall back to its position among its kind */
+    return { sel: sel, idx: Array.prototype.indexOf.call(root.querySelectorAll(sel), a) };
+  }
   function h(html) {
-    root.innerHTML = html;
     var screen = html.slice(0, 60);
-    if (screen !== curScreen && !C.TEST_MODE) root.scrollIntoView({ behavior: "smooth", block: "start" });
+    var first = curScreen === "";
+    var changed = screen !== curScreen;
+    var key = changed ? null : focusKey();
+    root.innerHTML = html;
+    a11y();
+    if (changed && !C.TEST_MODE) root.scrollIntoView(scrollOpts());
     curScreen = screen;
+    try {
+      if (key) {
+        var refocus = function () {
+          var again = root.querySelectorAll(key.sel)[key.idx < 0 ? 0 : key.idx];
+          if (again) again.focus({ preventScroll: true });
+          return !!again;
+        };
+        /* some screens add their buttons right after the render call returns: retry once */
+        if (!refocus()) setTimeout(function () {
+          try {
+            if (!refocus()) { var hd2 = root.querySelector(".rpg-q"); if (hd2) hd2.focus({ preventScroll: true }); }
+          } catch (e) {}
+        }, 0);
+      } else if (changed && !first) {
+        /* new screen: put focus on its heading so screen readers announce the step */
+        var hd = root.querySelector(".rpg-q");
+        if (hd) hd.focus({ preventScroll: true });
+      }
+    } catch (e) {}
     updateBird();
+  }
+
+  /* a11y: one pass that names and describes whatever is on screen. Runs after every
+     render and (through the observer below) after any later change inside the tool,
+     so individual screens do not each need their own markup changes. Only sets
+     attributes; never changes classes, text, ids or handlers. */
+  function a11yText(el) { return String(el ? el.textContent : "").replace(/\s+/g, " ").trim(); }
+  function a11ySet(el, name, value) { if (el.getAttribute(name) !== value) el.setAttribute(name, value); }
+  function a11y() {
+    try {
+      var each = function (sel, fn) { Array.prototype.forEach.call(root.querySelectorAll(sel), fn); };
+      /* step titles are headings */
+      each(".rpg-q", function (el) {
+        a11ySet(el, "role", "heading"); a11ySet(el, "aria-level", "2"); a11ySet(el, "tabindex", "-1");
+      });
+      /* each room / level card is a named group, and its remove button says what it removes */
+      each(".rpg-room", function (card) {
+        var head = card.querySelector(".rpg-room-head strong");
+        if (!head) return;
+        var nm = a11yText(head);
+        a11ySet(card, "role", "group"); a11ySet(card, "aria-label", nm);
+        var x = card.querySelector(".rpg-room-head .rpg-x");
+        if (x) a11ySet(x, "aria-label", "Remove " + nm);
+      });
+      /* choice rows: the row takes the name of the label above it; each choice reports on/off */
+      each(".rpg-segrow", function (row) {
+        var lb = row.previousElementSibling;
+        if (lb && lb.classList.contains("rpg-lbl")) { a11ySet(row, "role", "group"); a11ySet(row, "aria-label", a11yText(lb)); }
+      });
+      each(".rpg-seg", function (b) { a11ySet(b, "aria-pressed", b.classList.contains("rpg-seg-on") ? "true" : "false"); });
+      each("#rpg-cond .rpg-opt", function (b) { a11ySet(b, "aria-pressed", b.classList.contains("rpg-sel2") ? "true" : "false"); });
+      var cond = root.querySelector("#rpg-cond");
+      if (cond) { a11ySet(cond, "role", "group"); a11ySet(cond, "aria-label", "Overall condition of the walls"); }
+      /* plus / minus steppers */
+      each(".rpg-item", function (item) {
+        var nm = a11yText(item.querySelector("span"));
+        var qty = item.querySelector(".rpg-step b");
+        Array.prototype.forEach.call(item.querySelectorAll(".rpg-step button"), function (b) {
+          a11ySet(b, "aria-label", (b.getAttribute("data-d") === "-1" ? "One fewer: " : "One more: ") + nm + (qty ? " (now " + a11yText(qty) + ")" : ""));
+        });
+      });
+      /* fields: use the label just above, else the placeholder */
+      each("input, select, textarea", function (f) {
+        if (f.type === "hidden" || f.type === "checkbox") return;
+        if (f.getAttribute("aria-label") || (f.labels && f.labels.length)) return;
+        var prev = f.previousElementSibling, guard = 0;
+        while (prev && guard++ < 3 && !(prev.classList && prev.classList.contains("rpg-lbl"))) prev = prev.previousElementSibling;
+        var nm = prev && prev.classList && prev.classList.contains("rpg-lbl") ? a11yText(prev) : (f.getAttribute("placeholder") || "");
+        if (nm) a11ySet(f, "aria-label", nm);
+      });
+      /* messages that appear without a page change get announced */
+      each(".rpg-err", function (el) { a11ySet(el, "role", "alert"); });
+      each("#rpg-addr-picked, #rpg-photo-count, .rpg-photo-ok", function (el) { a11ySet(el, "role", "status"); a11ySet(el, "aria-live", "polite"); });
+      /* the booking calendar frame */
+      each("iframe", function (f) { if (!f.getAttribute("title")) f.setAttribute("title", "Booking calendar"); });
+    } catch (e) {}
+  }
+  if (window.MutationObserver) {
+    var a11yQueued = false;
+    new MutationObserver(function () {
+      if (a11yQueued) return;
+      a11yQueued = true;
+      setTimeout(function () { a11yQueued = false; a11y(); }, 0);
+    }).observe(root, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
   }
 
   /* Back buttons are wired through ONE delegated capture-phase listener instead of
@@ -1450,7 +1583,7 @@
         '<div class="rpg-inline">' +
         '<label class="rpg-chk"><input type="checkbox" data-i="' + i + '" data-f="walls_included"' + (r.walls_included !== false ? " checked" : "") + "> Paint the walls</label>" +
         '<label class="rpg-chk"><input type="checkbox" data-i="' + i + '" data-f="ceiling_included"' + (r.ceiling_included ? " checked" : "") + "> Paint the ceiling</label>" +
-        '<select class="rpg-field rpg-sel" style="width:auto" data-i="' + i + '" data-f="closet">' + closetOpts + "</select>" +
+        '<select class="rpg-field rpg-sel" style="width:auto" aria-label="Closet" data-i="' + i + '" data-f="closet">' + closetOpts + "</select>" +
         (r.closet !== "not_included"
           ? '<label class="rpg-chk"><input type="checkbox" data-i="' + i + '" data-f="closet_shelves"' + (r.closet_shelves ? " checked" : "") + "> Paint the shelving</label>"
           : "") +
@@ -1467,7 +1600,7 @@
         '<input class="rpg-field rpg-room-photos" type="file" accept="image/*" multiple data-i="' + i + '">' +
         ((r.images || []).length
           ? '<div class="rpg-photo-ok">&#10003; ' + r.images.length + ' photo' + (r.images.length > 1 ? 's' : '') + ' added to this room &middot; <a href="#" data-clearimg="' + i + '">clear</a></div>' +
-            '<div class="rpg-thumbs">' + r.images.map(function (im) { return '<img src="' + im.data + '" alt="room photo">'; }).join('') + "</div>"
+            '<div class="rpg-thumbs">' + r.images.map(function (im) { return '<img src="' + im.data + '" alt="">'; }).join('') + "</div>"
           : "") +
         '<label class="rpg-lbl">Anything else about this room? <span style="font-weight:400">(wallpaper, repairs, special requests)</span></label>' +
         '<textarea class="rpg-field" rows="2" data-i="' + i + '" data-f="notes" placeholder="Optional notes">' + esc(r.notes) + "</textarea>" +
@@ -1870,17 +2003,48 @@
     return prefixes.some(function (p) { return String(zip).indexOf(p) === 0; });
   }
 
+  /* a11y: read a hand-typed address. Accepts "number street[, unit], city[,] [MA] ZIP".
+     Returns { street, city, zip } or null. The caller applies the service-area check. */
+  function parseTypedAddress(v) {
+    var parts = String(v || "").split(",").map(function (x) { return x.replace(/\s+/g, " ").trim(); }).filter(Boolean);
+    if (parts.length < 2) return null;
+    var last = parts[parts.length - 1];
+    if (/^(usa|us|united states)$/i.test(last)) { parts.pop(); last = parts[parts.length - 1]; }
+    if (parts.length < 2) return null;
+    var mz = last.match(/^(.*?)\s*(\d{5})(?:-\d{4})?$/);
+    if (!mz) return null;
+    var zip = mz[2];
+    var rest = mz[1].replace(/\b(MA|Mass\.?|Massachusetts)\b\.?$/i, "").trim();
+    var cityIdx = parts.length - 1, city = rest;
+    if (!city) { cityIdx = parts.length - 2; city = parts[cityIdx]; }
+    if (cityIdx < 1) return null;
+    city = city.replace(/\b(MA|Mass\.?|Massachusetts)\b\.?$/i, "").trim();
+    /* "..., Boston, MA, 02130": the part before the ZIP was only the state, so the city is one further back */
+    if (!city && cityIdx > 1) { cityIdx -= 1; city = parts[cityIdx]; }
+    var street = parts.slice(0, cityIdx).join(", ");
+    if (!city || /\d/.test(city) || !/^\d[\w-]*\s+\S/.test(street)) return null;
+    return { street: street, city: city, zip: zip };
+  }
+
   function setupAddress() {
     var inp = document.getElementById("rpg-addr");
     var sugg = document.getElementById("rpg-sugg");
     var picked = document.getElementById("rpg-addr-picked");
     function setAddress(street, city, zip, stateCode, label) {
+      state.addrTyped = null; /* a11y: a picked suggestion replaces any hand-typed address */
       inp.value = label || (street + ", " + city + ", MA " + zip);
       sugg.innerHTML = ""; sugg.style.display = "none";
+      if (!zip) {
+        /* Google sometimes returns just a street or a town. That is an incomplete address, not one outside the service area. */
+        state.address = {};
+        track("address_incomplete", {});
+        picked.innerHTML = '<span style="display:block;background:#fff;color:#b3261e;border:1.5px solid #b3261e;border-radius:8px;padding:8px 10px;font-weight:600">That address looks incomplete. Please pick a suggestion that includes the house number, or type the full address with the ZIP code.</span>';
+        return;
+      }
       if (!inServiceArea(zip, stateCode)) {
         state.address = {};
         track("address_out_of_area", { zip: zip });
-        picked.innerHTML = '<span style="color:#b3261e">It looks like this address is outside our service area &mdash; we serve Boston and its metro area. If you think that&rsquo;s not right, call us at ' + C.PHONE_DISPLAY + ".</span>";
+        picked.innerHTML = '<span style="display:block;background:#fff;color:#b3261e;border:1.5px solid #b3261e;border-radius:8px;padding:8px 10px;font-weight:600">It looks like this address is outside our service area &mdash; we serve Boston and its metro area. If you think that&rsquo;s not right, call us at ' + C.PHONE_DISPLAY + ".</span>";
         return;
       }
       state.address = { street: street, city: city, zip: zip };
@@ -1928,7 +2092,7 @@
       ];
       sugg.innerHTML = mocks.map(function (mSug, i) {
         return '<button type="button" class="rpg-sugg-item" data-i="' + i + '">' + esc(mSug[0] + ", " + mSug[1] + ", " + mSug[3] + " " + mSug[2]) + "</button>";
-      }).join("") + '<div style="padding:6px 14px;font-size:.72rem;color:#999;background:#fafafa">Sample suggestions &mdash; the live page searches every real address via Google</div>';
+      }).join("") + '<div style="padding:6px 14px;font-size:.72rem;color:#666;background:#fafafa">Sample suggestions &mdash; the live page searches every real address via Google</div>';
       sugg.style.display = "block";
       Array.prototype.forEach.call(sugg.querySelectorAll(".rpg-sugg-item"), function (el) {
         el.onclick = function () {
@@ -1943,16 +2107,17 @@
   /* ============ CONTACT + ADDRESS → QUOTE ============ */
   function contactThenQuote(computeFn, backFn) {
     h('<div class="rpg-q">Almost there &mdash; where is the project, and where should we send your quote?</div>' +
-      '<input class="rpg-field" id="rpg-name"  placeholder="Full name">' +
-      '<input class="rpg-field" id="rpg-email" type="email" placeholder="Email">' +
-      '<input class="rpg-field" id="rpg-phone" type="tel" placeholder="Phone">' +
+      '<input class="rpg-field" id="rpg-name"  placeholder="Full name" aria-label="Full name" autocomplete="name">' +
+      '<input class="rpg-field" id="rpg-email" type="email" placeholder="Email" aria-label="Email" autocomplete="email">' +
+      '<input class="rpg-field" id="rpg-phone" type="tel" placeholder="Phone" aria-label="Phone" autocomplete="tel">' +
       '<div style="position:relative">' +
-      '<input class="rpg-field" id="rpg-addr" placeholder="Project address" autocomplete="off">' +
+      '<input class="rpg-field" id="rpg-addr" placeholder="Project address" aria-label="Project address" aria-describedby="rpg-addr-help" autocomplete="off">' +
       '<div id="rpg-sugg" class="rpg-sugg" style="display:none"></div>' +
       "</div>" +
+      '<div class="rpg-note" id="rpg-addr-help">Pick your address from the suggestions, or type it in full with the ZIP code (for example 12 Main St, Boston, MA 02130).</div>' +
       '<div class="rpg-note" id="rpg-addr-picked"></div>' +
-      '<input class="rpg-field" id="rpg-promo" placeholder="Promo code (optional)" autocomplete="off" autocapitalize="characters">' +
-      '<div class="rpg-err" id="rpg-c-err">Please fill in name, a valid email, phone, and pick the project address from the suggestions.</div>' +
+      '<input class="rpg-field" id="rpg-promo" placeholder="Promo code (optional)" aria-label="Promo code (optional)" autocomplete="off" autocapitalize="characters">' +
+      '<div class="rpg-err" id="rpg-c-err"></div>' +
       '<button class="rpg-cta" id="rpg-c-go">See my quote</button><br><button type="button" class="rpg-back">&larr; back</button>');
     backHandler = backFn;
     setupAddress();
@@ -1967,14 +2132,50 @@
       document.getElementById("rpg-addr").value = state.address.street + (state.address.city ? ", " + state.address.city : "");
       var pkEl = document.getElementById("rpg-addr-picked");
       if (pkEl) pkEl.innerHTML = "&#10003; " + esc(state.address.street + ", " + state.address.city + " " + (state.address.zip || ""));
+      /* a11y: a hand-typed address comes back exactly as it was typed */
+      if (state.addrTyped != null) document.getElementById("rpg-addr").value = state.addrTyped;
     }
     document.getElementById("rpg-c-go").onclick = function () {
       var n = document.getElementById("rpg-name").value.trim(),
           em = document.getElementById("rpg-email").value.trim(),
           p = document.getElementById("rpg-phone").value.trim();
-      if (!n || !/.+@.+\..+/.test(em) || p.length < 7 || !state.address.street || !state.address.zip) {
-        document.getElementById("rpg-c-err").style.display = "block"; return;
+      /* a11y: a visitor who cannot use the suggestion list can type the full address.
+         Accepted only as "number street, city, [MA] ZIP"; the same service-area check applies. */
+      var addrEl = document.getElementById("rpg-addr");
+      /* a typed address is only good for the exact text it was read from: if the visitor
+         has edited the box since, forget it and read the box again. An address picked from
+         the suggestion list clears state.addrTyped, so picked addresses behave as before. */
+      if (state.addrTyped != null && addrEl.value !== state.addrTyped) { state.address = {}; state.addrTyped = null; }
+      if (!state.address.street || !state.address.zip) {
+        var mTyped = parseTypedAddress(addrEl.value);
+        if (mTyped) {
+          if (inServiceArea(mTyped.zip, "MA")) {
+            state.address = mTyped;
+            state.addrTyped = addrEl.value;
+            track("address_typed_fallback", { zip: mTyped.zip });
+          } else if (document.getElementById("rpg-addr-picked").textContent.indexOf("outside our service area") === -1) {
+            /* (skipped when the suggestion list already showed this message and logged the event) */
+            track("address_out_of_area", { zip: mTyped.zip });
+            document.getElementById("rpg-addr-picked").innerHTML = '<span style="display:block;background:#fff;color:#b3261e;border:1.5px solid #b3261e;border-radius:8px;padding:8px 10px;font-weight:600">It looks like this address is outside our service area &mdash; we serve Boston and its metro area. If you think that&rsquo;s not right, call us at ' + C.PHONE_DISPLAY + ".</span>";
+          }
+        }
       }
+      /* a11y: say exactly which fields need attention, mark them, and move focus to the first */
+      var bad = [];
+      if (!n) bad.push(["rpg-name", "your full name"]);
+      if (!/.+@.+\..+/.test(em)) bad.push(["rpg-email", "a valid email"]);
+      if (p.length < 7) bad.push(["rpg-phone", "a phone number"]);
+      if (!state.address.street || !state.address.zip) bad.push(["rpg-addr", "the project address (pick it from the suggestions, or type it in full with the ZIP code)"]);
+      ["rpg-name", "rpg-email", "rpg-phone", "rpg-addr"].forEach(function (id) { document.getElementById(id).removeAttribute("aria-invalid"); });
+      if (bad.length) {
+        bad.forEach(function (b) { document.getElementById(b[0]).setAttribute("aria-invalid", "true"); });
+        var errEl = document.getElementById("rpg-c-err");
+        errEl.textContent = "Please add " + bad.map(function (b) { return b[1]; }).join("; ") + ".";
+        errEl.style.display = "block";
+        document.getElementById(bad[0][0]).focus();
+        return;
+      }
+      document.getElementById("rpg-c-err").style.display = "none";
       state.contact = { name: n, email: em, phone: p };
       /* promo code: optional, validated (case-insensitively) against the doGet-loaded
          registry. An invalid or unknown code is dropped silently — never a blocker. */
@@ -2035,7 +2236,7 @@
     if (!wallsOn) parts.push("walls not included");
     var dim = dimsFor(r.type_label, r.room_size);
     return "<strong>" + esc(roomTitle(r)) + (dim ? " (" + dim + " ft)" : "") + "</strong> &mdash; " + parts.join(", ") +
-      (r.notes ? '<br><em style="color:#777">Your note: ' + esc(r.notes) + " (reviewed by Ryan Painting; any additional cost confirmed before work)</em>" : "");
+      (r.notes ? '<br><em style="color:#666">Your note: ' + esc(r.notes) + " (reviewed by Ryan Painting; any additional cost confirmed before work)</em>" : "");
   }
 
   function scopeRecapHtml() {
@@ -2047,7 +2248,7 @@
       var e = state.ext;
       lines.push("<strong>" + e.dsize + " deck</strong> &mdash; " + (e.stain === "transparent" ? "transparent stain finish" : "solid stain finish") +
         ", " + e.prep + " prep, pressure washing included" + (e.rail ? ", railings &amp; spindles" : ""));
-      if (e.notes) lines.push('<em style="color:#777">Your note: ' + esc(e.notes) + "</em>");
+      if (e.notes) lines.push('<em style="color:#666">Your note: ' + esc(e.notes) + "</em>");
     } else if (state.ext) {
       state.ext.levels.forEach(function (lvl) {
         var items = [];
@@ -2057,7 +2258,7 @@
         });
         if (items.length) lines.push("<strong>" + STORY_LABELS[lvl.story] + "</strong> &mdash; " + items.join(", "));
       });
-      if (state.ext.notes) lines.push('<em style="color:#777">Your note: ' + esc(state.ext.notes) + "</em>");
+      if (state.ext.notes) lines.push('<em style="color:#666">Your note: ' + esc(state.ext.notes) + "</em>");
     }
     if (state.rush) lines.push('<span style="color:#b3261e;font-weight:600">Rush &mdash; needed within a week (priority scheduling)</span>');
     if (state.promo) lines.push('<span style="color:#1d5f2f;font-weight:600">Promo code ' + esc(state.promo.code) + ' &mdash; ' + state.promo.pct + '% discount applied</span>');
@@ -2143,8 +2344,8 @@
       (quote.promo_discount ? '<p style="text-align:center;color:#1d5f2f;font-size:.92rem;font-weight:600">Promo code ' + esc(quote.promo_code) + ' applied &mdash; ' + quote.promo_pct + '% off (&minus;' + money(quote.promo_discount) + ')</p>' : "") +
       (prodLine ? '<p style="text-align:center;color:#555;font-size:.92rem">' + prodLine + "</p>" : "") +
       (state.rush ? '<p style="text-align:center;color:#b3261e;font-size:.9rem;font-weight:600">Rush project &mdash; priority scheduling included; we aim to complete within the week (subject to confirmation within 1 business day).</p>' : "") +
-      '<p style="text-align:center;color:#888;font-size:.8rem">Quote ' + state.projectId + " &middot; " + esc(state.address.street + ", " + state.address.city) + "</p>" +
-      '<p style="text-align:center;color:#888;font-size:.78rem">Fully insured &middot; MA HIC Reg. #211554 &middot; 4.8&#9733; on Google (50+ reviews)</p>' +
+      '<p style="text-align:center;color:#666;font-size:.8rem">Quote ' + state.projectId + " &middot; " + esc(state.address.street + ", " + state.address.city) + "</p>" +
+      '<p style="text-align:center;color:#666;font-size:.78rem">Fully insured &middot; MA HIC Reg. #211554 &middot; 4.8&#9733; on Google (50+ reviews)</p>' +
       
       '<div class="rpg-pdf-slot" style="text-align:center;margin:12px 0">' + pdfButtonHtml() + "</div>" +
       '<details class="rpg-bd"><summary>What&rsquo;s included</summary>' + scopeRecapHtml() + "</details>" +
@@ -2169,7 +2370,7 @@
     var wrap = document.getElementById("rpg-terms");
     wrap.innerHTML = '<div class="rpg-panel" id="rpg-terms-panel">' +
       '<div class="rpg-q" style="margin-top:0">Before you approve &mdash; the short version of our terms</div>' +
-      '<div style="max-height:260px;overflow-y:auto;font-size:.88rem;color:#444;border:1px solid #eee;border-radius:8px;padding:12px 14px">' +
+      '<div tabindex="0" role="region" aria-label="Summary of terms" style="max-height:260px;overflow-y:auto;font-size:.88rem;color:#444;border:1px solid #eee;border-radius:8px;padding:12px 14px">' +
       '<ul style="margin:0;padding-left:18px">' +
       '<li>Your price is held for 30 days; it locks in fully when your deposit is paid.</li>' +
       (isWQ
@@ -2187,10 +2388,13 @@
       '<div class="rpg-err" id="rpg-agree-err">Please tick the box to continue.</div>' +
       '<button class="rpg-cta" id="rpg-accept-final">Approve My Estimate</button>' +
       "</div>";
-    wrap.scrollIntoView({ behavior: "smooth", block: "start" });
+    wrap.scrollIntoView(scrollOpts());
+    a11y();
+    try { var termsHd = wrap.querySelector(".rpg-q"); if (termsHd) termsHd.focus({ preventScroll: true }); } catch (e) {}
     document.getElementById("rpg-accept-final").onclick = function () {
       if (!document.getElementById("rpg-agree").checked) {
-        document.getElementById("rpg-agree-err").style.display = "block"; return;
+        document.getElementById("rpg-agree-err").style.display = "block";
+        document.getElementById("rpg-agree").focus(); return;
       }
       track("proposal_accepted", { total: total, deposit: deposit, project_id: state.projectId });
       sendAcceptance(total, deposit);
@@ -2496,7 +2700,7 @@
         h('<div class="rpg-panel"><div class="rpg-q" style="margin-top:0">Not editable here</div>' +
           "<p>" + esc(state.projectId) + " is a " + esc(state.type || "non-interior") + " quote (" + esc(state.size || "unknown") +
           "), and this editor only rebuilds interior room scopes. Adjust it on the deal, or re-quote it in the Generator.</p>" +
-          '<p style="font-size:.85rem;color:#777">' + esc(operator.priorScope || "") + "</p></div>");
+          '<p style="font-size:.85rem;color:#666">' + esc(operator.priorScope || "") + "</p></div>");
         return;
       }
       operator.hydrated = hydrateRooms(d.scope_json);
@@ -2504,7 +2708,7 @@
     }, function (why) {
       h('<div class="rpg-panel"><div class="rpg-q" style="margin-top:0">Can&rsquo;t open that quote</div>' +
         "<p>" + (why === "key" ? "The operator key was rejected." : why === "notfound" ? "No quote found with that ID." : "The lookup failed &mdash; check the connection and try again.") + "</p>" +
-        '<p style="font-size:.85rem;color:#777">' + esc(pid) + "</p></div>");
+        '<p style="font-size:.85rem;color:#666">' + esc(pid) + "</p></div>");
     });
   }
 
@@ -2636,8 +2840,8 @@
       h('<div class="rpg-panel">' +
         '<div class="rpg-q" style="margin-top:0;text-align:center">Your estimate for ' + esc(d.street || "your project") + (d.label ? " &mdash; " + esc(d.label) : "") + "</div>" +
         '<div class="rpg-price" style="text-align:center">' + money(total) + "</div>" +
-        '<p style="text-align:center;color:#888;font-size:.8rem">Estimate ' + pid + " &middot; this price is held for 30 days from your original visit</p>" +
-        '<p style="text-align:center;color:#888;font-size:.78rem">Fully insured &middot; MA HIC Reg. #211554 &middot; 4.8&#9733; on Google (50+ reviews)</p>' +
+        '<p style="text-align:center;color:#666;font-size:.8rem">Estimate ' + pid + " &middot; this price is held for 30 days from your original visit</p>" +
+        '<p style="text-align:center;color:#666;font-size:.78rem">Fully insured &middot; MA HIC Reg. #211554 &middot; 4.8&#9733; on Google (50+ reviews)</p>' +
         
         '<div class="rpg-pdf-slot" style="text-align:center;margin:12px 0">' + pdfButtonHtml() + "</div>" +
         '<div style="text-align:center"><button class="rpg-cta" id="rpg-accept">Approve My Estimate</button></div>' +
