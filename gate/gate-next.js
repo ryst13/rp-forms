@@ -1,9 +1,9 @@
 /* Ryan Painting quote form. BUILT FILE, do not edit here.
    Source: estimate-schedule-gate.html in the vault (60-technology/estimate-automation).
-   Build: v3.4-a11y staging 2 (incomplete-address message, light pages) | source sha 2538e1133b8d | 2026-11-18 */
+   Build: v3.4 accessibility | source sha c76cf8959eee | 2026-11-18 */
 (function () {
   if (window.__rpGateBuild) { return; }
-  window.__rpGateBuild = "v3.4-a11y staging 2 (incomplete-address message, light pages) 2538e1133b8d";
+  window.__rpGateBuild = "v3.4 accessibility c76cf8959eee";
   var d = document, links = [{"rel": "preconnect", "href": "https://fonts.gstatic.com", "crossOrigin": "anonymous"}, {"href": "https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap", "rel": "stylesheet"}];
   links.forEach(function (a) {
     var l = d.createElement("link");
