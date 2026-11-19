@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Color &amp; Access Form | Ryan Painting Co.</title>
 <meta name="robots" content="noindex, nofollow">
 <base target="_top">
 <style>
-  :root { --green:#34A853; --green-dark:#2d8f47; --ink:#202124; --muted:#5f6368; --line:#dadce0; --bg:#f6f7f8; --red:#c5221f; --amber:#b06000; }
+  :root { --green:#1a7c39; --green-dark:#17692f; --ink:#202124; --muted:#5f6368; --line:#dadce0; --bg:#f6f7f8; --red:#c5221f; --amber:#8a4a00; }
   * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html,body { margin:0; padding:0; background:var(--bg); color:var(--ink);
     font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif; font-size:16px; }
@@ -31,21 +31,22 @@
   .card.cat-access { background:#e8f4ec; }
   h2.room.acc { background:#202124; }
   h2.room.fold { cursor:pointer; user-select:none; }
-  h2.room.fold:focus-visible { outline:2px solid var(--green-dark); outline-offset:2px; }
+  .foldbtn:focus-visible { outline:2px solid #fff; outline-offset:3px; border-radius:2px; }
   h2.room .chev { display:inline-block; width:0; height:0; margin-right:8px; vertical-align:1px; border-left:5px solid transparent; border-right:5px solid transparent; border-top:6px solid #fff; transition:transform .15s; }
-  h2.room[aria-expanded="false"] .chev { transform:rotate(-90deg); }
+  h2.room .foldbtn[aria-expanded="false"] .chev { transform:rotate(-90deg); }
   .roombody[hidden] { display:none !important; }
-  h2.room .opttag { display:inline-block; margin-left:8px; font-size:10.5px; letter-spacing:.4px; font-weight:700; padding:1px 7px; border-radius:9px; background:rgba(255,255,255,.25); vertical-align:1px; }
+  h2.room .opttag { display:inline-block; margin-left:8px; font-size:10.5px; letter-spacing:.4px; font-weight:700; padding:1px 7px; border-radius:9px; background:rgba(0,0,0,.25); vertical-align:1px; }
   .legend { display:flex; gap:10px; font-size:12px; color:var(--muted); margin:-4px 0 10px; flex-wrap:wrap; }
   .legend i { display:inline-block; width:12px; height:12px; border-radius:3px; border:1px solid var(--line); vertical-align:-2px; margin-right:4px; }
   .card.todo { border-left:4px solid #f0a020; }
   .tick.todo { color:var(--amber); font-weight:600; }
-  .rbadge { float:right; font-size:11.5px; font-weight:700; padding:2px 9px; border-radius:10px; background:rgba(255,255,255,.25); }
+  .rbadge { float:right; font-size:11.5px; font-weight:700; padding:2px 9px; border-radius:10px; background:rgba(0,0,0,.25); }
+  h2.room.acc .rbadge:not(.full) { background:rgba(255,255,255,.25); }
   .rbadge.full { background:#fff; color:var(--green-dark); }
   .card .head { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
   .card .surface { font-weight:600; font-size:15.5px; }
   .card .qty { font-size:12px; color:var(--muted); }
-  .tick { color:var(--green); font-size:14px; font-weight:700; }
+  .tick { color:var(--green-dark); font-size:14px; font-weight:700; }
 
   .defaultline { display:flex; justify-content:space-between; align-items:center; margin-top:8px; gap:8px; }
   .defaultline .val { font-size:14px; color:var(--ink); display:flex; align-items:center; gap:8px; }
@@ -64,8 +65,11 @@
   .ta { position:relative; }
   .sugg { position:absolute; left:0; right:0; top:100%; z-index:20; background:#fff; border:1px solid var(--line);
     border-radius:0 0 10px 10px; box-shadow:0 6px 16px rgba(0,0,0,.12); max-height:280px; overflow-y:auto; }
-  .sugg div { display:flex; align-items:center; gap:10px; padding:11px 12px; font-size:14px; border-top:1px solid #f0f1f2; cursor:pointer; }
-  .sugg div:active { background:#eef7f0; }
+  .sugg .opt { display:flex; width:100%; align-items:center; gap:10px; padding:11px 12px; margin:0; font:inherit; font-size:14px; color:var(--ink); text-align:left;
+    background:#fff; border:none; border-top:1px solid #f0f1f2; border-radius:0; cursor:pointer; }
+  .sugg .opt:active, .sugg .opt:focus { background:#eef7f0; }
+  .sugg .opt:focus-visible { outline-offset:-3px; }
+  .sugg div.opt { cursor:default; }
   .chip { width:22px; height:22px; border-radius:6px; border:1px solid #bbb; flex:none; }
   .sugg .nm { flex:1; } .sugg .cd { color:var(--muted); font-size:12.5px; }
   .picked { display:flex; align-items:center; gap:10px; margin-top:8px; padding:10px 12px; background:#f2f8f4; border:1px solid #cfe7d6; border-radius:10px; font-size:14px; }
@@ -83,10 +87,10 @@
   .door { width:100%; text-align:left; padding:16px 18px; border:none; border-radius:12px; color:#fff; cursor:pointer; }
   .door b { display:block; font-size:16.5px; }
   .door span { display:block; font-size:13px; opacity:.92; margin-top:4px; font-weight:400; }
-  .door.a { background:#24a149; } .door.b { background:#1d5f2f; } .door.c { background:#72bf46; color:#0f2a17; }
+  .door.a { background:#1a7c39; } .door.b { background:#1d5f2f; } .door.c { background:#72bf46; color:#0f2a17; }
   .door.c span { opacity:.85; }
   .pick { display:flex; gap:8px; align-items:center; }
-  .pick select { flex:1; font-size:14px; padding:9px; border:1px solid var(--line); border-radius:8px; }
+  .pick select { flex:1; font-size:16px; padding:9px; border:1px solid var(--line); border-radius:8px; }
 
   .banner { margin:14px 0; padding:12px 14px; border-radius:10px; font-size:13.5px; }
   .banner.ok { background:#e6f4ea; color:#1e6f36; border:1px solid #b7dfc3; }
@@ -98,6 +102,14 @@
   .endsubmit .btn { width:100%; }
   .save { font-size:11.5px; color:var(--muted); }
   .err { text-align:center; margin-top:80px; color:var(--muted); padding:0 24px; }
+  button:focus-visible, a:focus-visible, input[type=checkbox]:focus-visible { outline:3px solid var(--ink); outline-offset:2px; }
+  .seg button:focus-visible { outline-offset:-3px; }
+  .seg button.on:focus-visible { outline-color:#fff; }
+  #body:focus { outline:none; }
+  .sr { position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
+  .tip { position:fixed; left:12px; right:12px; bottom:calc(12px + env(safe-area-inset-bottom)); z-index:45; max-width:616px; margin:0 auto; background:#202124; color:#fff;
+    padding:12px 14px; border-radius:10px; font-size:14px; box-shadow:0 6px 16px rgba(0,0,0,.25); }
+  @media (prefers-reduced-motion: reduce) { * { transition:none !important; } }
   .staffbar { position:sticky; top:0; z-index:50; background:#b3261e; color:#fff; font-weight:700; text-align:center; padding:10px 14px; border-radius:0 0 10px 10px; margin-bottom:10px; }
 </style>
 </head>
@@ -114,7 +126,9 @@
       <div class="addr" id="addr"></div>
       <div class="prog"><div class="bar"><i id="fill"></i></div><span id="count"></span></div>
     </div>
-    <div id="body"><div class="err" id="loading">Loading your project…</div></div>
+    <div id="body" tabindex="-1" role="region" aria-label="Color form"><div class="err" id="loading">Loading your project…</div></div>
+    <div class="tip" id="tip" style="display:none"></div>
+    <div class="sr" id="sr" role="status" aria-live="polite"></div>
     <div class="footer" id="foot" style="display:none">
       <div class="inner">
         <div class="state" id="state">Progress saves automatically.</div>
@@ -206,8 +220,70 @@ function onForm(res) {
   render();
 }
 
+/* ---------- accessibility helpers (2026-11-19) ----------
+   Redraws replace whole cards, which used to drop keyboard focus back to the top of the page.
+   focusMark/focusBack put it back on the same control (or the nearest sensible one). */
+var FOCUSABLE = 'button, input, select, textarea, a[href], [tabindex="0"]';
+var FOCUS_HINT = null;   // set by a handler that knows where focus should land after the next redraw
+function focusMark() {
+  try {
+    var a = document.activeElement, app = document.getElementById('app');
+    if (!a || a === document.body || !app || !app.contains(a)) return null;
+    var host = a.closest('.card[id], #accessSec, #nextStep, #body');
+    if (!host) return null;
+    return { el: a, host: host.id, idx: Array.prototype.indexOf.call(host.querySelectorAll(FOCUSABLE), a), tag: a.tagName,
+      text: /^(INPUT|SELECT|TEXTAREA)$/.test(a.tagName) ? '' : a.textContent, inTa: !!a.closest('.ta, .vgrid') };
+  } catch (e) { return null; }
+}
+function firstFocusable(node) { return node ? (node.matches && node.matches(FOCUSABLE) ? node : node.querySelector(FOCUSABLE)) : null; }
+function focusBack(m) {
+  try {
+    var hint = FOCUS_HINT; FOCUS_HINT = null;
+    var t = null;
+    if (hint === 'body') t = document.getElementById('body');
+    else if (hint) t = firstFocusable(typeof hint === 'function' ? hint() : document.getElementById(hint));
+    if (!t) {
+      if (!m || document.body.contains(m.el)) return;
+      var host = document.getElementById(m.host);
+      if (host) {
+        var list = host.querySelectorAll(FOCUSABLE);
+        if (m.inTa) t = host.querySelector('.ta input');
+        if (!t && m.text) t = Array.prototype.filter.call(list, function (x) { return x.tagName === m.tag && x.textContent === m.text; })[0];
+        if (!t && m.host !== 'body' && list[m.idx] && list[m.idx].tagName === m.tag) t = list[m.idx];
+        if (!t && m.host !== 'body') t = list[0];
+      }
+      if (!t) t = document.getElementById('body');
+    }
+    if (t) t.focus({ preventScroll: true });
+  } catch (e) {}
+}
+/** Disable or re-enable a button while a request runs. A disabled button loses keyboard focus, so it is handed back on re-enable. */
+var BUSY_FOCUS = null;
+function busy(b, on) {
+  if (on) { if (document.activeElement === b) BUSY_FOCUS = b; b.disabled = true; return; }
+  b.disabled = false;
+  try { if (BUSY_FOCUS === b && (!document.activeElement || document.activeElement === document.body)) b.focus({ preventScroll: true }); } catch (e) {}
+  if (BUSY_FOCUS === b) BUSY_FOCUS = null;
+}
+function focusBody() { try { document.getElementById('body').focus({ preventScroll: true }); } catch (e) {} }
+/** Say something to screen readers. Messages inside a short window are joined so none is lost. */
+var SAY = [], SAY_T = null;
+function announce(t, kind) {
+  if (!t) return;
+  if (kind) SAY = SAY.filter(function (x) { return x.indexOf(kind + '') !== 0; });
+  SAY.push((kind ? kind + '' : '') + String(t));
+  clearTimeout(SAY_T);
+  SAY_T = setTimeout(function () {
+    var s = document.getElementById('sr'); if (!s) { SAY = []; return; }
+    var msg = SAY.filter(function (x, i) { return SAY.indexOf(x) === i; }).map(function (x) { return x.replace(/^[a-z]+/, ''); }).join(' '); SAY = [];
+    s.textContent = ''; setTimeout(function () { s.textContent = msg; }, 60);
+  }, 200);
+}
+function cardName(r) { return (r.room && r.room !== 'Whole home' ? r.room + ': ' : '') + r.surface; }
+
 /* ---------- render ---------- */
-function render() {
+function render() { var m = focusMark(); renderInner(); focusBack(m); }
+function renderInner() {
   var body = document.getElementById('body');
   body.innerHTML = '';
   var SM = MODEL.samples = MODEL.samples || { mode: '', picks: [], all: [], status: '', sets: 0, free: 5, extra_price: 95 };
@@ -229,7 +305,7 @@ function render() {
   } else if (MODEL.status !== 'SUBMITTED' && SM.mode === 'samples' && SM.status === 'applied') {
     var ab = el('div', 'banner ok', 'Your samples are on the wall: ' + SM.picks.map(pickLabel).join(', ') + '. Take a look in your own light, then choose a color for each surface below. The sampled colors appear as one-tap choices. Press Submit when you are happy, and we will set your dates.');
     var more = el('button', 'linkbtn', 'Want to see more colors first? Another set of up to ' + SM.free + ' is $' + SM.extra_price);
-    more.onclick = function () { body.innerHTML = ''; body.appendChild(pickerSection(true)); window.scrollTo(0, 0); };
+    more.onclick = function () { body.innerHTML = ''; body.appendChild(pickerSection(true)); window.scrollTo(0, 0); focusBody(); };
     ab.appendChild(document.createElement('br')); ab.appendChild(more);
     body.appendChild(ab);
   } else if (MODEL.status !== 'SUBMITTED' && SM.mode === 'match') {
@@ -303,14 +379,18 @@ var ROOM_SHOW = {};
 function makeFold(key, h, box) {
   var shown = !!ROOM_SHOW[key];
   h.className += ' fold';
-  h.insertBefore(el('span', 'chev'), h.firstChild);
-  h.setAttribute('role', 'button'); h.setAttribute('tabindex', '0'); h.setAttribute('aria-expanded', String(shown));
+  // 2026-11-19: the heading stays a heading; its name becomes a button inside it (tags and badges stay outside the button)
+  var fb = el('span', 'foldbtn');
+  fb.appendChild(el('span', 'chev'));
+  Array.prototype.slice.call(h.childNodes).forEach(function (n) { if (n.nodeType === 3) fb.appendChild(n); });
+  h.insertBefore(fb, h.firstChild);
+  fb.setAttribute('role', 'button'); fb.setAttribute('tabindex', '0'); fb.setAttribute('aria-expanded', String(shown));
   box.className += ' roombody'; box.hidden = !shown;
-  var toggle = function () { ROOM_SHOW[key] = box.hidden ? 1 : 0; box.hidden = !ROOM_SHOW[key]; h.setAttribute('aria-expanded', String(!!ROOM_SHOW[key])); };
+  var toggle = function () { ROOM_SHOW[key] = box.hidden ? 1 : 0; box.hidden = !ROOM_SHOW[key]; fb.setAttribute('aria-expanded', String(!!ROOM_SHOW[key])); };
   h.onclick = toggle;
-  h.onkeydown = function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } };
+  fb.onkeydown = function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } };
 }
-function openAccess() { ROOM_SHOW.__access = 1; rerenderAccess(); var s = document.getElementById('accessSec'); if (s) s.scrollIntoView({ behavior: 'smooth' }); }   // 2026-11-16: interior rooms fold; all start closed, a room the client opens stays open across re-renders
+function openAccess() { ROOM_SHOW.__access = 1; FOCUS_HINT = 'accessSec'; rerenderAccess(); var s = document.getElementById('accessSec'); if (s) s.scrollIntoView({ behavior: 'smooth' }); }   // 2026-11-16: interior rooms fold; all start closed, a room the client opens stays open across re-renders
 
 function isTrimFamRow(r) {
   return /^(Trim|Doors|Window frames)$/.test(r.surface || '') && String(r.row_id).indexOf('added-') !== 0;
@@ -381,8 +461,9 @@ function roomTrimBlock(room, fam, G) {
   if (G.complete && hasBase) {
     var back = el('button', 'linkbtn', 'Use the main trim color for this room');
     back.onclick = function () {
-      back.disabled = true;
+      busy(back, true);
       setState('Applying the main trim color…');
+      var hintId = 'card_rtrim_' + slugify(room);
       google.script.run.withSuccessHandler(function (res) {
         if (res && res.ok) {
           fam.forEach(function (r) {
@@ -393,10 +474,11 @@ function roomTrimBlock(room, fam, G) {
           MODEL.outstanding = res.outstanding;
           if (res.extras) MODEL.extras = res.extras;
           if (res.status) MODEL.status = res.status;
+          FOCUS_HINT = hintId;
           render();
           setState('This room now uses the main trim color.');
-        } else { back.disabled = false; setState('Couldn’t apply — try again.'); }
-      }).withFailureHandler(function () { back.disabled = false; setState('Couldn’t apply — try again.'); })
+        } else { busy(back, false); setState('Couldn’t apply — try again.'); }
+      }).withFailureHandler(function () { busy(back, false); setState('Couldn’t apply — try again.'); })
         .rejoinGlobalTrim(TOKEN, room, STAFF);
     };
     frag.appendChild(back);
@@ -407,6 +489,7 @@ function roomTrimBlock(room, fam, G) {
 function roomTrimSummary(room, fam, G) {
   var c = el('div', 'card done cat-trim');
   c.id = 'card_rtrim_' + slugify(room);
+  c.setAttribute('role', 'group'); c.setAttribute('aria-label', room + ': Trim, doors & window frames');
   var head = el('div', 'head');
   var left = el('div', '');
   left.appendChild(el('span', 'surface', 'Trim, doors & window frames'));
@@ -422,7 +505,7 @@ function roomTrimSummary(room, fam, G) {
   val.appendChild(document.createTextNode(displayColor(G) + (G.sheen ? ' · ' + G.sheen : '') + ' — main trim color'));
   dl.appendChild(val);
   var btn = el('button', 'linkbtn', 'Different in this room?');
-  btn.onclick = function () { ROOM_OPEN[room] = 1; render(); };
+  btn.onclick = function () { ROOM_OPEN[room] = 1; FOCUS_HINT = 'card_' + fam[0].row_id; render(); };
   dl.appendChild(btn);
   c.appendChild(dl);
   var flagged = fam.filter(function (r) { return r.flag; });
@@ -445,19 +528,20 @@ function addSurfaceCard() {
   btn.onclick = function () {
     var label = '';
     if (interior) { label = prompt('What would you like painted? (e.g. radiator in the hall, built-in shelves)'); if (!label) return; }
-    btn.disabled = true;
+    busy(btn, true);
     setState('Adding…');
     google.script.run.withSuccessHandler(function (res) {
-      btn.disabled = false;
+      busy(btn, false);
       if (res && res.ok) {
         MODEL.rows.push(res.row);
         ROOM_SHOW[res.row.room] = 1;
+        FOCUS_HINT = 'card_' + res.row.row_id;
         render();
         setState('Added — pick the color and tell us where it goes.');
         var elc = document.getElementById('card_' + res.row.row_id);
         if (elc) elc.scrollIntoView({ behavior: 'smooth', block: 'center' });
       } else setState('Couldn’t add that — try again.');
-    }).withFailureHandler(function () { btn.disabled = false; setState('Couldn’t add that — try again.'); })
+    }).withFailureHandler(function () { busy(btn, false); setState('Couldn’t add that — try again.'); })
       .addSurface(TOKEN, interior ? 'Other' : 'Accent color', label, STAFF);
   };
   c.appendChild(btn);
@@ -468,6 +552,7 @@ function catClass(r) { var sf = String(r.surface || ''); if (/ceiling/i.test(sf)
 function card(r) {
   var c = el('div', 'card' + (r.complete ? ' done' : ' todo') + catClass(r));
   c.id = 'card_' + r.row_id;
+  c.setAttribute('role', 'group'); c.setAttribute('aria-label', cardName(r));
   var head = el('div', 'head');
   var left = el('div', '');
   left.appendChild(el('span', 'surface', r.surface));
@@ -489,6 +574,7 @@ function card(r) {
     val.appendChild(document.createTextNode('Standard white · ' + (r.sheen || '')));
     dl.appendChild(val);
     var btn = el('button', 'linkbtn', 'Change');
+    btn.setAttribute('aria-label', 'Change the color for ' + cardName(r));
     btn.onclick = function () { r._open = true; rerenderCard(r); };
     dl.appendChild(btn);
     c.appendChild(dl);
@@ -497,6 +583,7 @@ function card(r) {
 
   // choice segment
   var seg = el('div', 'seg');
+  seg.setAttribute('role', 'group'); seg.setAttribute('aria-label', 'Color choice');
   var opts = r.is_default ? [['standard', 'Standard white'], ['match', 'Match existing'], ['new', 'New color']]
                           : [['match', 'Match existing'], ['new', 'New color']];
   if (r.allow_na) opts.push(['na', 'N/A']);
@@ -504,6 +591,7 @@ function card(r) {
   if (r.row_id !== '__globaltrim__') opts.push(['deciding', 'Still deciding']);
   opts.forEach(function (o) {
     var b = el('button', r.choice === o[0] ? 'on' : '', o[1]);
+    b.setAttribute('aria-pressed', String(r.choice === o[0]));
     b.onclick = function () {
       r.choice = o[0];
       if (o[0] === 'standard') { r.brand = 'Standard'; r.name = 'Off-the-Shelf White'; r.code = ''; r.hex = '#f8f8f4'; r.sheen = r.suggested_sheen || r.sheen; r._open = false; }
@@ -551,17 +639,18 @@ function card(r) {
     rm.style.color = 'var(--red)';
     rm.onclick = function () {
       if (!confirm('Remove "' + r.surface + '" from your selections?')) return;
-      rm.disabled = true;
+      busy(rm, true);
       setState('Removing…');
       google.script.run.withSuccessHandler(function (res) {
         if (res && res.ok) {
           MODEL.rows = MODEL.rows.filter(function (t) { return t.row_id !== r.row_id; });
           if (res.extras) MODEL.extras = res.extras;
           if (res.status) MODEL.status = res.status;
+          FOCUS_HINT = function () { var bd = document.getElementById('rb_' + slugify(r.room)); return bd ? bd.parentNode : document.getElementById('card_addroom') || document.getElementById('card_addsurface'); };
           render();
           setState('Removed.');
-        } else { rm.disabled = false; setState('Couldn’t remove — try again.'); }
-      }).withFailureHandler(function () { rm.disabled = false; setState('Couldn’t remove — try again.'); })
+        } else { busy(rm, false); setState('Couldn’t remove — try again.'); }
+      }).withFailureHandler(function () { busy(rm, false); setState('Couldn’t remove — try again.'); })
         .removeSurface(TOKEN, r.row_id, STAFF);
     };
     c.appendChild(rm);
@@ -572,17 +661,49 @@ function card(r) {
 function rerenderCard(r) {
   // the whole-home card carries section extras (apply-to-all link, hints) — rebuild in full
   if (r.row_id === '__globaltrim__') { render(); return; }
+  var m = focusMark();
   var old = document.getElementById('card_' + r.row_id);
   if (old) old.parentNode.replaceChild(card(r), old);
   refreshProgress();
+  focusBack(m);
 }
 
+/** A label and its control. 2026-11-19: the label is tied to the control so screen readers read it;
+ *  when the "control" is a set of buttons or boxes, the set becomes a named group instead. */
+var FIELD_N = 0;
 function field(labelText, inputEl) {
   var f = el('div', 'field');
   var l = el('label', '', labelText);
+  if (labelText) {
+    var ctl = /^(INPUT|SELECT|TEXTAREA)$/.test(inputEl.tagName) ? inputEl : null;
+    if (!ctl && !inputEl.querySelector('button')) { var inner = inputEl.querySelectorAll('input, select, textarea'); if (inner.length === 1) ctl = inner[0]; }
+    FIELD_N++;
+    if (ctl) { if (!ctl.id) ctl.id = 'fc' + FIELD_N; l.htmlFor = ctl.id; }
+    else { l.id = 'fl' + FIELD_N; inputEl.setAttribute('role', 'group'); inputEl.setAttribute('aria-labelledby', l.id); }
+  }
   f.appendChild(l); f.appendChild(inputEl);
   return f;
 }
+
+/** Suggestion lists (color search): keyboard support. Down arrow moves from the box into the list, Up and Down
+ *  move through it, Escape closes it. The list stays open while focus is anywhere inside the wrapper. */
+function wireSuggest(wrap, inp, box) {
+  var opts = function () { return Array.prototype.slice.call(box.querySelectorAll('button.opt')); };
+  inp.onkeydown = function (e) {
+    if (e.key === 'ArrowDown' && box.style.display !== 'none') { var o = opts(); if (o.length) { e.preventDefault(); o[0].focus(); } }
+    else if (e.key === 'Escape') box.style.display = 'none';
+  };
+  box.onkeydown = function (e) {
+    var o = opts(), k = o.indexOf(document.activeElement);
+    if (e.key === 'ArrowDown') { e.preventDefault(); if (o[k + 1]) o[k + 1].focus(); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); if (k > 0) o[k - 1].focus(); else inp.focus(); }
+    else if (e.key === 'Escape') { box.style.display = 'none'; inp.focus(); }
+  };
+  wrap.addEventListener('focusout', function () {
+    setTimeout(function () { if (!wrap.contains(document.activeElement)) box.style.display = 'none'; }, 250);
+  });
+}
+function suggCount(n, extra) { announce((n ? n + (n === 1 ? ' color' : ' colors') + ' found.' : 'No colors found.') + (n || extra ? ' Press the down arrow or Tab to go through the list.' : ''), 'sugg'); }
 
 function noteInput(r, ph) {
   var i = document.createElement('input');
@@ -633,15 +754,17 @@ function lrvWarning(r) {
 function vinylBrowse(r) {
   var wrap = el('div', 'field');
   var btn = el('button', 'linkbtn', 'Browse all vinyl-safe colors');
-  var grid = el('div', ''); grid.style.display = 'none';
+  var grid = el('div', 'vgrid'); grid.style.display = 'none';
   grid.style.cssText += ';display:none;max-height:260px;overflow:auto;margin-top:6px;border:1px solid #dadce0;border-radius:8px;padding:6px';
+  btn.setAttribute('aria-expanded', 'false');
   btn.onclick = function () {
-    if (grid.style.display !== 'none') { grid.style.display = 'none'; return; }
+    if (grid.style.display !== 'none') { grid.style.display = 'none'; btn.setAttribute('aria-expanded', 'false'); return; }
+    btn.setAttribute('aria-expanded', 'true');
     grid.innerHTML = '';
     (INDEX || []).filter(function (h) { return Number(h[6]); })
       .sort(function (a, b) { return (Number(b[5]) || 0) - (Number(a[5]) || 0); })
       .forEach(function (h) {
-        var d = el('div', ''); d.style.cssText = 'display:flex;align-items:center;gap:8px;padding:4px;cursor:pointer';
+        var d = el('button', ''); d.type = 'button'; d.style.cssText = 'display:flex;width:100%;align-items:center;gap:8px;padding:4px;margin:0;cursor:pointer;border:none;background:none;font:inherit;color:inherit;text-align:left';
         var chip = el('span', 'chip'); chip.style.background = h[3] || '#fff';
         d.appendChild(chip);
         d.appendChild(el('span', 'nm', h[1]));
@@ -664,6 +787,7 @@ function pickIndexEntry(r, h) {
   if (!r.sheen && r.suggested_sheen && h[4] !== 'stain') r.sheen = r.suggested_sheen;
   save(r, { choice: r.choice, brand: r.brand, name: r.name, code: r.code, hex: r.hex, sheen: r.sheen });
   rerenderCard(r);
+  announce(h[1] + ' chosen for ' + cardName(r) + '.');
 }
 
 function sheenField(r, optionalLook) {
@@ -720,7 +844,7 @@ function typeahead(r, forMatch) {
     var hits = searchIndex(q, r);
     box.innerHTML = '';
     hits.forEach(function (h) {
-      var d = document.createElement('div');
+      var d = el('button', 'opt'); d.type = 'button';
       var chip = el('span', 'chip'); chip.style.background = h[3] || '#fff';
       d.appendChild(chip);
       d.appendChild(el('span', 'nm', h[1]));
@@ -730,14 +854,15 @@ function typeahead(r, forMatch) {
     });
     // custom entry escape hatch (not on vinyl siding: only the vinyl-safe palettes are offered there)
     if (!isVinylRow(r)) {
-      var custom = document.createElement('div');
+      var custom = el('button', 'opt'); custom.type = 'button';
       custom.appendChild(el('span', 'cd', 'Can’t find it? Enter “' + q + '” manually'));
       custom.onclick = function () { box.style.display = 'none'; manualEntry(r, q); };
       box.appendChild(custom);
-    } else if (!hits.length) box.appendChild(el('div', 'cd', 'No vinyl-safe color by that name. Try “Browse all vinyl-safe colors”.'));
+    } else if (!hits.length) box.appendChild(el('div', 'opt cd', 'No vinyl-safe color by that name. Try “Browse all vinyl-safe colors”.'));
     box.style.display = '';
+    suggCount(hits.length, !isVinylRow(r));
   };
-  i.onblur = function () { setTimeout(function () { box.style.display = 'none'; }, 250); };
+  wireSuggest(wrap, i, box);
   wrap.appendChild(i); wrap.appendChild(box);
   return field(forMatch ? (r.name ? 'Change the color you told us' : 'Know the color? (optional — we can match it on site if not)')
                         : (r.name ? 'Search for a different color' : 'Color'), wrap);
@@ -972,9 +1097,9 @@ function renderExtras() {
     var lab = el('label', 'hint'); lab.style.display = 'block'; lab.style.marginTop = '6px';
     var cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = !!X.fb_primer;
     cb.onchange = function () {
-      cb.disabled = true; setState('Saving…');
-      google.script.run.withSuccessHandler(function (res) { cb.disabled = false; setState(savedMsg()); applyExtras(res); })
-        .withFailureHandler(function () { cb.disabled = false; cb.checked = !cb.checked; setState('Couldn’t save — try again.'); })
+      busy(cb, true); setState('Saving…');
+      google.script.run.withSuccessHandler(function (res) { var had = BUSY_FOCUS === cb; busy(cb, false); setState(savedMsg()); applyExtras(res); if (had) { var nc = document.querySelector('#extrasBox input[type=checkbox]'); if (nc && document.activeElement !== nc) try { nc.focus({ preventScroll: true }); } catch (e) {} } })
+        .withFailureHandler(function () { busy(cb, false); cb.checked = !cb.checked; setState('Couldn’t save — try again.'); })
         .setFbPrimer(TOKEN, cb.checked, STAFF);
     };
     lab.appendChild(cb);
@@ -1052,19 +1177,20 @@ function addRoomCard() {
     if (!picks.length) { setState('Tick at least one thing to paint.'); return; }
     var trimOn = picks.indexOf('Trim') >= 0;
     if (!staff && trimOn && (doors.value === '' || wins.value === '')) { setState('Tell us how many doors and windows (0 if none).'); return; }
-    go.disabled = true; setState('Adding…');
+    busy(go, true); setState('Adding…');
     google.script.run.withSuccessHandler(function (res) {
-      go.disabled = false;
+      busy(go, false);
       if (res && res.ok) {
         res.rows.forEach(function (r) { MODEL.rows.push(r); });
         if (res.rows[0]) ROOM_SHOW[res.rows[0].room] = 1;
         if (res.status) MODEL.status = res.status;
+        if (res.rows[0]) FOCUS_HINT = 'card_' + res.rows[0].row_id;
         render();
         setState(staff ? 'Room added.' : 'Room added. Pick its colors; we’ll be in touch with a price.');
         var first = document.getElementById('card_' + res.rows[0].row_id);
         if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
       } else setState(res && res.error === 'exists' ? 'There’s already a room with that name.' : (res && res.error === 'size' ? 'Choose the size of the room.' : (res && res.error === 'trim' ? 'Tell us how many doors and windows (0 if none).' : 'Couldn’t add that room — try again.')));
-    }).withFailureHandler(function () { go.disabled = false; setState('Couldn’t add that room — try again.'); })
+    }).withFailureHandler(function () { busy(go, false); setState('Couldn’t add that room — try again.'); })
       .addRoom(TOKEN, name.value.trim() || type.value, picks, STAFF, !staff, type.value, size.value,
         trimOn ? { doors: doors.value, windows: wins.value } : null);
   };
@@ -1078,18 +1204,19 @@ function addRoomCard() {
   goi.onclick = function () {
     var label = what.value.trim();
     if (!label) { setState('Tell us what you’d like painted.'); return; }
-    goi.disabled = true; setState('Adding…');
+    busy(goi, true); setState('Adding…');
     google.script.run.withSuccessHandler(function (res) {
-      goi.disabled = false;
+      busy(goi, false);
       if (res && res.ok) {
         MODEL.rows.push(res.row);
         ROOM_SHOW[res.row.room] = 1;
+        FOCUS_HINT = 'card_' + res.row.row_id;
         render();
         setState('Added. Pick the color and tell us where it goes.');
         var elc = document.getElementById('card_' + res.row.row_id);
         if (elc) elc.scrollIntoView({ behavior: 'smooth', block: 'center' });
       } else setState('Couldn’t add that — try again.');
-    }).withFailureHandler(function () { goi.disabled = false; setState('Couldn’t add that — try again.'); })
+    }).withFailureHandler(function () { busy(goi, false); setState('Couldn’t add that — try again.'); })
       .addSurface(TOKEN, 'Other', label, STAFF);
   };
   ip.appendChild(goi);
@@ -1108,20 +1235,21 @@ function accentLink(room) {
   btn.onclick = function () {
     if (!included && !confirm('Accent walls are an extra charge unless your estimate includes one for this room. '
       + 'The price shows on the card once added, and it goes on a change order for you to approve. Add an accent wall to ' + room + '?')) return;
-    btn.disabled = true; setState('Adding…');
+    busy(btn, true); setState('Adding…');
     google.script.run.withSuccessHandler(function (res) {
-      btn.disabled = false;
+      busy(btn, false);
       if (res && res.ok) {
         MODEL.rows.push(res.row);
         ROOM_SHOW[res.row.room] = 1;
         if (res.extras) MODEL.extras = res.extras;
         if (res.status) MODEL.status = res.status;
+        FOCUS_HINT = 'card_' + res.row.row_id;
         render();
         setState('Added. Pick the color and tell us which wall.');
         var elc = document.getElementById('card_' + res.row.row_id);
         if (elc) elc.scrollIntoView({ behavior: 'smooth', block: 'center' });
       } else setState('Couldn’t add that — try again.');
-    }).withFailureHandler(function () { btn.disabled = false; setState('Couldn’t add that — try again.'); })
+    }).withFailureHandler(function () { busy(btn, false); setState('Couldn’t add that — try again.'); })
       .addSurface(TOKEN, 'Accent wall', '', STAFF, room);
   };
   wrap.appendChild(btn);
@@ -1207,17 +1335,20 @@ function setSubmitButtons(text, disabled) {
   for (var i = 0; i < all.length; i++) { all[i].disabled = !!disabled; all[i].textContent = text; }
 }
 
+/** The Submit buttons are disabled while sending, which drops keyboard focus; hand it back if the send failed. */
+function submitFocus(btn) { try { if (btn && document.body.contains(btn) && !btn.disabled && (!document.activeElement || document.activeElement === document.body)) btn.focus({ preventScroll: true }); } catch (e) {} }
+
 function doSubmit(btn) {
   setSubmitButtons('Submitting…', true);
   google.script.run.withSuccessHandler(function (res) {
     inFlight = false; submitting = false;
-    if (res && res.ok) { MODEL.status = 'SUBMITTED'; if (res.extras) MODEL.extras = res.extras; pending = pending.filter(function (t) { return t.type !== 'submit'; }); render(); setState('Submitted. Thank you!'); window.scrollTo(0, 0); }
-    else if (res && res.error === 'access') { refreshProgress(); setState('Please finish the access and timing questions, then submit.'); openAccess(); }
-    else { refreshProgress(); setState('Couldn’t submit — please try again.'); }
+    if (res && res.ok) { MODEL.status = 'SUBMITTED'; if (res.extras) MODEL.extras = res.extras; pending = pending.filter(function (t) { return t.type !== 'submit'; }); FOCUS_HINT = 'body'; render(); setState('Submitted. Thank you!'); window.scrollTo(0, 0); }
+    else if (res && res.error === 'access') { refreshProgress(); setState('Please finish the access and timing questions, then submit.'); FOCUS_HINT = 'accessSec'; openAccess(); }
+    else { refreshProgress(); setState('Couldn’t submit — please try again.'); submitFocus(btn); }
     pump();
   }).withFailureHandler(function () {
     inFlight = false; submitting = false;
-    refreshProgress(); setState('Couldn’t submit — please try again.');
+    refreshProgress(); setState('Couldn’t submit — please try again.'); submitFocus(btn);
     pump();
   }).submitForm(TOKEN, STAFF);
 }
@@ -1292,7 +1423,7 @@ function requestedSection() {
   n.appendChild(el('span', 'surface', 'Then'));
   n.appendChild(el('div', 'hint', 'Take a few days to look at them in your own light. When you have decided, come back to this page, choose a color for each surface (the sampled colors are one tap away) and press Submit. That is what sets your dates in motion.'));
   sec.appendChild(n);
-  var ed = el('button', 'linkbtn', 'Change my sample list'); ed.onclick = function () { var body = document.getElementById('body'); body.innerHTML = ''; body.appendChild(pickerSection(false, true)); window.scrollTo(0, 0); };
+  var ed = el('button', 'linkbtn', 'Change my sample list'); ed.onclick = function () { var body = document.getElementById('body'); body.innerHTML = ''; body.appendChild(pickerSection(false, true)); window.scrollTo(0, 0); focusBody(); };
   sec.appendChild(ed);
   var go = el('button', 'linkbtn', 'I already know some of my colors, let me enter them now'); go.onclick = function () { SHOW_FORM_WHILE_WAITING = true; render(); window.scrollTo(0, 0); };
   sec.appendChild(go);
@@ -1318,6 +1449,7 @@ function pickerSection(more, edit) {
     c.appendChild(el('span', 'surface', 'Color ' + (i + 1) + (i ? ' (optional)' : '')));
     var wrap = el('div', 'ta');
     var inp = document.createElement('input'); inp.type = 'text'; inp.autocomplete = 'off'; inp.placeholder = 'Type a color name or code — e.g. “white dove” or “SW 7008”';
+    inp.setAttribute('aria-label', 'Color ' + (i + 1) + (i ? ' (optional)' : '') + ': type a color name or code');
     var box = el('div', 'sugg'); box.style.display = 'none';
     var picked = el('div', '');
     function showPicked() {
@@ -1333,22 +1465,24 @@ function pickerSection(more, edit) {
       var hits = searchIndex(q, null);
       box.innerHTML = '';
       hits.forEach(function (h) {
-        var d = document.createElement('div');
+        var d = el('button', 'opt'); d.type = 'button';
         var chip = el('span', 'chip'); chip.style.background = h[3] || '#fff'; d.appendChild(chip);
         d.appendChild(el('span', 'nm', h[1])); d.appendChild(el('span', 'cd', h[0].replace('Benjamin Moore', 'BM').replace('Sherwin-Williams', 'SW').replace('Farrow & Ball', 'F&B') + ' · ' + h[2]));
-        d.onclick = function () { slot.brand = h[0]; slot.name = h[1]; slot.code = h[2]; slot.hex = h[3]; slot.text = h[1] + ' (' + h[2] + ')'; inp.value = slot.text; box.style.display = 'none'; showPicked(); };
+        d.onclick = function () { slot.brand = h[0]; slot.name = h[1]; slot.code = h[2]; slot.hex = h[3]; slot.text = h[1] + ' (' + h[2] + ')'; inp.value = slot.text; box.style.display = 'none'; showPicked(); inp.focus(); announce(h[1] + ' chosen for color ' + (i + 1) + '.'); };
         box.appendChild(d);
       });
-      var custom = document.createElement('div'); custom.appendChild(el('span', 'cd', 'Not in the list? Keep “' + q + '” as typed')); custom.onclick = function () { box.style.display = 'none'; showPicked(); };
+      var custom = el('button', 'opt'); custom.type = 'button'; custom.appendChild(el('span', 'cd', 'Not in the list? Keep “' + q + '” as typed')); custom.onclick = function () { box.style.display = 'none'; showPicked(); inp.focus(); };
       box.appendChild(custom); box.style.display = '';
+      suggCount(hits.length, true);
     };
-    inp.onblur = function () { setTimeout(function () { box.style.display = 'none'; }, 250); };
+    wireSuggest(wrap, inp, box);
     if (pr) { inp.value = slot.text; }
     wrap.appendChild(inp); wrap.appendChild(box); c.appendChild(wrap); c.appendChild(picked); if (pr) showPicked();
     var sel = document.createElement('select');
     var o0 = document.createElement('option'); o0.value = ''; o0.textContent = 'Where are you thinking of it? (optional)'; sel.appendChild(o0);
     places.forEach(function (p) { var o = document.createElement('option'); o.value = p; o.textContent = p; sel.appendChild(o); });
     var ox = document.createElement('option'); ox.value = 'Not sure yet'; ox.textContent = 'Not sure yet'; sel.appendChild(ox);
+    sel.setAttribute('aria-label', 'Color ' + (i + 1) + ': where are you thinking of it? (optional)');
     if (pr && pr.where) sel.value = pr.where;
     sel.onchange = function () { slot.where = sel.value; };
     var pw = el('div', 'pick'); pw.appendChild(sel); c.appendChild(field('', pw));
@@ -1367,11 +1501,11 @@ function pickerSection(more, edit) {
     var picks = slots.filter(function (x) { return x.name || x.text; }).map(function (x) { return { brand: x.brand, name: x.name, code: x.code, hex: x.hex, text: x.text, where: x.where }; });
     if (!picks.length) { if (!note.value.trim()) { setState('Add at least one color, or describe what you are after.'); return; } picks = [{ text: note.value.trim().slice(0, 120), where: '' }]; }
     if (more && !document.getElementById('agree95').checked) { setState('Please tick the box to accept the $' + price + '.'); return; }
-    send.disabled = true; send.textContent = 'Sending…';
+    busy(send, true); send.textContent = 'Sending…';
     var runner = google.script.run.withSuccessHandler(function (res) {
-      if (res && res.ok) { MODEL.samples = res.samples; render(); window.scrollTo(0, 0); setState(edit ? 'Saved. Your updated list is with us.' : 'Sent. We will email you when the samples are up.'); }
-      else { send.disabled = false; send.textContent = edit ? 'Save my changes' : 'Send my sample list'; setState(res && res.error === 'already' ? 'Your list is already with us.' : (res && res.error === 'not_yet' ? 'Your first set is not on the wall yet; another set can be added after that.' : 'Couldn’t send — try again.')); }
-    }).withFailureHandler(function () { send.disabled = false; send.textContent = edit ? 'Save my changes' : 'Send my sample list'; setState('Couldn’t send — try again.'); });
+      if (res && res.ok) { MODEL.samples = res.samples; FOCUS_HINT = 'body'; render(); window.scrollTo(0, 0); setState(edit ? 'Saved. Your updated list is with us.' : 'Sent. We will email you when the samples are up.'); }
+      else { busy(send, false); send.textContent = edit ? 'Save my changes' : 'Send my sample list'; setState(res && res.error === 'already' ? 'Your list is already with us.' : (res && res.error === 'not_yet' ? 'Your first set is not on the wall yet; another set can be added after that.' : 'Couldn’t send — try again.')); }
+    }).withFailureHandler(function () { busy(send, false); send.textContent = edit ? 'Save my changes' : 'Send my sample list'; setState('Couldn’t send — try again.'); });
     if (edit) runner.updateSamples(TOKEN, picks, note.value.trim(), STAFF); else runner.requestSamples(TOKEN, picks, note.value.trim(), !!more, STAFF);
   };
   sec.appendChild(send);
@@ -1394,6 +1528,7 @@ function quickPicks(r) {
   (MODEL.samples.all || []).forEach(function (p) {
     var lbl = pickLabel(p); if (!lbl) return;
     var b = el('button', r.name && String(r.name).toLowerCase() === lbl.toLowerCase() ? 'on' : '', lbl + (p && p.where ? ' (' + p.where + ')' : ''));
+    b.setAttribute('aria-pressed', String(b.className === 'on'));
     b.onclick = function () { useSample(r, p); };
     wrap.appendChild(b);
   });
@@ -1456,6 +1591,7 @@ function accessSection() {
     // detail: { key, label, when(value) } — a text answer shown for some choices
     var c = el('div', 'card cat-access' + (isMissing([key].concat(detail ? [detail.key] : [])) ? ' todo' : ' done'));
     c.id = 'acc_' + key;
+    c.setAttribute('role', 'group'); c.setAttribute('aria-label', label);
     var head = el('div', 'head');
     head.appendChild(el('span', 'surface', label));
     head.appendChild(el('span', isMissing([key].concat(detail ? [detail.key] : [])) ? 'tick todo' : 'tick', isMissing([key].concat(detail ? [detail.key] : [])) ? 'to answer' : '✓ done'));
@@ -1463,6 +1599,7 @@ function accessSection() {
     var seg = el('div', 'seg');
     opts.forEach(function (o) {
       var b = el('button', a[key] === o[0] ? 'on' : '', o[1]);
+      b.setAttribute('aria-pressed', String(a[key] === o[0]));
       b.onclick = function () { a[key] = o[0]; saveAccess(patchOf(key, o[0])); rerenderAccess(); };
       seg.appendChild(b);
     });
@@ -1536,6 +1673,7 @@ function accessSection() {
     var rseg = el('div', 'seg');
     [['move_in', 'Move-in'], ['closing', 'Closing'], ['event', 'Event'], ['other', 'Other']].forEach(function (o) {
       var b = el('button', a.finish_reason === o[0] ? 'on' : '', o[1]);
+      b.setAttribute('aria-pressed', String(a.finish_reason === o[0]));
       b.onclick = function () { a.finish_reason = o[0]; saveAccess(patchOf('finish_reason', o[0])); rerenderAccess(); };
       rseg.appendChild(b);
     });
@@ -1568,9 +1706,11 @@ function endSubmit() {
 }
 
 function rerenderAccess() {
+  var m = focusMark();
   var old = document.getElementById('accessSec');
   if (old) old.parentNode.replaceChild(accessSection(), old);
   refreshProgress();
+  focusBack(m);
 }
 
 /** Access answers go through the same one-at-a-time queue; patches coalesce into one call. */
@@ -1590,7 +1730,20 @@ function onAccessSaved(res) {
   refreshProgress();
 }
 
-function setState(t) { var s = document.getElementById('state'); if (s) s.textContent = t; }
+var TIP_T = null;
+function setState(t) {
+  var s = document.getElementById('state'); if (s) s.textContent = t;
+  var working = /…$/.test(t);                      // "Saving…" and the like: not worth saying aloud
+  if (!working) announce(t);
+  // 2026-11-19: on the start, sample-list and thank-you screens the footer (and this message) is hidden,
+  // so "Add at least one color" and similar were never seen. Show those in a small bar instead.
+  var tip = document.getElementById('tip'), foot = document.getElementById('foot');
+  if (!tip) return;
+  var show = !!t && !working && !/^Saved/.test(t) && foot && foot.style.display === 'none';
+  clearTimeout(TIP_T);
+  tip.textContent = show ? t : ''; tip.style.display = show ? '' : 'none';
+  if (show) TIP_T = setTimeout(function () { tip.style.display = 'none'; }, 8000);
+}
 /** 2026-11-02: "Saved. Progress saves automatically." read as done. Say plainly that nothing has been sent yet. */
 function savedMsg() { return MODEL && MODEL.status === 'SUBMITTED' ? 'Saved. Our team is notified of changes automatically.' : 'Saved, not yet submitted.'; }
 function el(tag, cls, text) {
