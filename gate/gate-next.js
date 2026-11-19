@@ -1,9 +1,9 @@
 /* Ryan Painting quote form. BUILT FILE, do not edit here.
    Source: estimate-schedule-gate.html in the vault (60-technology/estimate-automation).
-   Build: v3.5 staging (approved-heading focus, size hint contrast) | source sha f17c2cfb6049 | 2026-11-19 */
+   Build: v3.5 (approved-heading focus, size hint contrast) | source sha f17c2cfb6049 | 2026-11-19 */
 (function () {
   if (window.__rpGateBuild) { return; }
-  window.__rpGateBuild = "v3.5 staging (approved-heading focus, size hint contrast) f17c2cfb6049";
+  window.__rpGateBuild = "v3.5 (approved-heading focus, size hint contrast) f17c2cfb6049";
   var d = document, links = [{"rel": "preconnect", "href": "https://fonts.gstatic.com", "crossOrigin": "anonymous"}, {"href": "https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap", "rel": "stylesheet"}];
   links.forEach(function (a) {
     var l = d.createElement("link");
