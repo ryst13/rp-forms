@@ -1,9 +1,9 @@
 /* Ryan Painting quote form. BUILT FILE, do not edit here.
    Source: estimate-schedule-gate.html in the vault (60-technology/estimate-automation).
-   Build: v3.4 accessibility | source sha c76cf8959eee | 2026-11-18 */
+   Build: v3.5 staging (approved-heading focus, size hint contrast) | source sha f17c2cfb6049 | 2026-11-19 */
 (function () {
   if (window.__rpGateBuild) { return; }
-  window.__rpGateBuild = "v3.4 accessibility c76cf8959eee";
+  window.__rpGateBuild = "v3.5 staging (approved-heading focus, size hint contrast) f17c2cfb6049";
   var d = document, links = [{"rel": "preconnect", "href": "https://fonts.gstatic.com", "crossOrigin": "anonymous"}, {"href": "https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap", "rel": "stylesheet"}];
   links.forEach(function (a) {
     var l = d.createElement("link");
@@ -1187,7 +1187,7 @@
       ".rpg-step button{width:30px;height:30px;border-radius:8px;border:1.5px solid #ccc;background:#fff;color:#1c1e1c;font-size:1.1rem;line-height:1;cursor:pointer;font-family:inherit}" +
       ".rpg-step button:hover{border-color:#24a149;color:#1d5f2f}" +
       ".rpg-step b{min-width:20px;text-align:center;font-variant-numeric:tabular-nums}" +
-      ".rpg-dim{display:block;font-size:.72rem;font-weight:400;opacity:.6;margin-top:2px}" +
+      ".rpg-dim{display:block;font-size:.72rem;font-weight:400;opacity:.75;margin-top:2px}" +
       ".rpg-stair{border:1px dashed #cfe3d4;border-radius:10px;padding:10px 12px;margin-top:8px;background:#fafdfb}";
     document.head.appendChild(st);
   })();
@@ -2409,6 +2409,8 @@
     if (topBtn) { topBtn.disabled = true; topBtn.textContent = "Estimate approved"; topBtn.style.opacity = "0.6"; }
     var backBtns = root.querySelectorAll(".rpg-back");
     Array.prototype.forEach.call(backBtns, function (b) { b.style.display = "none"; });
+    /* a11y: the approve button is now disabled, so focus would be lost; move it to the result heading */
+    function doneFocus() { try { a11y(); var dh = panel.querySelector(".rpg-q"); if (dh) dh.focus({ preventScroll: true }); } catch (e) {} }
     function doneHtml(extraNote) {
       /* a PRJ- estimate was already reviewed and priced by Ryan at the walkthrough —
          there is no scope-review step; the contract dispatches automatically on accept */
@@ -2429,7 +2431,7 @@
     }
     if (C.TEST_MODE || !C.ACCEPT_WEBHOOK_URL || (C.ACCEPT_WEBHOOK_URL || "").indexOf("REPLACE") === 0) {
       if (window.rpConsole) window.rpConsole("MOCK", "Would POST acceptance to accept webhook: total " + money(total) + ", deposit " + money(deposit));
-      panel.innerHTML = doneHtml(); startPdfPoll(); return;
+      panel.innerHTML = doneHtml(); doneFocus(); startPdfPoll(); return;
     }
     panel.innerHTML = '<p style="text-align:center;color:#555">Recording your acceptance&hellip;</p>';
     fetch(C.ACCEPT_WEBHOOK_URL, {
@@ -2444,10 +2446,10 @@
         duration_days: state.quote && state.quote.production ? state.quote.production.duration_days || 0 : 0
       })
     }).then(function (r) { return r.json(); }).then(function () {
-      panel.innerHTML = doneHtml(); startPdfPoll();
+      panel.innerHTML = doneHtml(); doneFocus(); startPdfPoll();
     }).catch(function () {
       panel.innerHTML = doneHtml(" If you don&rsquo;t hear from us within 1 business day, call us &mdash; we may not have received your acceptance.");
-      startPdfPoll();
+      doneFocus(); startPdfPoll();
     });
   }
 
