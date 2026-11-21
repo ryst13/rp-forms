@@ -1,9 +1,9 @@
 /* Ryan Painting quote form. BUILT FILE, do not edit here.
    Source: estimate-schedule-gate.html in the vault (60-technology/estimate-automation).
-   Build: v3.5 (approved-heading focus, size hint contrast) | source sha f17c2cfb6049 | 2026-11-19 */
+   Build: v3.6 six rooms 3 photos 2026-11-21 | source sha 594856a15c6e | 2026-11-21 */
 (function () {
   if (window.__rpGateBuild) { return; }
-  window.__rpGateBuild = "v3.5 (approved-heading focus, size hint contrast) f17c2cfb6049";
+  window.__rpGateBuild = "v3.6 six rooms 3 photos 2026-11-21 594856a15c6e";
   var d = document, links = [{"rel": "preconnect", "href": "https://fonts.gstatic.com", "crossOrigin": "anonymous"}, {"href": "https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap", "rel": "stylesheet"}];
   links.forEach(function (a) {
     var l = d.createElement("link");
@@ -36,7 +36,7 @@
     TERMS_URL: "/terms",
     MIN_PROJECT: 1000,
     RUSH_MULTIPLIER: 1.3, // rush = complete within the coming week
-    MAX_SQ_ROOMS: 2, // interior self-quote room cap (baked fallback); live value = PRICING sheet gate/MAX_SQ_ROOMS, so the seasonal flip (8 rooms Nov 1, back down in March) is a sheet edit, no re-paste
+    MAX_SQ_ROOMS: 6, // interior self-quote room cap (baked fallback, keep equal to the sheet); live value = PRICING sheet gate/MAX_SQ_ROOMS, so a change (6 from 2026-11-21; maybe lower in March, tbc) is a sheet edit, no publish
     DEPOSIT_PERCENT: 0.30,
     PRICING_OPTIONS: {},   // catalog-direct engine: premium/settings come from the engine + PRICING sheet
     PHONE_DISPLAY: "(617) 804-5300"
@@ -1075,7 +1075,7 @@
      unreachable. Clamped to the engine's 16-room policy ceiling. */
   function sqRoomCap() {
     var n = Math.round(Number(C.MAX_SQ_ROOMS));
-    return (isFinite(n) && n >= 1 && n <= 16) ? n : 2;
+    return (isFinite(n) && n >= 1 && n <= 16) ? n : 6;
   }
   function maxRooms() { return operator.on ? Math.max(OPERATOR_MAX_ROOMS, sqRoomCap()) : sqRoomCap(); }
 
@@ -1596,7 +1596,7 @@
         '<label class="rpg-lbl">Photos of this room <span style="font-weight:400">' +
         (operator.on
           ? (r.photos_on_file ? "(already on file from the original submission)" : "(optional)")
-          : "(required &mdash; a couple of quick phone shots keep your price accurate)") + "</span></label>" +
+          : "(required, up to " + ROOM_PHOTO_MAX + " &mdash; a few quick phone shots keep your price accurate)") + "</span></label>" +
         '<input class="rpg-field rpg-room-photos" type="file" accept="image/*" multiple data-i="' + i + '">' +
         ((r.images || []).length
           ? '<div class="rpg-photo-ok">&#10003; ' + r.images.length + ' photo' + (r.images.length > 1 ? 's' : '') + ' added to this room &middot; <a href="#" data-clearimg="' + i + '">clear</a></div>' +
@@ -1743,20 +1743,32 @@
     rd.readAsDataURL(f);
   }
 
+  /* Up to 3 photos per room (Ryan 2026-11-21): with up to 6 rooms that is at most 18
+     photos, about 7MB, so the upload never has to drop any at full 1600px quality. */
+  var ROOM_PHOTO_MAX = 3;
+  function roomPhotoNote(i) {
+    var clear = root.querySelector('[data-clearimg="' + i + '"]');
+    if (clear) clear.parentNode.insertAdjacentHTML("beforeend",
+      " &middot; up to " + ROOM_PHOTO_MAX + " photos per room, so we kept the first " + ROOM_PHOTO_MAX);
+  }
   function wireRoomPhotos() {
     root.querySelectorAll(".rpg-room-photos").forEach(function (el) {
       el.onchange = function () {
         var i = +el.getAttribute("data-i");
-        var files = Array.prototype.slice.call(el.files || []).slice(0, 4);
-        if (!files.length) return;
+        var picked = Array.prototype.slice.call(el.files || []);
+        var have = (state.rooms[i].images || []).length;
+        var files = picked.slice(0, Math.max(0, ROOM_PHOTO_MAX - have));
+        var over = picked.length > files.length;
+        if (!files.length) { if (over) { renderRooms(); roomPhotoNote(i); } return; }
         var out = [], done = 0;
         files.forEach(function (f) {
           readPhoto(f, function (p) { if (p) out.push(p); if (++done === files.length) finish(); });
         });
         function finish() {
           var r = state.rooms[i];
-          r.images = (r.images || []).concat(out).slice(0, 4);
+          r.images = (r.images || []).concat(out).slice(0, ROOM_PHOTO_MAX);
           renderRooms();
+          if (over) roomPhotoNote(i);
         }
       };
     });
@@ -2190,8 +2202,9 @@
       }
       state.quote = quote;
       /* walkthrough cap is checked on the BASE price — a rush premium shouldn't
-         push a quotable project into the walkthrough lane (rush needs speed) */
-      if (quote.grand_total >= WALKTHROUGH_CAP) {
+         push a quotable project into the walkthrough lane (rush needs speed).
+         Interior quotes skip it since v3.6 (Ryan 2026-11-21: the room cap is the limit). */
+      if (computeFn !== computeInterior && quote.grand_total >= WALKTHROUGH_CAP) {
         submitProject("WALKTHROUGH (computed " + money(quote.grand_total) + " — above instant cap)");
         return routeWalkthrough("This one deserves an in-person consultation.",
           "Based on your scope this is a substantial project &mdash; we&rsquo;ll walk it with you so the quote is exact. Pick a time:", backFn);
