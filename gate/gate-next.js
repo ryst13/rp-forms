@@ -1,9 +1,9 @@
 /* Ryan Painting quote form. BUILT FILE, do not edit here.
    Source: estimate-schedule-gate.html in the vault (60-technology/estimate-automation).
-   Build: v3.11 click-through fixes 2026-11-23 | source sha 3e114216ba58 | 2026-11-23 */
+   Build: v3.12 saved progress + Back, Room as Bedroom 2026-11-23 | source sha c7aaa256cc99 | 2026-11-23 */
 (function () {
   if (window.__rpGateBuild) { return; }
-  window.__rpGateBuild = "v3.11 click-through fixes 2026-11-23 3e114216ba58";
+  window.__rpGateBuild = "v3.12 saved progress + Back, Room as Bedroom 2026-11-23 c7aaa256cc99";
   var d = document, links = [{"rel": "preconnect", "href": "https://fonts.gstatic.com", "crossOrigin": "anonymous"}, {"href": "https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap", "rel": "stylesheet"}];
   links.forEach(function (a) {
     var l = d.createElement("link");
@@ -1173,7 +1173,7 @@
 
   /* UI label -> engine room type key */
   var ROOM_TYPES = [
-    ["Room", "Room"], ["Bedroom", "Bedroom"], ["Primary Bedroom", "Master Bedroom"],
+    ["Room", "Bedroom"], ["Bedroom", "Bedroom"],   /* generic Room prices like a Bedroom of that size (Ryan 2026-11-23) */ ["Primary Bedroom", "Master Bedroom"],
     ["Living Room", "Living Room"], ["Kitchen", "Kitchen"], ["Bathroom", "Bathroom"],
     ["Primary Bathroom", "Full Bathroom"], ["Dining Room", "Dining Room"], ["Office", "Office"],
     ["Den", "Den"], ["Family Room", "Family Room"], ["Foyer/Hallway", "Foyer/Hallway"],
@@ -1213,7 +1213,7 @@
     'Family Room': ['12 x 16', '14 x 20', '16 x 24']
   };
   /* The engine's own room key differs from the picker label for two types */
-  var DIM_ALIAS = { 'Primary Bedroom': 'Master Bedroom', 'Primary Bathroom': 'Full Bathroom' };
+  var DIM_ALIAS = { 'Primary Bedroom': 'Master Bedroom', 'Primary Bathroom': 'Full Bathroom', 'Room': 'Bedroom' };
   function dimsFor(typeLabel, sizeKey) {
     var d = SIZE_DIMS[DIM_ALIAS[typeLabel] || typeLabel];
     if (!d) return "";
@@ -1394,6 +1394,8 @@
     var key = changed ? null : focusKey();
     root.innerHTML = html;
     a11y();
+    noteScreen(changed, first);
+    if (draftEligible()) saveDraft();
     if (changed && !C.TEST_MODE) root.scrollIntoView(scrollOpts());
     curScreen = screen;
     try {
@@ -1482,10 +1484,107 @@
     }).observe(root, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
   }
 
+
+  /* ============ SAVED PROGRESS + BROWSER BACK (v3.12, Ryan 2026-11-23) ============
+     The room builder is saved on this device as the visitor works: choices and contact
+     details in localStorage, photos in IndexedDB (too big for localStorage). A refresh or a
+     return visit within 7 days offers "Pick up where you left off". The draft is cleared once
+     the quote is shown. The browser Back button steps back through the form instead of
+     leaving the page. Every storage call is wrapped: private windows simply don't save. */
+  var DRAFT_KEY = "rp_gate_draft_v1", DRAFT_DAYS = 7, draftTimer = null, draftPhotoSig = "";
+  function draftEligible() {
+    return !operator.on && state.type === "interior" && state.size === "rooms" && state.rooms.length > 0 && !state.quoteShown;
+  }
+  function idb(cb) {
+    try {
+      var rq = window.indexedDB.open("rp_gate", 1);
+      rq.onupgradeneeded = function () { rq.result.createObjectStore("kv"); };
+      rq.onsuccess = function () { cb(rq.result); };
+      rq.onerror = function () { cb(null); };
+    } catch (e) { cb(null); }
+  }
+  function idbPut(key, val) { idb(function (db) { if (!db) return; try { db.transaction("kv", "readwrite").objectStore("kv").put(val, key); } catch (e) {} }); }
+  function idbGet(key, cb) {
+    idb(function (db) {
+      if (!db) return cb(null);
+      try { var g = db.transaction("kv").objectStore("kv").get(key); g.onsuccess = function () { cb(g.result || null); }; g.onerror = function () { cb(null); }; }
+      catch (e) { cb(null); }
+    });
+  }
+  function saveDraftNow() {
+    if (!draftEligible()) return;
+    try {
+      /* contact fields typed but not yet submitted */
+      var fv = function (id) { var el = document.getElementById(id); return el ? el.value.trim() : null; };
+      if (fv("rpg-email") !== null) {
+        state.contact = { name: fv("rpg-name") || "", email: fv("rpg-email") || "", phone: fv("rpg-phone") || "" };
+        state.promoInput = fv("rpg-promo") || "";
+      }
+      var rooms = state.rooms.map(function (r) { var c = {}; for (var k in r) if (k !== "images") c[k] = r[k]; return c; });
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({ ts: Date.now(), projectId: state.projectId, type: state.type, size: state.size,
+        rooms: rooms, condition: state.condition, rush: state.rush, contact: state.contact, promoInput: state.promoInput }));
+      var sig = state.rooms.map(function (r) { return (r.images || []).length + ":" + ((r.images || [])[0] || {}).name; }).join("|");
+      if (sig !== draftPhotoSig) { draftPhotoSig = sig; idbPut(DRAFT_KEY, state.rooms.map(function (r) { return r.images || []; })); }
+    } catch (e) {}
+  }
+  function saveDraft() { clearTimeout(draftTimer); draftTimer = setTimeout(saveDraftNow, 600); }
+  function clearDraft() {
+    clearTimeout(draftTimer);
+    try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
+    idbPut(DRAFT_KEY, null); draftPhotoSig = "";
+  }
+  function readDraft() {
+    try {
+      var d = JSON.parse(localStorage.getItem(DRAFT_KEY) || "null");
+      if (!d || !d.rooms || !d.rooms.length || Date.now() - d.ts > DRAFT_DAYS * 864e5) return null;
+      return d;
+    } catch (e) { return null; }
+  }
+  function offerDraft(d, fallback) {
+    backHandler = null;
+    var n = d.rooms.length;
+    h('<div class="rpg-panel">' +
+      '<div class="rpg-q" style="margin-top:0">Pick up where you left off?</div>' +
+      '<p>You started pricing ' + n + ' room' + (n > 1 ? 's' : '') + ' on this device. Your choices' + (d.contact && d.contact.email ? ' and contact details' : '') + ' are saved.</p>' +
+      '<button class="rpg-cta" id="rpg-draft-go">Continue my quote</button><br>' +
+      '<button type="button" class="rpg-opt" id="rpg-draft-new" style="margin-top:10px">Start a new quote</button>' +
+      '<div class="rpg-note">Pressing Continue brings back your rooms and photos. Start a new quote clears them from this device.</div>' +
+      '</div>');
+    document.getElementById("rpg-draft-new").onclick = function () { clearDraft(); fallback(); };
+    document.getElementById("rpg-draft-go").onclick = function () {
+      state.type = d.type; state.size = d.size; state.condition = d.condition || "Standard"; state.rush = !!d.rush;
+      state.contact = d.contact || {}; state.promoInput = d.promoInput || "";
+      if (d.projectId) state.projectId = d.projectId;
+      state.rooms = d.rooms.map(function (r) { r.images = []; return r; });
+      idbGet(DRAFT_KEY, function (imgs) {
+        if (imgs && imgs.length) state.rooms.forEach(function (r, i) { r.images = (imgs[i] || []).slice(0, ROOM_PHOTO_MAX); });
+        track("draft_resumed", { rooms: n });
+        renderRooms();
+      });
+    };
+  }
+  /* browser Back: one history entry per screen; Back runs the form's own back step */
+  var histDepth = 0, fromPop = false;
+  function noteScreen(changed, first) {
+    if (operator.on || !window.history || !history.pushState) return;
+    try {
+      if (first) { history.replaceState({ rpg: 0 }, ""); histDepth = 0; return; }
+      if (changed && !fromPop) { histDepth++; history.pushState({ rpg: histDepth }, ""); }
+    } catch (e) {}
+  }
+  window.addEventListener("popstate", function (ev) {
+    if (operator.on) return;
+    if (!ev.state || ev.state.rpg === undefined) return;
+    histDepth = ev.state.rpg;
+    if (backHandler) { fromPop = true; try { backHandler(); } finally { fromPop = false; } }
+  });
+
   /* Back buttons are wired through ONE delegated capture-phase listener instead of
      per-render .onclick assignments — innerHTML churn and overlapping elements can
      no longer orphan a back button. Each screen just sets backHandler (or null). */
   var backHandler = null;
+  root.addEventListener("change", function () { if (draftEligible()) saveDraft(); }, true);
+  root.addEventListener("input", function () { if (draftEligible()) saveDraft(); }, true);
   root.addEventListener("click", function (ev) {
     var t = ev.target;
     while (t && t !== root && !(t.classList && t.classList.contains("rpg-back")) && !(t.getAttribute && t.getAttribute("data-mockdoc"))) t = t.parentNode;
@@ -2458,6 +2557,7 @@
     var dHi = Math.max(dLo + 1, Math.ceil(days * 1.6));
     var prodLine = days > 0 ? "Estimated " + dLo + "&ndash;" + dHi + " days on site" : "";
     track("instant_quote_shown", { total: total, project_id: state.projectId });
+    state.quoteShown = true; clearDraft();
     h('<div class="rpg-panel">' +
       '<div class="rpg-check">&#10003;</div>' +
       '<div class="rpg-q" style="margin-top:0;text-align:center">Your price</div>' +
@@ -2498,7 +2598,7 @@
         ? '<li>Your price is based on the scope we reviewed at your walkthrough. If the project changes (sizes, surfaces, repairs), we&rsquo;ll confirm any changes with you before extra work or charges.</li>' +
           '<li>Your contract and a ' + Math.round(DEPOSIT_PCT * 100) + '% deposit invoice (' + money(deposit) + ') arrive by email shortly after you approve; paying the deposit reserves your project, and any remaining balance follows the payment schedule in your contract.</li>'
         : '<li>Your price is based on the scope you entered. If conditions on-site are materially different (sizes, surfaces, repairs), we&rsquo;ll confirm any changes with you before extra work or charges.</li>' +
-          '<li>After our team reviews your scope, your contract and a ' + Math.round(DEPOSIT_PCT * 100) + '% deposit invoice (' + money(deposit) + ') arrive by email; paying the deposit reserves your project and the balance is due on completion. Once your deposit is paid and your Color &amp; Access Form is in, we email you a proposed start date to confirm.</li>') +
+          '<li>After our team reviews your scope, your contract and a ' + Math.round(DEPOSIT_PCT * 100) + '% deposit invoice (' + money(deposit) + ') arrive by email; paying the deposit reserves your project and the final payment is due when the work is complete. Once your deposit is paid and your Color &amp; Access Form is in, we email you a proposed start date to confirm.</li>') +
       '<li>Standard prep is included. Not included unless listed: heavy wall repairs, wallpaper removal, extra coats or colors beyond ' + (isWQ ? 'the agreed scope' : 'your selections') + ', specialty priming over dark/oil-based surfaces.</li>' +
       '<li>Pre-1978 homes: we follow EPA lead-safe practices; this can require a scope confirmation before work begins.</li>' +
       '<li>Exterior work is weather-dependent; we reschedule weather delays at no cost.</li>' +
@@ -3059,6 +3159,8 @@
           '</div>');
         return;
       }
+      var draft = readDraft();
+      if (draft) { offerDraft(draft, q1); return; }
       q1();
     }
     var u = C.PRICING_CONFIG_URL || "";
