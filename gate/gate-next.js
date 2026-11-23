@@ -1,9 +1,9 @@
 /* Ryan Painting quote form. BUILT FILE, do not edit here.
    Source: estimate-schedule-gate.html in the vault (60-technology/estimate-automation).
-   Build: v3.13 ZIP first, no ceilings-only banner 2026-11-23 | source sha 7cc7d0ea7192 | 2026-11-23 */
+   Build: v3.14 condition per room, timing box 2026-11-23 | source sha 31f01296e4d5 | 2026-11-23 */
 (function () {
   if (window.__rpGateBuild) { return; }
-  window.__rpGateBuild = "v3.13 ZIP first, no ceilings-only banner 2026-11-23 7cc7d0ea7192";
+  window.__rpGateBuild = "v3.14 condition per room, timing box 2026-11-23 31f01296e4d5";
   var d = document, links = [{"rel": "preconnect", "href": "https://fonts.gstatic.com", "crossOrigin": "anonymous"}, {"href": "https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap", "rel": "stylesheet"}];
   links.forEach(function (a) {
     var l = d.createElement("link");
@@ -12,7 +12,7 @@
   });
   var st = d.createElement("style");
   st.setAttribute("data-rp-gate", "1");
-  st.textContent = "\n  /* Designed for a DARK page section: base text is white; white cards re-assert dark text. */\n  #rp-gate { max-width: 640px; margin: 0 auto; font-family: 'Open Sans', -apple-system, sans-serif;\n    color: #fff; border: 2px solid #000; border-radius: 14px; padding: 24px; }\n  @media (max-width: 560px) { #rp-gate { padding: 16px; } }\n  #rp-gate p, #rp-gate label, #rp-gate summary, #rp-gate h1, #rp-gate h2, #rp-gate h3 { color: inherit; }\n  /* a11y: on a light page section (set by script, e.g. /proposal) the text outside the white cards turns dark */\n  #rp-gate.rpg-light { color: #1c1e1c; }\n  #rp-gate.rpg-light > .rpg-q, #rp-gate.rpg-light > .rpg-lbl, #rp-gate.rpg-light > .rpg-note,\n  #rp-gate.rpg-light > .rpg-inline, #rp-gate.rpg-light > .rpg-chk { color: #1c1e1c; }\n  #rp-gate.rpg-light > .rpg-back { color: #1d5f2f; }\n  .rpg-q { font-size: 1.35rem; font-weight: 600; margin: 1.2em 0 0.8em; color: #fff;\n    font-family: 'Familjen Grotesk', 'Open Sans', -apple-system, sans-serif; }\n  .rpg-room .rpg-q, .rpg-panel .rpg-q { color: #1c1e1c; }\n  .rpg-room, .rpg-panel { color: #1c1e1c; }\n  .rpg-opts { display: grid; gap: 10px; grid-template-columns: 1fr 1fr; }\n  @media (max-width: 560px) { .rpg-opts { grid-template-columns: 1fr; } }\n  .rpg-opt { padding: 16px 14px; border: 2px solid #d8d8d8; border-radius: 10px;\n    background: #fff; color: #1c1e1c; cursor: pointer; font-size: 1rem; text-align: center;\n    transition: border-color .15s, background .15s; font-family: inherit; }\n  .rpg-opt:hover { border-color: #70d44b; background: #70d44b; color: #000; }\n  .rpg-sel2 { border-color: #24a149; background: #f2faf4; }\n  /* a11y: one focus ring for every control; dark ring with a thin white gap shows on the green section and on white cards */\n  #rp-gate :focus-visible { outline: 3px solid #1c1e1c; outline-offset: 2px; box-shadow: 0 0 0 2px #fff; }\n  #rp-gate .rpg-q:focus { outline: none; box-shadow: none; }\n  .rpg-back { background: none; border: none; color: #fff; cursor: pointer;\n    font-size: .9rem; margin-top: 14px; text-decoration: underline; padding: 0; font-family: inherit; }\n  .rpg-room .rpg-back, .rpg-panel .rpg-back { color: #1d5f2f; }\n  .rpg-cta { display: inline-block; margin-top: 16px; padding: 14px 26px; border: none;\n    border-radius: 8px; background: #000; color: #fff; font-size: 1.05rem;\n    font-weight: 600; cursor: pointer; font-family: inherit; }\n  .rpg-cta:hover { background: #70d44b; color: #000; }\n  .rpg-panel { border: 1px solid #e2e2e2; border-radius: 12px; padding: 22px; margin-top: 18px; background: #fff; }\n  .rpg-panel ul { padding-left: 20px; }\n  .rpg-price { font-size: 2rem; font-weight: 700; color: #1d5f2f; margin: .3em 0;\n    font-family: 'Familjen Grotesk', 'Open Sans', -apple-system, sans-serif; }\n  .rpg-note { font-size: .85rem; color: #fff; margin-top: 10px; }\n  .rpg-room .rpg-note, .rpg-panel .rpg-note { color: #666; }\n  .rpg-field { width: 100%; padding: 12px; margin: 6px 0; border: 1.5px solid #ccc;\n    border-radius: 8px; font-size: 1rem; box-sizing: border-box; background: #fff; color: #1c1e1c; font-family: inherit; }\n  .rpg-err { color: #b3261e; font-size: .9rem; font-weight: 600; display: none; background: #fff; border: 1.5px solid #b3261e; border-radius: 8px; padding: 10px 12px; margin-top: 10px; }\n  #rpg-accept, #rpg-accept-final { background: #fff; color: #1d5f2f; border: 2px solid #24a149; }\n  #rpg-accept:hover, #rpg-accept-final:hover { background: #70d44b; border-color: #70d44b; color: #000; }\n  .rpg-check { width: 44px; height: 44px; border-radius: 50%; background: #e7f6ec; color: #1d5f2f;\n    font-size: 1.4rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; }\n  .rpg-room { border: 1px solid #e2e2e2; border-radius: 12px; padding: 16px; margin: 12px 0; background: #fff; }\n  .rpg-room-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }\n  .rpg-x { background: none; border: none; color: #b3261e; font-size: .8rem; cursor: pointer; text-decoration: underline; font-family: inherit; }\n  .rpg-lbl { display: block; font-size: .82rem; font-weight: 600; color: #fff; margin-top: 10px; }\n  .rpg-room .rpg-lbl, .rpg-panel .rpg-lbl { color: #4a4f4a; }\n  .rpg-sel { margin-top: 4px; }\n  .rpg-segrow { display: flex; gap: 8px; margin-top: 6px; }\n  .rpg-seg { flex: 1; padding: 10px 6px; border: 2px solid #d8d8d8; border-radius: 8px; background: #fff;\n    color: #1c1e1c; cursor: pointer; font-size: .9rem; font-family: inherit; }\n  .rpg-seg-on { border-color: #24a149; background: #f2faf4; font-weight: 600; }\n  .rpg-inline { display: flex; gap: 18px; margin-top: 10px; flex-wrap: wrap; align-items: center; }\n  .rpg-chk { font-size: .92rem; display: flex; align-items: center; gap: 6px; color: inherit; }\n  .rpg-num { width: 64px; padding: 8px; border: 1.5px solid #ccc; border-radius: 8px; font-size: 1rem;\n    margin-left: 6px; background: #fff; color: #1c1e1c; font-family: inherit; }\n  .rpg-add { display: block; width: 100%; padding: 12px; margin-top: 4px; border: 2px dashed #b9ddb9;\n    border-radius: 10px; background: #fbfefb; color: #1d5f2f; font-weight: 600; cursor: pointer; font-family: inherit; }\n  .rpg-add:hover { border-color: #24a149; }\n  .rpg-bd { margin: 16px 0 4px; border-top: 1px solid #eee; padding-top: 10px; }\n  .rpg-bd summary { cursor: pointer; font-weight: 600; color: #1d5f2f; }\n  .rpg-bd-sec { margin-top: 10px; }\n  .rpg-bd-head { display: flex; justify-content: space-between; font-weight: 600; font-size: .92rem; }\n  .rpg-bd-item { display: flex; justify-content: space-between; font-size: .85rem; color: #666; padding-left: 14px; margin-top: 2px; }\n  .rpg-bd-total { display: flex; justify-content: space-between; font-weight: 700; border-top: 1px solid #e2e2e2;\n    margin-top: 10px; padding-top: 8px; font-variant-numeric: tabular-nums; }\n  .rpg-photo-ok { display: inline-block; background: #e7f6ec; color: #1d5f2f; font-weight: 600;\n    border: 1.5px solid #24a149; border-radius: 8px; padding: 6px 10px; margin-top: 8px; font-size: .88rem; }\n  .rpg-photo-ok a { color: #b3261e; }\n  .rpg-thumbs { margin-top: 6px; }\n  .rpg-thumbs img { width: 54px; height: 54px; object-fit: cover; border-radius: 6px; margin: 0 6px 6px 0; border: 2px solid #24a149; }\n  .rpg-ceil-note { background: #70d44b; color: #1c1e1c; font-size: .9rem; font-weight: 600; text-align: center;\n    padding: 10px 14px; border-radius: 8px; margin-top: 12px; }\n  .rpg-ceil-note a { color: #0a2ea8; }\n  #rp-bird { display: none; pointer-events: none; transition: transform 1.6s cubic-bezier(.33,.72,.28,.99); will-change: transform; animation: rpBirdSway 5s ease-in-out infinite; }\n  @keyframes rpBirdSway { 0%,100% { rotate: -2deg; } 50% { rotate: 2.5deg; } }\n  @media (prefers-reduced-motion: reduce) { #rp-bird { transition: none; animation: none; } }\n  @media (max-width: 767px) { #rp-bird { display: none !important; } }\n";
+  st.textContent = "\n  /* Designed for a DARK page section: base text is white; white cards re-assert dark text. */\n  #rp-gate { max-width: 640px; margin: 0 auto; font-family: 'Open Sans', -apple-system, sans-serif;\n    color: #fff; border: 2px solid #000; border-radius: 14px; padding: 24px; }\n  @media (max-width: 560px) { #rp-gate { padding: 16px; } }\n  #rp-gate p, #rp-gate label, #rp-gate summary, #rp-gate h1, #rp-gate h2, #rp-gate h3 { color: inherit; }\n  /* a11y: on a light page section (set by script, e.g. /proposal) the text outside the white cards turns dark */\n  #rp-gate.rpg-light { color: #1c1e1c; }\n  #rp-gate.rpg-light > .rpg-q, #rp-gate.rpg-light > .rpg-lbl, #rp-gate.rpg-light > .rpg-note,\n  #rp-gate.rpg-light > .rpg-inline, #rp-gate.rpg-light > .rpg-chk { color: #1c1e1c; }\n  #rp-gate.rpg-light > .rpg-back { color: #1d5f2f; }\n  .rpg-q { font-size: 1.35rem; font-weight: 600; margin: 1.2em 0 0.8em; color: #fff;\n    font-family: 'Familjen Grotesk', 'Open Sans', -apple-system, sans-serif; }\n  .rpg-room .rpg-q, .rpg-panel .rpg-q { color: #1c1e1c; }\n  .rpg-room, .rpg-panel { color: #1c1e1c; }\n  .rpg-opts { display: grid; gap: 10px; grid-template-columns: 1fr 1fr; }\n  @media (max-width: 560px) { .rpg-opts { grid-template-columns: 1fr; } }\n  .rpg-opt { padding: 16px 14px; border: 2px solid #d8d8d8; border-radius: 10px;\n    background: #fff; color: #1c1e1c; cursor: pointer; font-size: 1rem; text-align: center;\n    transition: border-color .15s, background .15s; font-family: inherit; }\n  .rpg-opt:hover { border-color: #70d44b; background: #70d44b; color: #000; }\n  .rpg-sel2 { border-color: #24a149; background: #f2faf4; }\n  /* a11y: one focus ring for every control; dark ring with a thin white gap shows on the green section and on white cards */\n  #rp-gate :focus-visible { outline: 3px solid #1c1e1c; outline-offset: 2px; box-shadow: 0 0 0 2px #fff; }\n  #rp-gate .rpg-q:focus { outline: none; box-shadow: none; }\n  .rpg-back { background: none; border: none; color: #fff; cursor: pointer;\n    font-size: .9rem; margin-top: 14px; text-decoration: underline; padding: 0; font-family: inherit; }\n  .rpg-room .rpg-back, .rpg-panel .rpg-back { color: #1d5f2f; }\n  .rpg-cta { display: inline-block; margin-top: 16px; padding: 14px 26px; border: none;\n    border-radius: 8px; background: #000; color: #fff; font-size: 1.05rem;\n    font-weight: 600; cursor: pointer; font-family: inherit; }\n  .rpg-cta:hover { background: #70d44b; color: #000; }\n  .rpg-panel { border: 1px solid #e2e2e2; border-radius: 12px; padding: 22px; margin-top: 18px; background: #fff; }\n  .rpg-panel ul { padding-left: 20px; }\n  .rpg-price { font-size: 2rem; font-weight: 700; color: #1d5f2f; margin: .3em 0;\n    font-family: 'Familjen Grotesk', 'Open Sans', -apple-system, sans-serif; }\n  .rpg-note { font-size: .85rem; color: #fff; margin-top: 10px; }\n  .rpg-room .rpg-note, .rpg-panel .rpg-note { color: #666; }\n  .rpg-field { width: 100%; padding: 12px; margin: 6px 0; border: 1.5px solid #ccc;\n    border-radius: 8px; font-size: 1rem; box-sizing: border-box; background: #fff; color: #1c1e1c; font-family: inherit; }\n  .rpg-err { color: #b3261e; font-size: .9rem; font-weight: 600; display: none; background: #fff; border: 1.5px solid #b3261e; border-radius: 8px; padding: 10px 12px; margin-top: 10px; }\n  #rpg-accept, #rpg-accept-final { background: #fff; color: #1d5f2f; border: 2px solid #24a149; }\n  #rpg-accept:hover, #rpg-accept-final:hover { background: #70d44b; border-color: #70d44b; color: #000; }\n  .rpg-check { width: 44px; height: 44px; border-radius: 50%; background: #e7f6ec; color: #1d5f2f;\n    font-size: 1.4rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; }\n  .rpg-room { border: 1px solid #e2e2e2; border-radius: 12px; padding: 16px; margin: 12px 0; background: #fff; }\n  .rpg-room.rpg-timing { background: #eaf6e4; border: 2px solid #70d44b; }\n  .rpg-room-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }\n  .rpg-x { background: none; border: none; color: #b3261e; font-size: .8rem; cursor: pointer; text-decoration: underline; font-family: inherit; }\n  .rpg-lbl { display: block; font-size: .82rem; font-weight: 600; color: #fff; margin-top: 10px; }\n  .rpg-room .rpg-lbl, .rpg-panel .rpg-lbl { color: #4a4f4a; }\n  .rpg-sel { margin-top: 4px; }\n  .rpg-segrow { display: flex; gap: 8px; margin-top: 6px; }\n  .rpg-seg { flex: 1; padding: 10px 6px; border: 2px solid #d8d8d8; border-radius: 8px; background: #fff;\n    color: #1c1e1c; cursor: pointer; font-size: .9rem; font-family: inherit; }\n  .rpg-seg-on { border-color: #24a149; background: #f2faf4; font-weight: 600; }\n  .rpg-inline { display: flex; gap: 18px; margin-top: 10px; flex-wrap: wrap; align-items: center; }\n  .rpg-chk { font-size: .92rem; display: flex; align-items: center; gap: 6px; color: inherit; }\n  .rpg-num { width: 64px; padding: 8px; border: 1.5px solid #ccc; border-radius: 8px; font-size: 1rem;\n    margin-left: 6px; background: #fff; color: #1c1e1c; font-family: inherit; }\n  .rpg-add { display: block; width: 100%; padding: 12px; margin-top: 4px; border: 2px dashed #b9ddb9;\n    border-radius: 10px; background: #fbfefb; color: #1d5f2f; font-weight: 600; cursor: pointer; font-family: inherit; }\n  .rpg-add:hover { border-color: #24a149; }\n  .rpg-bd { margin: 16px 0 4px; border-top: 1px solid #eee; padding-top: 10px; }\n  .rpg-bd summary { cursor: pointer; font-weight: 600; color: #1d5f2f; }\n  .rpg-bd-sec { margin-top: 10px; }\n  .rpg-bd-head { display: flex; justify-content: space-between; font-weight: 600; font-size: .92rem; }\n  .rpg-bd-item { display: flex; justify-content: space-between; font-size: .85rem; color: #666; padding-left: 14px; margin-top: 2px; }\n  .rpg-bd-total { display: flex; justify-content: space-between; font-weight: 700; border-top: 1px solid #e2e2e2;\n    margin-top: 10px; padding-top: 8px; font-variant-numeric: tabular-nums; }\n  .rpg-photo-ok { display: inline-block; background: #e7f6ec; color: #1d5f2f; font-weight: 600;\n    border: 1.5px solid #24a149; border-radius: 8px; padding: 6px 10px; margin-top: 8px; font-size: .88rem; }\n  .rpg-photo-ok a { color: #b3261e; }\n  .rpg-thumbs { margin-top: 6px; }\n  .rpg-thumbs img { width: 54px; height: 54px; object-fit: cover; border-radius: 6px; margin: 0 6px 6px 0; border: 2px solid #24a149; }\n  .rpg-ceil-note { background: #70d44b; color: #1c1e1c; font-size: .9rem; font-weight: 600; text-align: center;\n    padding: 10px 14px; border-radius: 8px; margin-top: 12px; }\n  .rpg-ceil-note a { color: #0a2ea8; }\n  #rp-bird { display: none; pointer-events: none; transition: transform 1.6s cubic-bezier(.33,.72,.28,.99); will-change: transform; animation: rpBirdSway 5s ease-in-out infinite; }\n  @keyframes rpBirdSway { 0%,100% { rotate: -2deg; } 50% { rotate: 2.5deg; } }\n  @media (prefers-reduced-motion: reduce) { #rp-bird { transition: none; animation: none; } }\n  @media (max-width: 767px) { #rp-bird { display: none !important; } }\n";
   d.head.appendChild(st);
 })();
 
@@ -601,6 +601,8 @@
          itself and its paint are dropped. */
       var wallsIncluded = room.walls_included !== false;
       var items = [];
+      /* v3.14: each room carries its own wall condition (falls back to the project's) */
+      conditionMod = gradeMod * nn(CONDITION_MODIFIERS.prep_level[room.prep_level || project.prep_level], 1.0);
       /* Generator hours (2026-11-23): trade-partner cost of each line / painter hourly rate */
       var gWall = wallSub(room.room_type, room.room_size);
       if (gWall === null) gWall = wallSqft * ((CATALOG_WALL_RATE[room.room_type] && CATALOG_WALL_RATE[room.room_type][room.room_size]) || 1.65) * subRatio();   /* generic room: same share as the Catalog rooms */
@@ -1741,8 +1743,13 @@
   }
 
   /* ============ INTERIOR ROOM BUILDER ============ */
+  /* v3.14: the project counts as 'repairs needed' if any room is */
+  function roomCond(r) { return r.condition || state.condition || "Standard"; }
+  function projectCondition() {
+    return state.rooms.some(function (r) { return roomCond(r) === "Superior"; }) ? "Superior" : "Standard";
+  }
   function newRoom() {
-    return { type_label: "Bedroom", room_size: "Medium", walls_included: true, ceiling_included: true,
+    return { type_label: "Bedroom", room_size: "Medium", walls_included: true, ceiling_included: true, condition: "Standard",
       doors: 1, windows: 2, closet: "not_included", closet_shelves: false, notes: "", images: [],
       baseframes: true, crown: false, wainscot: false, chairrail: false,
       steps: 0, stair_risers: false, stair_handrail: false, stair_spindles: false };
@@ -1817,6 +1824,10 @@
         '<label class="rpg-lbl">Doors <input class="rpg-num" type="number" min="0" max="8" value="' + r.doors + '" data-i="' + i + '" data-f="doors"></label>' +
         '<label class="rpg-lbl">Windows <input class="rpg-num" type="number" min="0" max="12" value="' + r.windows + '" data-i="' + i + '" data-f="windows"></label>' +
         "</div>" +
+        '<label class="rpg-lbl">Condition of the walls in this room</label><div class="rpg-segrow">' +
+        [["Standard", "Good shape &mdash; normal prep"], ["Superior", "Some cracks / repairs needed"]].map(function (c) {
+          return '<button type="button" class="rpg-seg' + (roomCond(r) === c[0] ? " rpg-seg-on" : "") + '" data-i="' + i + '" data-f="condition" data-v="' + c[0] + '">' + c[1] + "</button>";
+        }).join("") + "</div>" +
         '<label class="rpg-lbl">Photos of this room <span style="font-weight:400">' +
         (operator.on
           ? (r.photos_on_file ? "(already on file from the original submission)" : "(optional)")
@@ -1842,11 +1853,8 @@
         : operator.on ? ""
           : '<div class="rpg-note">Painting <strong>' + (sqRoomCap() + 1) + ' or more rooms</strong>? Projects that size get a free in-person consultation &mdash; <a href="#" id="rpg-3plus">book a walkthrough instead</a>.</div>') +
       /* ceilings-only Painter for a Day banner removed 2026-11-23 (Ryan): ceiling-only rooms are self-quoted */
-      '<div class="rpg-room">' +
-      '<div class="rpg-q" style="font-size:1.05rem;margin-top:0">Overall condition of the walls?</div><div class="rpg-opts" id="rpg-cond"></div>' +
-      rushBlockHtml() +
+      '<div class="rpg-room rpg-timing">' + rushBlockHtml() + "</div>" +
       '<div class="rpg-note">Requests outside standard scope (wallpaper removal, heavy repairs) don&rsquo;t change your base price today &mdash; any additional cost is confirmed by Ryan Painting after review and added to the base total.</div>' +
-      "</div>" +
       '<div class="rpg-err" id="rpg-rooms-err"></div>' +
       '<button class="rpg-cta" id="rpg-rooms-go">Continue</button><br><button type="button" class="rpg-back">&larr; back</button>');
     wireRoomPhotos();
@@ -1865,13 +1873,6 @@
         "Painting " + (sqRoomCap() + 1) + " or more rooms deserves an in-person look &mdash; we&rsquo;ll walk the project with you so your quote is accurate. Pick a time:", renderRooms);
     };
 
-    var condWrap = document.getElementById("rpg-cond");
-    [["Standard", "Good shape &mdash; normal prep"], ["Superior", "Some cracks / repairs needed"]].forEach(function (c) {
-      var b = document.createElement("button");
-      b.className = "rpg-opt" + (state.condition === c[0] ? " rpg-sel2" : ""); b.type = "button"; b.innerHTML = c[1];
-      b.onclick = function () { state.condition = c[0]; renderRooms(); };
-      condWrap.appendChild(b);
-    });
 
     backHandler = operator.on ? operatorSummary : q2;
     var addRoomBtn = document.getElementById("rpg-add");
@@ -2039,10 +2040,10 @@
         }
         return { room_type: engineRoomType(r.type_label), room_size: r.room_size,
           walls_included: r.walls_included !== false,
-          ceiling_included: !!r.ceiling_included, closet: r.closet,
+          ceiling_included: !!r.ceiling_included, closet: r.closet, prep_level: roomCond(r),
           closet_shelves: !!r.closet_shelves, items: items };
       }),
-      project: { surface_grade: "B", prep_level: state.condition, color_samples: true, transportation: true }
+      project: { surface_grade: "B", prep_level: projectCondition(), color_samples: true, transportation: true }
     };
     return RPPricing.quoteInterior(scope, PRICING_OPTS);
   }
@@ -2486,6 +2487,7 @@
       if (stairBits.length) parts.push(stairBits.join(" and ") + " over " + r.steps + " steps");
     }
     if (!wallsOn) parts.push("walls not included");
+    if (roomCond(r) === "Superior") parts.push("some repairs needed (included)");
     var dim = dimsFor(r.type_label, r.room_size);
     return "<strong>" + esc(roomTitle(r)) + (dim ? " (" + dim + " ft)" : "") + "</strong> &mdash; " + parts.join(", ") +
       (r.notes ? '<br><em style="color:#666">Your note: ' + esc(r.notes) + " (reviewed by Ryan Painting; any additional cost confirmed before work)</em>" : "");
@@ -2495,7 +2497,6 @@
     var lines = [];
     if (state.size === "rooms") {
       lines = state.rooms.map(roomRecapLine);
-      lines.push('<span style="color:#555">Condition: ' + (state.condition === "Superior" ? "some repairs needed (included)" : "good shape, normal prep") + "</span>");
     } else if (state.ext && state.ext.kind === "deck") {
       var e = state.ext;
       lines.push("<strong>" + e.dsize + " deck</strong> &mdash; " + (e.stain === "transparent" ? "transparent stain finish" : "solid stain finish") +
@@ -2766,8 +2767,8 @@
               .map(function (t) { return t[2]; }).join("+") || "walls only") + "]" : "";
         return roomTitle(r) + st + (r.walls_included === false ? " NO WALLS" : "") + (r.ceiling_included ? "+ceiling" : "") + " (" + r.doors + "d/" + r.windows + "w" +
           (t ? "/" + t : "") + (r.closet !== "not_included" ? "/" + r.closet + " closet" + (r.closet_shelves ? "+shelves" : "") : "") + ")" +
-          (r.notes ? " NOTES: " + r.notes : "");
-      }).join("; ") + "; condition: " + state.condition;
+          (roomCond(r) === "Superior" ? " REPAIRS" : "") + (r.notes ? " NOTES: " + r.notes : "");
+      }).join("; ") + "; condition: " + projectCondition();
     } else {
       s = JSON.stringify(state.ext);
     }
@@ -2820,10 +2821,10 @@
       materials_total: state.quote ? Math.round(state.quote.materials_total || 0) : 0,
       duration_days: state.quote && state.quote.production ? state.quote.production.duration_days || 0 : 0,
       recap_html: state.quote ? scopeRecapHtml() : "",
-      condition: state.condition,
+      condition: state.size === "rooms" ? projectCondition() : state.condition,
       rooms_detail: state.size === "rooms" ? state.rooms.map(function (r) {
         return { type: r.type_label, size: r.room_size, dims: dimsFor(r.type_label, r.room_size),
-          walls: r.walls_included !== false, ceiling: !!r.ceiling_included, closet: r.closet, closet_shelves: !!r.closet_shelves,
+          walls: r.walls_included !== false, ceiling: !!r.ceiling_included, closet: r.closet, closet_shelves: !!r.closet_shelves, condition: roomCond(r),
           doors: r.doors, windows: r.windows, baseframes: !!r.baseframes, crown: !!r.crown,
           wainscot: !!r.wainscot, chairrail: !!r.chairrail, notes: r.notes || "",
           steps: r.steps || 0, stair_risers: !!r.stair_risers,
@@ -2943,7 +2944,7 @@
     state.rooms = (parsed.rooms || []).map(function (r) {
       return { type_label: r.type || "Room", room_size: r.size || "Medium", walls_included: r.walls !== false, ceiling_included: !!r.ceiling,
         doors: Number(r.doors) || 0, windows: Number(r.windows) || 0, closet: r.closet || "not_included",
-        closet_shelves: !!r.closet_shelves,
+        closet_shelves: !!r.closet_shelves, condition: r.condition || parsed.condition || "Standard",
         notes: r.notes || "", images: [], photos_on_file: true,
         baseframes: !!r.baseframes, crown: !!r.crown, wainscot: !!r.wainscot, chairrail: !!r.chairrail,
         steps: Number(r.steps) || 0, stair_risers: !!r.stair_risers,
