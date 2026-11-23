@@ -1,9 +1,9 @@
 /* Ryan Painting quote form. BUILT FILE, do not edit here.
    Source: estimate-schedule-gate.html in the vault (60-technology/estimate-automation).
-   Build: v3.8 Generator size curve, color samples, Generator crew hours 2026-11-23 | source sha bf78b38082c6 | 2026-11-23 */
+   Build: v3.11 click-through fixes 2026-11-23 | source sha 3e114216ba58 | 2026-11-23 */
 (function () {
   if (window.__rpGateBuild) { return; }
-  window.__rpGateBuild = "v3.8 Generator size curve, color samples, Generator crew hours 2026-11-23 bf78b38082c6";
+  window.__rpGateBuild = "v3.11 click-through fixes 2026-11-23 3e114216ba58";
   var d = document, links = [{"rel": "preconnect", "href": "https://fonts.gstatic.com", "crossOrigin": "anonymous"}, {"href": "https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap", "rel": "stylesheet"}];
   links.forEach(function (a) {
     var l = d.createElement("link");
@@ -80,7 +80,7 @@
     gross_margin: 0.40,
     eos_enabled: true,         // economy-of-scale: folded setup/mobilization (2026-07-31)
     mobilization_hours: 2,     // real crew setup is 1-3 hrs (Ryan, 2026-07-31)
-    quote_premium: 0.05,       // instant-quote premium over Catalog pricing
+    quote_premium: 0.04,       // instant-quote premium over Catalog pricing (keep equal to PRICING settings/quote_premium)
     setup_hours_per_area: 0.5,
     shelves_uplift: 0.35,      // closet shelving adds 35% of that closet's price (Ryan, 2026-08-23)
     paint_coats: 2,            // coats of walls/trim/ceiling paint, same as the Generator since 2026-11-14 (primer stays 1)
@@ -91,9 +91,22 @@
   // Size curve: [job total $, multiplier], Generator Config!B17:C23.
   var SIZE_CURVE = [[0, 1], [2000, 1], [6000, 1.07], [12000, 0.8], [40000, 0.65], [65000, 0.67], [999999, 0.67]];
   // Trade-partner cost per room (walls) and per item, Generator Catalog K/N/Q37:55 and J7:20.
-  // Empty until the PRICING feed fills them; hours fall back to production rates.
-  var WALL_SUB = {};
-  var ITEM_SUB = {};
+  // Baked copy of the Generator values on 2026-11-23 (fallback); the PRICING feed overwrites them on load.
+  var WALL_SUB = {'Kitchen':{'Small':340.79,'Medium':541.48,'Large':605.85},'Living Room':{'Small':567.99,'Medium':681.59,'Large':757.32},'Bedroom':{'Small':378.66,'Medium':408.95,'Large':521.84},'Master Bedroom':{'Small':541.48,'Medium':643.72,'Large':757.32},'Dining Room':{'Small':499.83,'Medium':583.13,'Large':666.44},'Bathroom':{'Small':263.8,'Medium':383.71,'Large':455.65},'Full Bathroom':{'Small':359.73,'Medium':407.69,'Large':479.63},'Foyer/Hallway':{'Small':287.78,'Medium':471.22,'Large':928.98},'Closet':{'Small':75.73,'Medium':87.09,'Large':111.07},'Den':{'Small':454.39,'Medium':499.83,'Large':567.99},'Office':{'Small':528.23,'Medium':590.71,'Large':666.44},'Media Room':{'Small':413.68,'Medium':618.48,'Large':708.09},'Eating Area':{'Small':429.15,'Medium':469.54,'Large':565.46},'Pantry':{'Small':100.98,'Medium':163.45,'Large':225.3},'Laundry Room':{'Small':210.16,'Medium':326.91,'Large':498.88},'Utility/Mud Room':{'Small':277.68,'Medium':326.91,'Large':498.88},'Recreation Room':{'Small':643.72,'Medium':782.56,'Large':848.19},'Family Room':{'Small':600.8,'Medium':665.18,'Large':782.56},'Staircase Hallway':{'Small':476.74,'Medium':848.19,'Large':1272.29}};
+  var ITEM_SUB = {'Window - Standard Frame':36.22,'Door - Frame Standard':18.11,'Trim - Baseboard/Crown':21.73,'Door - w/ Panels':27.17,'Repair - Drywall Repair':18.11,'Door - Flat':18.11,'Door - w/ Glass':36.22,'Door - Frame Double':27.17,'Window - Small Frame':27.17,'Trim - Wainscotting':43.46,'Trim - Spindles/Balusters':110.98,'Trim - Radiator':28.98,'Trim - Handrail':35.86};
+  // Ceiling paint sqft per room, Generator Catalog G37:I55 (baked 2026-11-23; feed section ceiling_sqft overwrites).
+  var CEIL_SQFT = {'Kitchen':{'Small':50,'Medium':160,'Large':240},'Living Room':{'Small':216,'Medium':320,'Large':616},'Bedroom':{'Small':100,'Medium':144,'Large':224},'Master Bedroom':{'Small':163,'Medium':270,'Large':396},'Dining Room':{'Small':120,'Medium':192,'Large':252},'Bathroom':{'Small':30,'Medium':60,'Large':84},'Full Bathroom':{'Small':45,'Medium':70,'Large':96},'Foyer/Hallway':{'Small':36,'Medium':80,'Large':120},'Closet':{'Small':15,'Medium':15,'Large':20},'Den':{'Small':100,'Medium':144,'Large':224},'Office':{'Small':80,'Medium':168,'Large':252},'Media Room':{'Small':140,'Medium':192,'Large':255},'Eating Area':{'Small':100,'Medium':144,'Large':206},'Pantry':{'Small':20,'Medium':25,'Large':50},'Laundry Room':{'Small':18,'Medium':48,'Large':80},'Utility/Mud Room':{'Small':60,'Medium':48,'Large':40},'Recreation Room':{'Small':216,'Medium':384,'Large':540},'Family Room':{'Small':192,'Medium':560,'Large':384},'Staircase Hallway':{'Small':70,'Medium':110,'Large':170}};
+  function ceilSqftFor(type, size, wallSqft, ratio) {
+    var t = CEIL_SQFT[type];
+    if (t && size === 'XL' && t.Large && t.Medium) return t.Large + (t.Large - t.Medium);
+    if (t && t[size] > 0) return t[size];
+    return Math.round(wallSqft * ratio);
+  }
+  /* trade-partner share of the room price, for a room type the Catalog has no row for (generic 'Room') */
+  function subRatio() {
+    var b = WALL_SUB.Bedroom, r = CATALOG_WALL_RATE.Bedroom, q = WALL_SQFT.Bedroom;
+    return (b && r && q && b.Medium > 0 && r.Medium > 0 && q.Medium > 0) ? b.Medium / (r.Medium * q.Medium) : 0.48;
+  }
   function sizeFactor(total) {
     var c = SIZE_CURVE; if (!c || c.length < 2) return 1;
     var i = 0;
@@ -403,7 +416,7 @@
     'Door - Frame Standard': 8, 'Door - Frame Double': 12,
     'Door - Flat': 21, 'Door - w/ Panels': 21, 'Door - w/ Glass': 21,
     'Trim - Baseboard/Crown': 20, 'Trim - Wainscotting': 60,
-    'Trim - Spindles/Balusters': 430, 'Trim - Radiator': 22,
+    'Trim - Spindles/Balusters': 43, 'Trim - Radiator': 22,   /* spindles 43 sqft per 10ft like the Generator (its 430 was a typo, fixed there 2026-11-12) */
     'Trim - Handrail': 10, 'Repair - Drywall Repair': 50
   };
 
@@ -581,7 +594,7 @@
       var room = rooms[r];
       var wallSqft = (WALL_SQFT[room.room_type] && WALL_SQFT[room.room_type][room.room_size]) || 300;
       var ceilingRatio = CEILING_RATIO[room.room_type] || 0.45;
-      var ceilingSqft = room.ceiling_included ? Math.round(wallSqft * ceilingRatio) : 0;
+      var ceilingSqft = room.ceiling_included ? ceilSqftFor(room.room_type, room.room_size, wallSqft, ceilingRatio) : 0;   /* Generator ceiling areas (2026-11-23) */
       /* Walls toggle (2026-11-03): a ceiling-only room keeps its wall-based sizing so the
          ceiling and primer lines price exactly as before (a fraction of the wall price,
          the same model as the Generator's per-room Walls cell); only the Walls line
@@ -590,6 +603,7 @@
       var items = [];
       /* Generator hours (2026-11-23): trade-partner cost of each line / painter hourly rate */
       var gWall = wallSub(room.room_type, room.room_size);
+      if (gWall === null) gWall = wallSqft * ((CATALOG_WALL_RATE[room.room_type] && CATALOG_WALL_RATE[room.room_type][room.room_size]) || 1.65) * subRatio();   /* generic room: same share as the Catalog rooms */
       var gOk = gWall !== null, gSub = 0;
       if (gOk && wallsIncluded) gSub += gWall;
 
@@ -643,7 +657,7 @@
           sales_price: closetPrice.sales_price,
           allocated_time: closetHours
         });
-        totalWallSqft += closetSqft;
+        totalWallSqft += ((WALL_SQFT['Closet'] && WALL_SQFT['Closet'][closetSizeKey]) || closetSqft);   /* paint: Generator closet wall area (80/96/128) */
         var gCloset = wallSub('Closet', closetSizeKey);
         if (gCloset === null) gOk = false; else gSub += gCloset * (1 + (room.closet_shelves ? Math.max(0, Number(settings.shelves_uplift) || 0) : 0));
         // Shelving rides the closet price so it inherits size/condition/premium
@@ -1052,7 +1066,13 @@
         }
       });
     }
+    var qpIn = cfg.settings && cfg.settings.quote_premium;   /* checked before the merge: 0 is allowed, more than 50% is a typo */
     mergeKnown(DEFAULT_SETTINGS, cfg.settings);
+    if (qpIn !== undefined && qpIn !== null && qpIn !== '') {
+      var qp = Number(qpIn);
+      DEFAULT_SETTINGS.quote_premium = (isFinite(qp) && qp >= 0 && qp <= 0.5) ? qp : 0.04;
+    }
+    if (!(DEFAULT_SETTINGS.paint_coats >= 1 && DEFAULT_SETTINGS.paint_coats <= 3)) DEFAULT_SETTINGS.paint_coats = 2;
     mergeKnown(THRESHOLDS, cfg.thresholds);
     mergeKnown(PRODUCTION, cfg.production_rates);            /* interior_walls / interior_ceiling / interior_primer */
     mergeKnown(PRODUCTION.interior_items, cfg.interior_production);
@@ -1084,6 +1104,10 @@
       var parts = k.split("|"), v = num(cfg.wall_sub[k]);
       if (v === null) return;
       (WALL_SUB[parts[0]] = WALL_SUB[parts[0]] || {})[parts[1]] = v;
+    });
+    if (cfg.ceiling_sqft) Object.keys(cfg.ceiling_sqft).forEach(function (k) {
+      var parts = k.split("|"), v = num(cfg.ceiling_sqft[k]);
+      if (v !== null) (CEIL_SQFT[parts[0]] = CEIL_SQFT[parts[0]] || {})[parts[1]] = v;
     });
     if (cfg.item_sub) Object.keys(cfg.item_sub).forEach(function (k) {
       var v = num(cfg.item_sub[k]); if (v !== null) ITEM_SUB[k] = v;
@@ -1753,7 +1777,12 @@
       el.onchange = function () { state.rooms[+el.getAttribute("data-i")][el.getAttribute("data-f")] = el.checked; };
     });
     root.querySelectorAll(".rpg-num").forEach(function (el) {
-      el.onchange = function () { state.rooms[+el.getAttribute("data-i")][el.getAttribute("data-f")] = Math.max(0, +el.value || 0); };
+      el.onchange = function () {   /* 2026-11-23: keep within the box's own limits (50 doors or -3 used to be priced) */
+        var mx = Number(el.getAttribute("max")) || 99;
+        var v = Math.min(mx, Math.max(0, Math.round(+el.value || 0)));
+        el.value = v;
+        state.rooms[+el.getAttribute("data-i")][el.getAttribute("data-f")] = v;
+      };
     });
     root.querySelectorAll("textarea[data-f]").forEach(function (el) {
       el.onchange = function () { state.rooms[+el.getAttribute("data-i")].notes = el.value; };
@@ -1791,7 +1820,10 @@
     rd.onload = function () {
       var original = String(rd.result);
       var img = new Image();
-      img.onerror = function () { cb({ name: f.name, data: original }); };
+      /* 2026-11-23: a file the browser can't open as a picture (a .txt, a broken JPEG) is skipped,
+         not counted as a room photo. HEIC is kept as sent: desktop browsers can't open it but it is a real photo. */
+      var isHeic = /hei[cf]/i.test(f.type || "") || /\.hei[cf]$/i.test(f.name || "");
+      img.onerror = function () { cb(isHeic ? { name: f.name, data: original } : null); };
       img.onload = function () {
         try {
           var w = img.naturalWidth, h = img.naturalHeight;
@@ -1837,6 +1869,12 @@
           r.images = (r.images || []).concat(out).slice(0, ROOM_PHOTO_MAX);
           renderRooms();
           if (over) roomPhotoNote(i);
+          var bad = files.length - out.length;
+          if (bad > 0) {
+            var clr = root.querySelector('[data-clearimg="' + i + '"]'), box = root.querySelectorAll(".rpg-room-photos")[i];
+            var msg = '<span class="rpg-err" role="alert" style="display:block">' + bad + (bad === 1 ? " file wasn&rsquo;t" : " files weren&rsquo;t") + ' a photo we could open, so ' + (bad === 1 ? "it was" : "they were") + ' skipped. Please add a JPG or PNG photo of the room.</span>';
+            if (clr) clr.parentNode.insertAdjacentHTML("afterend", msg); else if (box) box.insertAdjacentHTML("afterend", msg);
+          }
         }
       };
     });
@@ -2116,6 +2154,7 @@
       sugg.innerHTML = ""; sugg.style.display = "none";
       if (!zip) {
         /* Google sometimes returns just a street or a town. That is an incomplete address, not one outside the service area. */
+        if (state.lastTypedAddr && /\d/.test(state.lastTypedAddr)) inp.value = state.lastTypedAddr;   /* give back what they typed, so adding the ZIP is enough */
         state.address = {};
         track("address_incomplete", {});
         picked.innerHTML = '<span style="display:block;background:#fff;color:#b3261e;border:1.5px solid #b3261e;border-radius:8px;padding:8px 10px;font-weight:600">That address looks incomplete. Please pick a suggestion that includes the house number, or type the full address with the ZIP code.</span>';
@@ -2138,6 +2177,7 @@
         var ac = new google.maps.places.Autocomplete(inp, {
           types: ["address"], componentRestrictions: { country: "us" }, fields: ["address_components", "formatted_address"]
         });
+        inp.addEventListener("input", function () { state.lastTypedAddr = inp.value; });
         ac.addListener("place_changed", function () {
           var pl = ac.getPlace(); if (!pl || !pl.address_components) return;
           var get = function (t, short) {
@@ -2675,10 +2715,43 @@
      the quote silently while the client still saw their price. Now: keep the photos
      under a safe total, retry once without photos, and email both owners either way. */
   var INTAKE_SAFE_CHARS = 12 * 1024 * 1024;   // n8n Cloud refuses bodies over ~16MB
+  /* Re-shrink stored photos (2026-11-23): 18 photos at 1600px can pass the budget, so
+     before any photo is dropped they are re-encoded smaller (1280px, then 1024px). */
+  function recompressPhotos(list, px, q, done) {
+    var out = [], i = 0;
+    (function next() {
+      if (i >= list.length) return done(out);
+      var it = list[i++];
+      if (!it || !it.data || String(it.data).indexOf("data:image") !== 0) { out.push(it); return next(); }
+      var img = new Image();
+      img.onerror = function () { out.push(it); next(); };
+      img.onload = function () {
+        try {
+          var k = Math.min(1, px / Math.max(img.naturalWidth, img.naturalHeight));
+          var cv = document.createElement("canvas");
+          cv.width = Math.max(1, Math.round(img.naturalWidth * k)); cv.height = Math.max(1, Math.round(img.naturalHeight * k));
+          var g = cv.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, cv.width, cv.height);
+          g.drawImage(img, 0, 0, cv.width, cv.height);
+          var small = cv.toDataURL("image/jpeg", q);
+          out.push(small.indexOf("data:image/jpeg") === 0 && small.length < it.data.length ? { name: it.name, data: small } : it);
+        } catch (e) { out.push(it); }
+        next();
+      };
+      img.src = it.data;
+    })();
+  }
   function sendIntake(proj) {
+    var steps = [[1280, 0.7], [1024, 0.62]];
+    (function fit() {
+      if (JSON.stringify(proj).length <= INTAKE_SAFE_CHARS || !(proj.images || []).length || !steps.length) return sendIntakeNow(proj);
+      var st = steps.shift();
+      recompressPhotos(proj.images, st[0], st[1], function (imgs) { proj.images = imgs; fit(); });
+    })();
+  }
+  function sendIntakeNow(proj) {
     var photoCount = (proj.images || []).length;
     var body = JSON.stringify(proj);
-    while (body.length > INTAKE_SAFE_CHARS && proj.images.length) {   // drop photos from the end until it fits
+    while (body.length > INTAKE_SAFE_CHARS && proj.images.length) {   // last resort: drop photos from the end until it fits
       proj.images = proj.images.slice(0, -1);
       body = JSON.stringify(proj);
     }
@@ -2787,6 +2860,9 @@
         return;
       }
       operator.hydrated = hydrateRooms(d.scope_json);
+      /* keep the client's promo code on a revision (2026-11-23: revisions used to drop it silently) */
+      operator.promoCode = String(d.promo_code || "").trim().toUpperCase();
+      state.promo = operator.promoCode ? promoLookup(operator.promoCode) : null;
       operatorSummary();
     }, function (why) {
       h('<div class="rpg-panel"><div class="rpg-q" style="margin-top:0">Can&rsquo;t open that quote</div>' +
@@ -2830,6 +2906,12 @@
       return;
     }
     if (state.rush) quote.grand_total += Math.round(quote.grand_total * ((C.RUSH_MULTIPLIER || 1.3) - 1));
+    if (state.promo) {                       /* same order as the client path: promo last */
+      quote.promo_code = state.promo.code;
+      quote.promo_pct = state.promo.pct;
+      quote.promo_discount = Math.round(quote.grand_total * state.promo.pct / 100);
+      quote.grand_total -= quote.promo_discount;
+    }
     state.quote = quote;
     var engineTotal = Math.round(quote.grand_total);
     var delta = engineTotal - operator.priorTotal;
@@ -2838,6 +2920,8 @@
       '<div class="rpg-q" style="margin-top:0">Review the revision</div>' +
       '<p style="font-size:1rem">Was <s>' + money(operator.priorTotal) + "</s> &nbsp;&rarr;&nbsp; <strong>" + money(engineTotal) + "</strong>" +
       '<span style="color:' + (delta >= 0 ? "#1d5f2f" : "#b3261e") + '"> (' + (delta >= 0 ? "+" : "-") + money(Math.abs(delta)) + ")</span></p>" +
+      (state.promo ? '<div class="rpg-note">Promo code ' + esc(state.promo.code) + ' (' + state.promo.pct + '% off) is applied, as on the original quote.</div>'
+        : operator.promoCode ? '<div class="rpg-err" style="display:block">The original quote used promo code ' + esc(operator.promoCode) + ', which is no longer in the price sheet, so no discount is applied. Type a price below if you want to honor it.</div>' : '') +
       '<details class="rpg-bd" open><summary>New scope</summary>' + scopeRecapHtml() + "</details>" +
       '<label class="rpg-lbl" style="margin-top:12px">Send a different price instead <span style="font-weight:400">(optional &mdash; leave blank to send ' + money(engineTotal) + ")</span></label>" +
       '<input class="rpg-field rpg-num" id="rpg-op-price" type="number" min="0" step="1" placeholder="' + engineTotal + '">' +
@@ -2985,8 +3069,9 @@
           if (j && j.gate) {
             var g = j.gate;
             if (+g.MIN_PROJECT > 0) { C.MIN_PROJECT = +g.MIN_PROJECT; MIN_PROJECT = +g.MIN_PROJECT; }
-            if (+g.DEPOSIT_PERCENT > 0) { C.DEPOSIT_PERCENT = +g.DEPOSIT_PERCENT; DEPOSIT_PCT = +g.DEPOSIT_PERCENT; }
-            if (+g.RUSH_MULTIPLIER > 0) C.RUSH_MULTIPLIER = +g.RUSH_MULTIPLIER;
+            /* sanity ranges (2026-11-23): a typo in the sheet (30 for 30%) must not reach a client */
+            if (+g.DEPOSIT_PERCENT > 0 && +g.DEPOSIT_PERCENT < 1) { C.DEPOSIT_PERCENT = +g.DEPOSIT_PERCENT; DEPOSIT_PCT = +g.DEPOSIT_PERCENT; }
+            if (+g.RUSH_MULTIPLIER >= 1 && +g.RUSH_MULTIPLIER <= 3) C.RUSH_MULTIPLIER = +g.RUSH_MULTIPLIER;
             if (+g.PAINTER_DAY_PRICE > 0) C.PAINTER_DAY_PRICE = +g.PAINTER_DAY_PRICE;
             if (+g.TRANSPARENT_DECK_MULTIPLIER > 0) C.TRANSPARENT_DECK_MULTIPLIER = +g.TRANSPARENT_DECK_MULTIPLIER;
             if (+g.DECK_SOLID_MULTIPLIER > 0) C.DECK_SOLID_MULTIPLIER = +g.DECK_SOLID_MULTIPLIER;
