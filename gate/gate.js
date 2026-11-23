@@ -1,9 +1,9 @@
 /* Ryan Painting quote form. BUILT FILE, do not edit here.
    Source: estimate-schedule-gate.html in the vault (60-technology/estimate-automation).
-   Build: v3.15 price page steps + loading bar, stairs note 2026-11-23 | source sha 3ab3e55c49de | 2026-11-23 */
+   Build: v3.17 LIVE: Generator-style estimate data + staircase 0/0 defaults 2026-11-23 | source sha 151556bdb36b | 2026-11-23 */
 (function () {
   if (window.__rpGateBuild) { return; }
-  window.__rpGateBuild = "v3.15 price page steps + loading bar, stairs note 2026-11-23 3ab3e55c49de";
+  window.__rpGateBuild = "v3.17 LIVE: Generator-style estimate data + staircase 0/0 defaults 2026-11-23 151556bdb36b";
   var d = document, links = [{"rel": "preconnect", "href": "https://fonts.gstatic.com", "crossOrigin": "anonymous"}, {"href": "https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap", "rel": "stylesheet"}];
   links.forEach(function (a) {
     var l = d.createElement("link");
@@ -1898,6 +1898,11 @@
            where the engine would fall through to its default sqft. Re-render so the size
            buttons relabel to levels (or back) the moment the type changes. */
         if (r.type_label !== STAIR_TYPE && r.room_size === "XL") r.room_size = "Large";
+        /* v3.17 (Ryan 2026-11-23): a stairwell usually has no door or window of its own, so it starts
+           at 0 and 0 (only if the client has not changed the 1 door / 2 windows defaults). Switching
+           back to another room type restores the defaults if they were zeroed here and left alone. */
+        if (r.type_label === STAIR_TYPE && r.doors === 1 && r.windows === 2) { r.doors = 0; r.windows = 0; r.stair_zeroed = true; }
+        else if (r.type_label !== STAIR_TYPE && r.stair_zeroed && r.doors === 0 && r.windows === 0) { r.doors = 1; r.windows = 2; r.stair_zeroed = false; }
         renderRooms();
       };
     });
@@ -2493,6 +2498,83 @@
       (r.notes ? '<br><em style="color:#666">Your note: ' + esc(r.notes) + " (reviewed by Ryan Painting; any additional cost confirmed before work)</em>" : "");
   }
 
+  /* ============ ESTIMATE DATA FOR THE GENERATOR-STYLE PDF (v3.16, Ryan 2026-11-23) ============
+     Sent with the quote so IQ1 can lay the estimate out like a Generator estimate: one block
+     per room with its price, item lines and quantities, the Generator's recap labels, the
+     Catalog item names (IQ1 reads their wording live from the Generator Catalog), and the
+     totals. Set-up, color samples and the card fee are spread across the room prices in
+     proportion, as the Generator does; materials stay separate; rush and promo are their own
+     lines. Room prices are scaled so everything adds up to the price the client saw. */
+  function estimateData() {
+    var q = state.quote; if (!q || !q.sections || state.size !== "rooms") return null;
+    var r2 = function (x) { return Math.round(x * 100) / 100; };
+    var S = q.sections.reduce(function (a, s) { return a + s.sales_price; }, 0) || 1;
+    var materials = r2(q.materials_total || 0), rush = r2(q.rush_premium || 0), promo = r2(q.promo_discount || 0);
+    var total = r2(q.grand_total);
+    var k = (total - materials - rush + promo) / S;   /* spreads surcharges (and any owner price) over the rooms */
+    var seen = {};
+    var rooms = state.rooms.map(function (r, i) {
+      var sec = q.sections[i] || { items: [], sales_price: 0 };
+      var lines = [], bcUnits = [];
+      var isStair = r.type_label === STAIR_TYPE;
+      if (r.baseframes) bcUnits.push(["base", 1]);
+      if (r.crown) bcUnits.push(["crown", 1]);
+      if (r.chairrail) bcUnits.push(["chair", 1]);
+      if (isStair && r.stair_risers && r.steps > 0) bcUnits.push(["risers", Math.round(r.steps * STAIR_FT_PER_STEP.risers / 10 * 100) / 100]);
+      var bcTot = bcUnits.reduce(function (a, u) { return a + u[1]; }, 0) || 1;
+      (sec.items || []).forEach(function (it) {
+        var price = it.sales_price * k, L = it.label, n = Number(it.quantity) || 1;
+        if (/^Walls/.test(L)) lines.push({ cat: "Walls", label: "Walls: preparation and two finish coats", price: price });
+        else if (/^Ceiling/.test(L)) lines.push({ cat: "Ceiling", label: "Ceiling: two finish coats", price: price });
+        else if (/^Closet shelving/.test(L)) lines.push({ cat: "Closet Shelving", label: "Closet shelving", price: price });
+        else if (/^Closet/.test(L)) lines.push({ cat: "Closets", label: "Closet interior", price: price });
+        else if (/^Primer/.test(L)) lines.push({ cat: "Primer", label: "Full prime, all surfaces", price: price });
+        else if (L === "Door - Frame Standard") lines.push({ cat: "Door - Frame (Standard)", label: n === 1 ? "Door frame" : "Door frames", price: price });
+        else if (L === "Window - Standard Frame") lines.push({ cat: "Window - Standard Frame", label: n === 1 ? "Window frame, standard" : "Window frames, standard", price: price });
+        else if (L === "Trim - Wainscotting") lines.push({ cat: "Trim - Wainscotting (10ft)", label: "Wainscoting", price: price });
+        else if (L === "Trim - Handrail") lines.push({ cat: "Trim - Handrail (10ft)", label: "Handrail", price: price });
+        else if (L === "Trim - Spindles/Balusters") lines.push({ cat: "Trim - Spindles / Balusters (10ft)", label: "Spindles and balusters", price: price });
+        else if (L === "Trim - Baseboard/Crown") bcUnits.forEach(function (u) {
+          var part = price * u[1] / bcTot;
+          if (u[0] === "base") lines.push({ cat: "Trim - Baseboards (10ft)", label: "Baseboards", price: part });
+          if (u[0] === "crown") lines.push({ cat: "Crown Molding", label: "Crown molding", price: part });
+          if (u[0] === "chair") lines.push({ cat: "Chair Rail", label: "Chair rail", price: part });
+          if (u[0] === "risers") lines.push({ cat: "Stair Risers", label: "Stair risers (" + r.steps + " stairs)", price: part });
+        });
+        else lines.push({ cat: L, label: L, price: price });
+      });
+      lines.forEach(function (l) { l.price = r2(l.price); });
+      var name = r.type_label;
+      seen[name] = (seen[name] || 0) + 1;
+      if (seen[name] > 1 || state.rooms.filter(function (x) { return x.type_label === r.type_label; }).length > 1) name = r.type_label + " " + seen[name];
+      var dim = dimsFor(r.type_label, r.room_size);
+      return {
+        name: name, size: isStair ? sizeLabel(r) : r.room_size + (dim ? " (" + dim + " ft)" : ""),
+        repairs: roomCond(r) === "Superior", walls: r.walls_included !== false, ceiling: !!r.ceiling_included,
+        closet: r.closet !== "not_included", doors: Number(r.doors) || 0, windows: Number(r.windows) || 0,
+        trim: !!(r.baseframes || r.crown || r.chairrail || r.wainscot || (isStair && (r.stair_risers || r.stair_handrail || r.stair_spindles))),
+        stairs: isStair ? (Number(r.steps) || 0) : 0, notes: r.notes || "",
+        lines: lines, total: r2(lines.reduce(function (a, l) { return a + l.price; }, 0))
+      };
+    });
+    /* cent rounding: the last cent goes on the biggest line so the sum is exact */
+    var sumRooms = rooms.reduce(function (a, r) { return a + r.total; }, 0);
+    var diff = r2(total - materials - rush + promo - sumRooms);
+    if (diff && rooms.length) {
+      var big = rooms.reduce(function (a, r) { return r.total > a.total ? r : a; }, rooms[0]);
+      if (big.lines.length) { big.lines[0].price = r2(big.lines[0].price + diff); big.total = r2(big.total + diff); }
+    }
+    var repairsRooms = rooms.filter(function (r) { return r.repairs; }).length;
+    return {
+      v: 1, grade: repairsRooms > 2 ? "C" : "B", prep: "Standard",
+      rooms: rooms, rooms_total: r2(rooms.reduce(function (a, r) { return a + r.total; }, 0)),
+      materials: materials, rush: rush, promo: promo, promo_code: q.promo_code || "", promo_pct: q.promo_pct || 0,
+      total: total,
+      /* Generator: Rental Ready = 7.5% less labor, Restoration Grade = 55% more labor (Catalog AK16 / AK18) */
+      rental_ready: r2(S * 0.075), restoration: r2(S * 0.55)
+    };
+  }
+
   function scopeRecapHtml() {
     var lines = [];
     if (state.size === "rooms") {
@@ -2861,6 +2943,7 @@
           stair_handrail: !!r.stair_handrail, stair_spindles: !!r.stair_spindles };
       }) : [],
       images: imgs,
+      estimate: estimateData(),
       /* operator edits: the key is checked server-side, and notify_client:false lets Ryan
          correct the record (estimate PDF, scope brief, deal amount) without emailing */
       operator_key: operator.on ? operator.key : "",
