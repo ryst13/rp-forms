@@ -1,9 +1,9 @@
 /* Ryan Painting quote form. BUILT FILE, do not edit here.
    Source: estimate-schedule-gate.html in the vault (60-technology/estimate-automation).
-   Build: v3.9 test sweep fixes 2026-11-23 | source sha 49f08b5e1020 | 2026-11-23 */
+   Build: v3.10 photo re-shrink before drop 2026-11-23 | source sha e3716b699379 | 2026-11-23 */
 (function () {
   if (window.__rpGateBuild) { return; }
-  window.__rpGateBuild = "v3.9 test sweep fixes 2026-11-23 49f08b5e1020";
+  window.__rpGateBuild = "v3.10 photo re-shrink before drop 2026-11-23 e3716b699379";
   var d = document, links = [{"rel": "preconnect", "href": "https://fonts.gstatic.com", "crossOrigin": "anonymous"}, {"href": "https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap", "rel": "stylesheet"}];
   links.forEach(function (a) {
     var l = d.createElement("link");
@@ -2699,10 +2699,43 @@
      the quote silently while the client still saw their price. Now: keep the photos
      under a safe total, retry once without photos, and email both owners either way. */
   var INTAKE_SAFE_CHARS = 12 * 1024 * 1024;   // n8n Cloud refuses bodies over ~16MB
+  /* Re-shrink stored photos (2026-11-23): 18 photos at 1600px can pass the budget, so
+     before any photo is dropped they are re-encoded smaller (1280px, then 1024px). */
+  function recompressPhotos(list, px, q, done) {
+    var out = [], i = 0;
+    (function next() {
+      if (i >= list.length) return done(out);
+      var it = list[i++];
+      if (!it || !it.data || String(it.data).indexOf("data:image") !== 0) { out.push(it); return next(); }
+      var img = new Image();
+      img.onerror = function () { out.push(it); next(); };
+      img.onload = function () {
+        try {
+          var k = Math.min(1, px / Math.max(img.naturalWidth, img.naturalHeight));
+          var cv = document.createElement("canvas");
+          cv.width = Math.max(1, Math.round(img.naturalWidth * k)); cv.height = Math.max(1, Math.round(img.naturalHeight * k));
+          var g = cv.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, cv.width, cv.height);
+          g.drawImage(img, 0, 0, cv.width, cv.height);
+          var small = cv.toDataURL("image/jpeg", q);
+          out.push(small.indexOf("data:image/jpeg") === 0 && small.length < it.data.length ? { name: it.name, data: small } : it);
+        } catch (e) { out.push(it); }
+        next();
+      };
+      img.src = it.data;
+    })();
+  }
   function sendIntake(proj) {
+    var steps = [[1280, 0.7], [1024, 0.62]];
+    (function fit() {
+      if (JSON.stringify(proj).length <= INTAKE_SAFE_CHARS || !(proj.images || []).length || !steps.length) return sendIntakeNow(proj);
+      var st = steps.shift();
+      recompressPhotos(proj.images, st[0], st[1], function (imgs) { proj.images = imgs; fit(); });
+    })();
+  }
+  function sendIntakeNow(proj) {
     var photoCount = (proj.images || []).length;
     var body = JSON.stringify(proj);
-    while (body.length > INTAKE_SAFE_CHARS && proj.images.length) {   // drop photos from the end until it fits
+    while (body.length > INTAKE_SAFE_CHARS && proj.images.length) {   // last resort: drop photos from the end until it fits
       proj.images = proj.images.slice(0, -1);
       body = JSON.stringify(proj);
     }
