@@ -1,9 +1,9 @@
 /* Ryan Painting quote form. BUILT FILE, do not edit here.
    Source: estimate-schedule-gate.html in the vault (60-technology/estimate-automation).
-   Build: v3.10 photo re-shrink before drop 2026-11-23 | source sha e3716b699379 | 2026-11-23 */
+   Build: v3.11 click-through fixes 2026-11-23 | source sha 3e114216ba58 | 2026-11-23 */
 (function () {
   if (window.__rpGateBuild) { return; }
-  window.__rpGateBuild = "v3.10 photo re-shrink before drop 2026-11-23 e3716b699379";
+  window.__rpGateBuild = "v3.11 click-through fixes 2026-11-23 3e114216ba58";
   var d = document, links = [{"rel": "preconnect", "href": "https://fonts.gstatic.com", "crossOrigin": "anonymous"}, {"href": "https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap", "rel": "stylesheet"}];
   links.forEach(function (a) {
     var l = d.createElement("link");
@@ -1777,7 +1777,12 @@
       el.onchange = function () { state.rooms[+el.getAttribute("data-i")][el.getAttribute("data-f")] = el.checked; };
     });
     root.querySelectorAll(".rpg-num").forEach(function (el) {
-      el.onchange = function () { state.rooms[+el.getAttribute("data-i")][el.getAttribute("data-f")] = Math.max(0, +el.value || 0); };
+      el.onchange = function () {   /* 2026-11-23: keep within the box's own limits (50 doors or -3 used to be priced) */
+        var mx = Number(el.getAttribute("max")) || 99;
+        var v = Math.min(mx, Math.max(0, Math.round(+el.value || 0)));
+        el.value = v;
+        state.rooms[+el.getAttribute("data-i")][el.getAttribute("data-f")] = v;
+      };
     });
     root.querySelectorAll("textarea[data-f]").forEach(function (el) {
       el.onchange = function () { state.rooms[+el.getAttribute("data-i")].notes = el.value; };
@@ -1815,7 +1820,10 @@
     rd.onload = function () {
       var original = String(rd.result);
       var img = new Image();
-      img.onerror = function () { cb({ name: f.name, data: original }); };
+      /* 2026-11-23: a file the browser can't open as a picture (a .txt, a broken JPEG) is skipped,
+         not counted as a room photo. HEIC is kept as sent: desktop browsers can't open it but it is a real photo. */
+      var isHeic = /hei[cf]/i.test(f.type || "") || /\.hei[cf]$/i.test(f.name || "");
+      img.onerror = function () { cb(isHeic ? { name: f.name, data: original } : null); };
       img.onload = function () {
         try {
           var w = img.naturalWidth, h = img.naturalHeight;
@@ -1861,6 +1869,12 @@
           r.images = (r.images || []).concat(out).slice(0, ROOM_PHOTO_MAX);
           renderRooms();
           if (over) roomPhotoNote(i);
+          var bad = files.length - out.length;
+          if (bad > 0) {
+            var clr = root.querySelector('[data-clearimg="' + i + '"]'), box = root.querySelectorAll(".rpg-room-photos")[i];
+            var msg = '<span class="rpg-err" role="alert" style="display:block">' + bad + (bad === 1 ? " file wasn&rsquo;t" : " files weren&rsquo;t") + ' a photo we could open, so ' + (bad === 1 ? "it was" : "they were") + ' skipped. Please add a JPG or PNG photo of the room.</span>';
+            if (clr) clr.parentNode.insertAdjacentHTML("afterend", msg); else if (box) box.insertAdjacentHTML("afterend", msg);
+          }
         }
       };
     });
@@ -2140,6 +2154,7 @@
       sugg.innerHTML = ""; sugg.style.display = "none";
       if (!zip) {
         /* Google sometimes returns just a street or a town. That is an incomplete address, not one outside the service area. */
+        if (state.lastTypedAddr && /\d/.test(state.lastTypedAddr)) inp.value = state.lastTypedAddr;   /* give back what they typed, so adding the ZIP is enough */
         state.address = {};
         track("address_incomplete", {});
         picked.innerHTML = '<span style="display:block;background:#fff;color:#b3261e;border:1.5px solid #b3261e;border-radius:8px;padding:8px 10px;font-weight:600">That address looks incomplete. Please pick a suggestion that includes the house number, or type the full address with the ZIP code.</span>';
@@ -2162,6 +2177,7 @@
         var ac = new google.maps.places.Autocomplete(inp, {
           types: ["address"], componentRestrictions: { country: "us" }, fields: ["address_components", "formatted_address"]
         });
+        inp.addEventListener("input", function () { state.lastTypedAddr = inp.value; });
         ac.addListener("place_changed", function () {
           var pl = ac.getPlace(); if (!pl || !pl.address_components) return;
           var get = function (t, short) {
