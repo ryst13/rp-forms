@@ -1,9 +1,9 @@
 /* Ryan Painting quote form. BUILT FILE, do not edit here.
    Source: estimate-schedule-gate.html in the vault (60-technology/estimate-automation).
-   Build: v3.15 price page: preparing card, approve waits 2026-11-23 | source sha 36f2d31c5cd6 | 2026-11-23 */
+   Build: v3.15 price page steps + loading bar, stairs note 2026-11-23 | source sha 3ab3e55c49de | 2026-11-23 */
 (function () {
   if (window.__rpGateBuild) { return; }
-  window.__rpGateBuild = "v3.15 price page: preparing card, approve waits 2026-11-23 36f2d31c5cd6";
+  window.__rpGateBuild = "v3.15 price page steps + loading bar, stairs note 2026-11-23 3ab3e55c49de";
   var d = document, links = [{"rel": "preconnect", "href": "https://fonts.gstatic.com", "crossOrigin": "anonymous"}, {"href": "https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap", "rel": "stylesheet"}];
   links.forEach(function (a) {
     var l = d.createElement("link");
@@ -1846,7 +1846,7 @@
         ? '<div class="rpg-q">Editing ' + esc(state.projectId) + (state.contact.name ? " &mdash; " + esc(state.contact.name) : "") + "</div>" +
           '<div class="rpg-note">Add, remove or relabel rooms, then continue to review the new price. The client&rsquo;s original photos stay on file.</div>'
         : '<div class="rpg-q">Tell us about your rooms</div>' +
-          '<div class="rpg-note">Stairs count as their own room. If we&rsquo;re painting a stairwell, add it as a <strong>Staircase Hallway</strong> rather than folding it into the room it leads to &mdash; the walls run the full height, so it prices on its own.</div>') +
+          '<div class="rpg-note">Painting a stairwell? Add it as its own room and choose <strong>Staircase Hallway</strong>.</div>') +
       cards +
       (state.rooms.length < maxRooms()
         ? '<button class="rpg-add" id="rpg-add">+ Add another room</button>'
