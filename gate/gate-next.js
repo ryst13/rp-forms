@@ -1,9 +1,9 @@
 /* Ryan Painting quote form. BUILT FILE, do not edit here.
    Source: estimate-schedule-gate.html in the vault (60-technology/estimate-automation).
-   Build: v3.6 six rooms 3 photos 2026-11-21 | source sha 594856a15c6e | 2026-11-21 */
+   Build: v3.7 paint 2 coats Generator prices, no 1-business-day scheduling promise 2026-11-23 | source sha f17869a88bda | 2026-11-23 */
 (function () {
   if (window.__rpGateBuild) { return; }
-  window.__rpGateBuild = "v3.6 six rooms 3 photos 2026-11-21 594856a15c6e";
+  window.__rpGateBuild = "v3.7 paint 2 coats Generator prices, no 1-business-day scheduling promise 2026-11-23 f17869a88bda";
   var d = document, links = [{"rel": "preconnect", "href": "https://fonts.gstatic.com", "crossOrigin": "anonymous"}, {"href": "https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap", "rel": "stylesheet"}];
   links.forEach(function (a) {
     var l = d.createElement("link");
@@ -82,7 +82,8 @@
     mobilization_hours: 2,     // real crew setup is 1-3 hrs (Ryan, 2026-07-31)
     quote_premium: 0.05,       // instant-quote premium over Catalog pricing
     setup_hours_per_area: 0.5,
-    shelves_uplift: 0.35       // closet shelving adds 35% of that closet's price (Ryan, 2026-08-23)
+    shelves_uplift: 0.35,      // closet shelving adds 35% of that closet's price (Ryan, 2026-08-23)
+    paint_coats: 2             // coats of walls/trim/ceiling paint, same as the Generator since 2026-11-14 (primer stays 1)
   };
 
   // ─── SURCHARGES (flat, resolved defaults) ────────────────────
@@ -101,10 +102,10 @@
   // ─── MATERIALS (paint products, coverage sqft/gal, $/gal) ────
   var DEFAULT_MATERIALS = {
     interior: {
-      walls:   { product: 'Regal Select Eggshell',   coverage: 350, price_per_gallon: 63.59 },
-      trim:    { product: 'Regal Select Semi Gloss', coverage: 350, price_per_gallon: 63.59 },
-      primer:  { product: 'Fresh Start',             coverage: 400, price_per_gallon: 44.99 },
-      ceiling: { product: 'Ben Moore Muresco',       coverage: 400, price_per_gallon: 40.78 }
+      walls:   { product: 'Regal Select Eggshell',   coverage: 350, price_per_gallon: 67.56 },
+      trim:    { product: 'Regal Select Semi Gloss', coverage: 350, price_per_gallon: 67.56 },
+      primer:  { product: 'Fresh Start',             coverage: 400, price_per_gallon: 58.64 },
+      ceiling: { product: 'Ben Moore Muresco',       coverage: 400, price_per_gallon: 43.32 }
     },
     exterior: {
       siding:  { product: 'Moorgard Low Lustre',     coverage: 300, price_per_gallon: 69.59 },
@@ -468,7 +469,8 @@
       quote_premium: (o.quote_premium !== undefined && isFinite(Number(o.quote_premium)))
         ? Number(o.quote_premium) : DEFAULT_SETTINGS.quote_premium,
       shelves_uplift: (o.shelves_uplift !== undefined && isFinite(Number(o.shelves_uplift)))
-        ? Number(o.shelves_uplift) : DEFAULT_SETTINGS.shelves_uplift
+        ? Number(o.shelves_uplift) : DEFAULT_SETTINGS.shelves_uplift,
+      paint_coats: (Number(o.paint_coats) >= 1 && Number(o.paint_coats) <= 3) ? Number(o.paint_coats) : DEFAULT_SETTINGS.paint_coats
     };
   }
 
@@ -734,11 +736,12 @@
 
     // Materials
     var materials = [];
-    var wallGallons = Math.ceil(totalWallSqft / mcfg.interior.walls.coverage);
+    var coats = settings.paint_coats || 1;   /* Generator: 2 coats on walls, trim, ceiling; primer 1 */
+    var wallGallons = Math.ceil(totalWallSqft * coats / mcfg.interior.walls.coverage);
     if (wallGallons > 0) {
       materials.push({ label: mcfg.interior.walls.product, gallons: wallGallons, cost: wallGallons * mcfg.interior.walls.price_per_gallon });
     }
-    var trimGallons = Math.ceil(totalTrimSqft / mcfg.interior.trim.coverage);
+    var trimGallons = Math.ceil(totalTrimSqft * coats / mcfg.interior.trim.coverage);
     if (trimGallons > 0) {
       materials.push({ label: mcfg.interior.trim.product, gallons: trimGallons, cost: trimGallons * mcfg.interior.trim.price_per_gallon });
     }
@@ -747,7 +750,7 @@
       materials.push({ label: mcfg.interior.primer.product, gallons: primerGallons, cost: primerGallons * mcfg.interior.primer.price_per_gallon });
     }
     if (totalCeilingSqft > 0) {
-      var ceilingGallons = Math.ceil(totalCeilingSqft / mcfg.interior.ceiling.coverage);
+      var ceilingGallons = Math.ceil(totalCeilingSqft * coats / mcfg.interior.ceiling.coverage);
       materials.push({ label: mcfg.interior.ceiling.product, gallons: ceilingGallons, cost: ceilingGallons * mcfg.interior.ceiling.price_per_gallon });
     }
 
@@ -2356,7 +2359,7 @@
       '<div class="rpg-price" style="text-align:center">' + money(total) + "</div>" +
       (quote.promo_discount ? '<p style="text-align:center;color:#1d5f2f;font-size:.92rem;font-weight:600">Promo code ' + esc(quote.promo_code) + ' applied &mdash; ' + quote.promo_pct + '% off (&minus;' + money(quote.promo_discount) + ')</p>' : "") +
       (prodLine ? '<p style="text-align:center;color:#555;font-size:.92rem">' + prodLine + "</p>" : "") +
-      (state.rush ? '<p style="text-align:center;color:#b3261e;font-size:.9rem;font-weight:600">Rush project &mdash; priority scheduling included; we aim to complete within the week (subject to confirmation within 1 business day).</p>' : "") +
+      (state.rush ? '<p style="text-align:center;color:#b3261e;font-size:.9rem;font-weight:600">Rush project &mdash; priority scheduling included; we aim to complete within the week (subject to confirmation).</p>' : "") +
       '<p style="text-align:center;color:#666;font-size:.8rem">Quote ' + state.projectId + " &middot; " + esc(state.address.street + ", " + state.address.city) + "</p>" +
       '<p style="text-align:center;color:#666;font-size:.78rem">Fully insured &middot; MA HIC Reg. #211554 &middot; 4.8&#9733; on Google (50+ reviews)</p>' +
       
@@ -2390,7 +2393,7 @@
         ? '<li>Your price is based on the scope we reviewed at your walkthrough. If the project changes (sizes, surfaces, repairs), we&rsquo;ll confirm any changes with you before extra work or charges.</li>' +
           '<li>Your contract and a ' + Math.round(DEPOSIT_PCT * 100) + '% deposit invoice (' + money(deposit) + ') arrive by email shortly after you approve; paying the deposit reserves your project, and any remaining balance follows the payment schedule in your contract.</li>'
         : '<li>Your price is based on the scope you entered. If conditions on-site are materially different (sizes, surfaces, repairs), we&rsquo;ll confirm any changes with you before extra work or charges.</li>' +
-          '<li>After our team reviews your scope, your contract and a ' + Math.round(DEPOSIT_PCT * 100) + '% deposit invoice (' + money(deposit) + ') arrive by email; paying the deposit reserves your project and the balance is due on completion. We&rsquo;ll be in touch within 1 business day.</li>') +
+          '<li>After our team reviews your scope, your contract and a ' + Math.round(DEPOSIT_PCT * 100) + '% deposit invoice (' + money(deposit) + ') arrive by email; paying the deposit reserves your project and the balance is due on completion. Once your deposit is paid and your Color &amp; Access Form is in, we email you a proposed start date to confirm.</li>') +
       '<li>Standard prep is included. Not included unless listed: heavy wall repairs, wallpaper removal, extra coats or colors beyond ' + (isWQ ? 'the agreed scope' : 'your selections') + ', specialty priming over dark/oil-based surfaces.</li>' +
       '<li>Pre-1978 homes: we follow EPA lead-safe practices; this can require a scope confirmation before work begins.</li>' +
       '<li>Exterior work is weather-dependent; we reschedule weather delays at no cost.</li>' +
