@@ -1,9 +1,9 @@
 /* Ryan Painting quote form. BUILT FILE, do not edit here.
    Source: estimate-schedule-gate.html in the vault (60-technology/estimate-automation).
-   Build: v3.17 LIVE: Generator-style estimate data + staircase 0/0 defaults 2026-11-23 | source sha 151556bdb36b | 2026-11-23 */
+   Build: v3.18 interior start (data-start) | source sha 0e69f92b34b3 | 2026-11-23 */
 (function () {
   if (window.__rpGateBuild) { return; }
-  window.__rpGateBuild = "v3.17 LIVE: Generator-style estimate data + staircase 0/0 defaults 2026-11-23 151556bdb36b";
+  window.__rpGateBuild = "v3.18 interior start (data-start) 0e69f92b34b3";
   var d = document, links = [{"rel": "preconnect", "href": "https://fonts.gstatic.com", "crossOrigin": "anonymous"}, {"href": "https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap", "rel": "stylesheet"}];
   links.forEach(function (a) {
     var l = d.createElement("link");
@@ -1523,7 +1523,7 @@
         state.promoInput = fv("rpg-promo") || "";
       }
       var rooms = state.rooms.map(function (r) { var c = {}; for (var k in r) if (k !== "images") c[k] = r[k]; return c; });
-      localStorage.setItem(DRAFT_KEY, JSON.stringify({ ts: Date.now(), projectId: state.projectId, type: state.type, size: state.size,
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({ ts: Date.now(), projectId: state.projectId, type: state.type, size: state.size, entry: state.entry || "",
         rooms: rooms, condition: state.condition, rush: state.rush, contact: state.contact, promoInput: state.promoInput, zipFirst: state.zipFirst || "" }));
       var sig = state.rooms.map(function (r) { return (r.images || []).length + ":" + ((r.images || [])[0] || {}).name; }).join("|");
       if (sig !== draftPhotoSig) { draftPhotoSig = sig; idbPut(DRAFT_KEY, state.rooms.map(function (r) { return r.images || []; })); }
@@ -1554,7 +1554,7 @@
       '</div>');
     document.getElementById("rpg-draft-new").onclick = function () { clearDraft(); fallback(); };
     document.getElementById("rpg-draft-go").onclick = function () {
-      state.type = d.type; state.size = d.size; state.condition = d.condition || "Standard"; state.rush = !!d.rush;
+      state.type = d.type; state.size = d.size; state.entry = d.entry || ""; state.condition = d.condition || "Standard"; state.rush = !!d.rush;
       state.contact = d.contact || {}; state.promoInput = d.promoInput || ""; state.zipFirst = d.zipFirst || "";
       if (d.projectId) state.projectId = d.projectId;
       state.rooms = d.rooms.map(function (r) { r.images = []; return r; });
@@ -1647,7 +1647,7 @@
 
   /* ============ DOORMAN ============ */
   function q1() {
-    state.size = null;
+    state.size = null; state.entry = "";
     backHandler = null;
     h('<div class="rpg-q">What kind of project do you have?</div><div class="rpg-opts"></div>');
     opts([
@@ -1665,6 +1665,19 @@
       }
       q2();
     });
+  }
+
+  /* v3.18 (Ryan 2026-11-23): a page can start the form at the interior rooms step by putting
+     data-start="interior" on the rp-gate box (the Interior Painting page does). It skips
+     "What kind of project?" and "How big?" and opens at the ZIP step. Back from there shows the
+     full question list. state.entry tells IQ1 which page the quote started on. */
+  var START = String((root && root.getAttribute("data-start")) || "").toLowerCase();
+  function entryScreen() { return START === "interior" ? startInterior() : q1(); }
+  function startInterior() {
+    state.type = "interior"; state.size = "rooms"; state.entry = "interior_page";
+    track("triage_completed", { route: "instant_quote", type: "interior", size: "rooms", entry: "interior_page" });
+    track("quote_started", { type: "interior", size: "rooms", project_id: state.projectId, entry: "interior_page" });
+    zipFirst(roomBuilder, q1);
   }
 
   function q2() {
@@ -1874,7 +1887,7 @@
     };
 
 
-    backHandler = operator.on ? operatorSummary : q2;
+    backHandler = operator.on ? operatorSummary : (state.entry ? startInterior : q2);
     var addRoomBtn = document.getElementById("rpg-add");
     if (addRoomBtn) addRoomBtn.onclick = function () {
       if (state.rooms.length >= maxRooms()) return;
@@ -2923,6 +2936,7 @@
     var proj = {
       project_id: state.projectId, tag: tag, rush: !!state.rush,
       contact: state.contact, address: state.address, type: state.type, size: state.size,
+      entry: state.entry || "", page: String(location.pathname || ""),
       scope: scopeSummary(),
       quote_total: state.quote ? Math.round(state.quote.grand_total) : null,
       /* agent attribution: IQ1 looks the code up in the registry and stamps
@@ -3306,8 +3320,8 @@
         return;
       }
       var draft = readDraft();
-      if (draft) { offerDraft(draft, q1); return; }
-      q1();
+      if (draft) { offerDraft(draft, entryScreen); return; }
+      entryScreen();
     }
     var u = C.PRICING_CONFIG_URL || "";
     if (u.indexOf("http") === 0) {
