@@ -1,9 +1,9 @@
 /* Ryan Painting quote form. BUILT FILE, do not edit here.
    Source: estimate-schedule-gate.html in the vault (60-technology/estimate-automation).
-   Build: v3.16 itemised estimate data 2026-11-23 | source sha acee9c1d4c58 | 2026-11-23 */
+   Build: v3.17 staircase starts at 0 doors / 0 windows 2026-11-23 | source sha 151556bdb36b | 2026-11-23 */
 (function () {
   if (window.__rpGateBuild) { return; }
-  window.__rpGateBuild = "v3.16 itemised estimate data 2026-11-23 acee9c1d4c58";
+  window.__rpGateBuild = "v3.17 staircase starts at 0 doors / 0 windows 2026-11-23 151556bdb36b";
   var d = document, links = [{"rel": "preconnect", "href": "https://fonts.gstatic.com", "crossOrigin": "anonymous"}, {"href": "https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap", "rel": "stylesheet"}];
   links.forEach(function (a) {
     var l = d.createElement("link");
@@ -1898,6 +1898,11 @@
            where the engine would fall through to its default sqft. Re-render so the size
            buttons relabel to levels (or back) the moment the type changes. */
         if (r.type_label !== STAIR_TYPE && r.room_size === "XL") r.room_size = "Large";
+        /* v3.17 (Ryan 2026-11-23): a stairwell usually has no door or window of its own, so it starts
+           at 0 and 0 (only if the client has not changed the 1 door / 2 windows defaults). Switching
+           back to another room type restores the defaults if they were zeroed here and left alone. */
+        if (r.type_label === STAIR_TYPE && r.doors === 1 && r.windows === 2) { r.doors = 0; r.windows = 0; r.stair_zeroed = true; }
+        else if (r.type_label !== STAIR_TYPE && r.stair_zeroed && r.doors === 0 && r.windows === 0) { r.doors = 1; r.windows = 2; r.stair_zeroed = false; }
         renderRooms();
       };
     });
