@@ -1,9 +1,9 @@
 /* Ryan Painting quote form. BUILT FILE, do not edit here.
    Source: estimate-schedule-gate.html in the vault (60-technology/estimate-automation).
-   Build: v3.7 paint 2 coats Generator prices, no 1-business-day scheduling promise 2026-11-23 | source sha f17869a88bda | 2026-11-23 */
+   Build: v3.8 Generator size curve, color samples, Generator crew hours 2026-11-23 | source sha bf78b38082c6 | 2026-11-23 */
 (function () {
   if (window.__rpGateBuild) { return; }
-  window.__rpGateBuild = "v3.7 paint 2 coats Generator prices, no 1-business-day scheduling promise 2026-11-23 f17869a88bda";
+  window.__rpGateBuild = "v3.8 Generator size curve, color samples, Generator crew hours 2026-11-23 bf78b38082c6";
   var d = document, links = [{"rel": "preconnect", "href": "https://fonts.gstatic.com", "crossOrigin": "anonymous"}, {"href": "https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap", "rel": "stylesheet"}];
   links.forEach(function (a) {
     var l = d.createElement("link");
@@ -83,8 +83,31 @@
     quote_premium: 0.05,       // instant-quote premium over Catalog pricing
     setup_hours_per_area: 0.5,
     shelves_uplift: 0.35,      // closet shelving adds 35% of that closet's price (Ryan, 2026-08-23)
-    paint_coats: 2             // coats of walls/trim/ceiling paint, same as the Generator since 2026-11-14 (primer stays 1)
+    paint_coats: 2,            // coats of walls/trim/ceiling paint, same as the Generator since 2026-11-14 (primer stays 1)
+    tp_hourly: 40              // Generator Catalog!P18: crew hours = trade-partner cost / this
   };
+
+  // ─── GENERATOR LINKS (2026-11-23) ──────────────────────────────
+  // Size curve: [job total $, multiplier], Generator Config!B17:C23.
+  var SIZE_CURVE = [[0, 1], [2000, 1], [6000, 1.07], [12000, 0.8], [40000, 0.65], [65000, 0.67], [999999, 0.67]];
+  // Trade-partner cost per room (walls) and per item, Generator Catalog K/N/Q37:55 and J7:20.
+  // Empty until the PRICING feed fills them; hours fall back to production rates.
+  var WALL_SUB = {};
+  var ITEM_SUB = {};
+  function sizeFactor(total) {
+    var c = SIZE_CURVE; if (!c || c.length < 2) return 1;
+    var i = 0;
+    for (var k = 0; k < c.length; k++) if (c[k][0] <= total) i = k;
+    i = Math.min(i, c.length - 2);           /* Generator: MIN(MATCH(...), 6) */
+    var b0 = c[i][0], m0 = c[i][1], b1 = c[i + 1][0], m1 = c[i + 1][1];
+    var f = m0 + (total - b0) * (m1 - m0) / ((b1 - b0) || 1);
+    return Math.round(f * 1e4) / 1e4;
+  }
+  function wallSub(type, size) {
+    var t = WALL_SUB[type]; if (!t) return null;
+    if (size === 'XL' && t.Large && t.Medium) return t.Large + (t.Large - t.Medium);
+    return (t[size] > 0) ? t[size] : null;
+  }
 
   // ─── SURCHARGES (flat, resolved defaults) ────────────────────
   var DEFAULT_SURCHARGES = {
@@ -470,7 +493,8 @@
         ? Number(o.quote_premium) : DEFAULT_SETTINGS.quote_premium,
       shelves_uplift: (o.shelves_uplift !== undefined && isFinite(Number(o.shelves_uplift)))
         ? Number(o.shelves_uplift) : DEFAULT_SETTINGS.shelves_uplift,
-      paint_coats: (Number(o.paint_coats) >= 1 && Number(o.paint_coats) <= 3) ? Number(o.paint_coats) : DEFAULT_SETTINGS.paint_coats
+      paint_coats: (Number(o.paint_coats) >= 1 && Number(o.paint_coats) <= 3) ? Number(o.paint_coats) : DEFAULT_SETTINGS.paint_coats,
+      tp_hourly: (Number(o.tp_hourly) > 0) ? Number(o.tp_hourly) : DEFAULT_SETTINGS.tp_hourly
     };
   }
 
@@ -551,6 +575,7 @@
     var totalCeilingSqft = 0;
     var totalTrimSqft = 0;
     var totalPrimerSqft = 0;
+    var genHours = 0, genRooms = 0;
 
     for (var r = 0; r < rooms.length; r++) {
       var room = rooms[r];
@@ -563,6 +588,10 @@
          itself and its paint are dropped. */
       var wallsIncluded = room.walls_included !== false;
       var items = [];
+      /* Generator hours (2026-11-23): trade-partner cost of each line / painter hourly rate */
+      var gWall = wallSub(room.room_type, room.room_size);
+      var gOk = gWall !== null, gSub = 0;
+      if (gOk && wallsIncluded) gSub += gWall;
 
       // Walls
       var wallHours = (wallSqft / PRODUCTION.interior_walls) / conditionMod;
@@ -594,6 +623,7 @@
           allocated_time: ceilHours
         });
         totalCeilingSqft += ceilingSqft;
+        if (gOk) gSub += gWall * 0.33;                 /* Generator: ceiling sub = walls sub x 0.33 */
       }
 
       // Closet
@@ -614,6 +644,8 @@
           allocated_time: closetHours
         });
         totalWallSqft += closetSqft;
+        var gCloset = wallSub('Closet', closetSizeKey);
+        if (gCloset === null) gOk = false; else gSub += gCloset * (1 + (room.closet_shelves ? Math.max(0, Number(settings.shelves_uplift) || 0) : 0));
         // Shelving rides the closet price so it inherits size/condition/premium
         if (room.closet_shelves) {
           var shelvesUplift = Math.max(0, Number(settings.shelves_uplift) || 0);
@@ -631,6 +663,7 @@
       if (room.primer_required) {
         var primerSqft = (wallsIncluded ? wallSqft : 0) + ceilingSqft;
         totalPrimerSqft += primerSqft;
+        if (gOk) gSub += gWall * 0.33;                 /* Generator: primer sub = walls sub x 0.33 */
         var primerHours = (primerSqft / PRODUCTION.interior_primer) / conditionMod;
         var primerSub = (wallsBaseSales * WALLS_SUB_RATIO * CEIL_OF_WALLS_SUB * premium) / conditionMod;
         var primerPrice = { sub_cost: primerSub, sales_price: primerSub * CEIL_MARKUP };
@@ -673,6 +706,7 @@
         if (itemName.indexOf('Trim') === 0 || itemName.indexOf('Door') === 0 || itemName.indexOf('Window') === 0) {
           totalTrimSqft += nn(INTERIOR_ITEM_SQFT[itemName], 0) * qty;
         }
+        if (ITEM_SUB[itemName] > 0) gSub += ITEM_SUB[itemName] * qty; else gOk = false;
       }
 
       var sectionSubCost = items.reduce(function (s, i) { return s + i.sub_cost; }, 0);
@@ -689,6 +723,8 @@
       totalSubCost += sectionSubCost;
       totalSalesPrice += sectionSalesPrice;
       totalPainterHours += sectionTime;
+      genHours += gOk ? gSub / settings.tp_hourly : sectionTime;
+      if (gOk) genRooms++;
     }
 
     // Economy of scale: fixed setup/mobilization block per job, FOLDED
@@ -765,11 +801,24 @@
       surcharges.push({ label: 'CC Fee (' + (scfg.cc_pct * 100).toFixed(1) + '%)', sub_amount: ccFee, sales_amount: ccFee });
     }
 
-    var grandTotal = grandBeforeCC + ccFee;
+    /* Size curve (2026-11-23): same as the Generator, total = (labor + surcharges) x factor + paint,
+       factor read off Config!B17:C23 at the job's raw total. Lines are scaled so they still add up. */
+    var sizeF = sizeFactor(grandBeforeCC + ccFee);
+    if (sizeF > 0 && sizeF !== 1) {
+      sections.forEach(function (sec) {
+        sec.sales_price = sec.sales_price * sizeF;
+        (sec.items || []).forEach(function (it) { it.sales_price = it.sales_price * sizeF; });
+      });
+      surcharges.forEach(function (sc) { sc.sales_amount = sc.sales_amount * sizeF; });
+      totalSalesPrice = totalSalesPrice * sizeF;
+      laborTotal = laborTotal * sizeF;
+      ccFee = ccFee * sizeF;
+    }
+    var grandTotal = laborTotal + ccFee + materialsTotal;
 
-    // Production
-    var paintingHours = totalPainterHours;
-    var crewSize = settings.crew_size || (paintingHours > 48 ? 3 : 2);
+    // Production: Generator hours when the feed has the room costs, 3 painters above 48 hours
+    var paintingHours = genRooms > 0 ? genHours : totalPainterHours;
+    var crewSize = paintingHours > 48 ? 3 : 2;
     var durationDays = Math.max(paintingHours / crewSize / 8, 0.5);
 
     return {
@@ -781,6 +830,7 @@
       materials: materials,
       materials_total: materialsTotal,
       grand_total: grandTotal,
+      size_factor: sizeF,
       production: { painting_hours: paintingHours, crew_size: crewSize, duration_days: durationDays }
     };
   }
@@ -1023,6 +1073,21 @@
       if (CATALOG_WALL_RATE[parts[0]] && CATALOG_WALL_RATE[parts[0]][parts[1]] !== undefined && v !== null) CATALOG_WALL_RATE[parts[0]][parts[1]] = v;
     });
     if (cfg.item_sales) mergeKnown(CATALOG_ITEM_SALES, cfg.item_sales);
+    mergeKnown(DEFAULT_SURCHARGES, cfg.surcharges);         /* color_samples_amount from the Generator */
+    if (cfg.size_curve) {
+      var pts = Object.keys(cfg.size_curve).map(function (k) { return [Number(k), Number(cfg.size_curve[k])]; })
+        .filter(function (p) { return isFinite(p[0]) && p[0] >= 0 && isFinite(p[1]) && p[1] > 0; })
+        .sort(function (a, b) { return a[0] - b[0]; });
+      if (pts.length >= 2 && pts[0][0] === 0) SIZE_CURVE = pts;
+    }
+    if (cfg.wall_sub) Object.keys(cfg.wall_sub).forEach(function (k) {
+      var parts = k.split("|"), v = num(cfg.wall_sub[k]);
+      if (v === null) return;
+      (WALL_SUB[parts[0]] = WALL_SUB[parts[0]] || {})[parts[1]] = v;
+    });
+    if (cfg.item_sub) Object.keys(cfg.item_sub).forEach(function (k) {
+      var v = num(cfg.item_sub[k]); if (v !== null) ITEM_SUB[k] = v;
+    });
     if (cfg.wall_sqft) Object.keys(cfg.wall_sqft).forEach(function (k) {
       var parts = k.split("|");                               /* e.g. "Bedroom|Medium" */
       var v = num(cfg.wall_sqft[k]);
@@ -1808,7 +1873,7 @@
           ceiling_included: !!r.ceiling_included, closet: r.closet,
           closet_shelves: !!r.closet_shelves, items: items };
       }),
-      project: { surface_grade: "B", prep_level: state.condition, color_samples: false, transportation: true }
+      project: { surface_grade: "B", prep_level: state.condition, color_samples: true, transportation: true }
     };
     return RPPricing.quoteInterior(scope, PRICING_OPTS);
   }
