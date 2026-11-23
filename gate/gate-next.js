@@ -1,9 +1,9 @@
 /* Ryan Painting quote form. BUILT FILE, do not edit here.
    Source: estimate-schedule-gate.html in the vault (60-technology/estimate-automation).
-   Build: v3.12 saved progress + Back, Room as Bedroom 2026-11-23 | source sha c7aaa256cc99 | 2026-11-23 */
+   Build: v3.13 ZIP first, no ceilings-only banner 2026-11-23 | source sha 7cc7d0ea7192 | 2026-11-23 */
 (function () {
   if (window.__rpGateBuild) { return; }
-  window.__rpGateBuild = "v3.12 saved progress + Back, Room as Bedroom 2026-11-23 c7aaa256cc99";
+  window.__rpGateBuild = "v3.13 ZIP first, no ceilings-only banner 2026-11-23 7cc7d0ea7192";
   var d = document, links = [{"rel": "preconnect", "href": "https://fonts.gstatic.com", "crossOrigin": "anonymous"}, {"href": "https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap", "rel": "stylesheet"}];
   links.forEach(function (a) {
     var l = d.createElement("link");
@@ -1522,7 +1522,7 @@
       }
       var rooms = state.rooms.map(function (r) { var c = {}; for (var k in r) if (k !== "images") c[k] = r[k]; return c; });
       localStorage.setItem(DRAFT_KEY, JSON.stringify({ ts: Date.now(), projectId: state.projectId, type: state.type, size: state.size,
-        rooms: rooms, condition: state.condition, rush: state.rush, contact: state.contact, promoInput: state.promoInput }));
+        rooms: rooms, condition: state.condition, rush: state.rush, contact: state.contact, promoInput: state.promoInput, zipFirst: state.zipFirst || "" }));
       var sig = state.rooms.map(function (r) { return (r.images || []).length + ":" + ((r.images || [])[0] || {}).name; }).join("|");
       if (sig !== draftPhotoSig) { draftPhotoSig = sig; idbPut(DRAFT_KEY, state.rooms.map(function (r) { return r.images || []; })); }
     } catch (e) {}
@@ -1553,7 +1553,7 @@
     document.getElementById("rpg-draft-new").onclick = function () { clearDraft(); fallback(); };
     document.getElementById("rpg-draft-go").onclick = function () {
       state.type = d.type; state.size = d.size; state.condition = d.condition || "Standard"; state.rush = !!d.rush;
-      state.contact = d.contact || {}; state.promoInput = d.promoInput || "";
+      state.contact = d.contact || {}; state.promoInput = d.promoInput || ""; state.zipFirst = d.zipFirst || "";
       if (d.projectId) state.projectId = d.projectId;
       state.rooms = d.rooms.map(function (r) { r.images = []; return r; });
       idbGet(DRAFT_KEY, function (imgs) {
@@ -1702,9 +1702,42 @@
       }
       track("triage_completed", { route: "instant_quote", type: state.type, size: v });
       track("quote_started", { type: state.type, size: v, project_id: state.projectId });
-      if (v === "rooms") return roomBuilder();
+      if (v === "rooms") return zipFirst(roomBuilder, q2);
       deckBuilder();
     });
+  }
+
+
+  /* ============ ZIP FIRST (v3.13, Ryan 2026-11-23) ============
+     Before anyone builds a scope, check the project ZIP is in the service area, as the
+     Terms page promises. The full address is still asked at the contact step. */
+  function zipFirst(next, backFn) {
+    backHandler = backFn;
+    h('<div class="rpg-panel">' +
+      '<div class="rpg-q" style="margin-top:0">What&rsquo;s the ZIP code of the property?</div>' +
+      '<p style="margin:4px 0 10px">We check it&rsquo;s in our service area before you build your quote.</p>' +
+      '<input class="rpg-field" id="rpg-zip1" inputmode="numeric" maxlength="5" placeholder="ZIP code (e.g. 02130)" aria-label="ZIP code" autocomplete="postal-code" value="' + esc(state.zipFirst || "") + '">' +
+      '<div class="rpg-err" id="rpg-zip1-err" role="alert"></div>' +
+      '<button class="rpg-cta" id="rpg-zip1-go">Continue</button>' +
+      '<div class="rpg-note">Pressing Continue checks your ZIP and, if we serve it, takes you to the room builder.</div>' +
+      '<button type="button" class="rpg-back">&larr; back</button></div>');
+    var inp = document.getElementById("rpg-zip1"), err = document.getElementById("rpg-zip1-err");
+    function go() {
+      var z = String(inp.value || "").replace(/\D/g, "");
+      if (z.length !== 5) { err.textContent = "Please enter the 5-digit ZIP code of the property."; err.style.display = "block"; inp.focus(); return; }
+      if (!inServiceArea(z, "MA")) {
+        track("zip_out_of_area", { zip: z });
+        h('<div class="rpg-panel"><div class="rpg-q" style="margin-top:0">Sorry, that&rsquo;s outside our service area</div>' +
+          '<p>We serve Boston and its metro area, and ' + esc(z) + ' is outside it. If you think that&rsquo;s not right, call us at ' + C.PHONE_DISPLAY + '.</p>' +
+          '<button type="button" class="rpg-back">&larr; try a different ZIP</button></div>');
+        backHandler = function () { zipFirst(next, backFn); };
+        return;
+      }
+      state.zipFirst = z; track("zip_ok", { zip: z });
+      next();
+    }
+    document.getElementById("rpg-zip1-go").onclick = go;
+    inp.onkeydown = function (ev) { if (ev.key === "Enter") { ev.preventDefault(); go(); } };
   }
 
   /* ============ INTERIOR ROOM BUILDER ============ */
@@ -1808,8 +1841,7 @@
         ? '<button class="rpg-add" id="rpg-add">+ Add another room</button>'
         : operator.on ? ""
           : '<div class="rpg-note">Painting <strong>' + (sqRoomCap() + 1) + ' or more rooms</strong>? Projects that size get a free in-person consultation &mdash; <a href="#" id="rpg-3plus">book a walkthrough instead</a>.</div>') +
-      (operator.on ? ""
-        : '<div class="rpg-ceil-note">Painting <strong>ceilings only</strong>? That fits our Painter for a Day service perfectly \u2014 <a href="#" id="rpg-ceilings-pfad">see the flat day rate</a>.</div>') +
+      /* ceilings-only Painter for a Day banner removed 2026-11-23 (Ryan): ceiling-only rooms are self-quoted */
       '<div class="rpg-room">' +
       '<div class="rpg-q" style="font-size:1.05rem;margin-top:0">Overall condition of the walls?</div><div class="rpg-opts" id="rpg-cond"></div>' +
       rushBlockHtml() +
