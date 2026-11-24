@@ -202,14 +202,14 @@ article section[data-section-id="6b04bd3276bd735e7c444a69"].page-section > .cont
 
 /* Testimonials as cards (classes added by layout.js). Ryan 2026-11-24: "formatting is underwhelming". */
 .rp-quotes > p.rp-q { background: #fff; color: #111 !important; margin: 0 !important; padding: 44px 26px 8px; border-radius: 15px 15px 0 0; position: relative; font-size: 1.05rem; line-height: 1.55; }
-.rp-quotes > p.rp-q::before { content: "\2605\2605\2605\2605\2605"; position: absolute; top: 16px; left: 26px; color: #1A7C39; letter-spacing: 3px; font-size: 1rem; line-height: 1; }
+.rp-quotes > p.rp-q::before { content: "C"; position: absolute; top: 10px; left: 22px; color: #70D44B; font-family: Georgia, serif; font-size: 3.4rem; line-height: 1; }
 .rp-quotes > p.rp-q-name { background: #fff; color: #111 !important; margin: 0 0 18px !important; padding: 0 26px 20px; border-radius: 0 0 15px 15px; font-size: .9rem; }
 .rp-quotes > p.rp-q-name strong, .rp-quotes > p.rp-q-name { color: #1A7C39 !important; }
 .rp-quotes > p.rp-q *, .rp-quotes > p.rp-q { color: #111 !important; }
 .rp-quotes > p:last-child { margin-top: 26px; }
 .rp-quotes-title, .rp-quotes-title * { color: #fff !important; font-family: var(--heading-font-font-family); font-size: clamp(1.6rem, 2.4vw, 2.2rem) !important; font-weight: 500 !important; line-height: 1.2 !important; background: none !important; }
 /* Section title injected by layout.js (gallery sections) */
-.rp-section-title { text-align: center; margin: 0 auto 28px; padding: 0 16px; }
+.rp-section-title { text-align: center; margin: 0 auto; padding: 64px 16px 0; }
 /* Exterior: photo beside "Boston is hard on paint" shortened and centered on the text */
 @media (min-width: 768px) {
   section[data-section-id="6afb90e4c2a2740ecfc7f8a7"] .fluid-engine { grid-template-rows: repeat(13, minmax(calc(var(--container-width) * var(--row-height-scaling-factor)), auto)) !important; }

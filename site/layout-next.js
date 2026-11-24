@@ -54,7 +54,7 @@
   var TITLES = { "6b04c07154009371916c148c": "Before, during and after" };
   function titles() {
     for (var id in TITLES) {
-      var s = document.querySelector('section[data-section-id="' + id + '"] .content-wrapper');
+      var s = document.querySelector('section[data-section-id="' + id + '"] .content-wrapper .content') || document.querySelector('section[data-section-id="' + id + '"] .content-wrapper');
       if (!s || s.querySelector(".rp-section-title")) continue;
       var h = document.createElement("h2"); h.className = "rp-section-title"; h.textContent = TITLES[id];
       s.insertBefore(h, s.firstChild);
