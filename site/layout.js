@@ -29,5 +29,38 @@
       if (own && own === whole && own.length <= 60) a.classList.add("rp-cta-btn");
     }
   }
+  /* Testimonials (2026-11-24): a text block of quotes followed by names, ending in the Google reviews link,
+     is marked up as cards (styled in layout.css). A heading block beside it ("What ... clients say") is marked too. */
+  function quotes() {
+    var blocks = document.querySelectorAll("article .sqs-html-content");
+    for (var i = 0; i < blocks.length; i++) {
+      var c = blocks[i], ps = c.querySelectorAll(":scope > p"), n = 0;
+      if (!c.querySelector('a[href*="google.com/maps"]')) continue;
+      for (var k = 0; k < ps.length; k++) {
+        var t = ps[k].textContent.trim();
+        if (/^[“"]/.test(t) && t.length > 40) { ps[k].classList.add("rp-q"); n++; if (ps[k + 1] && ps[k + 1].textContent.trim().length < 60) ps[k + 1].classList.add("rp-q-name"); }
+      }
+      if (n < 2) continue;
+      c.classList.add("rp-quotes");
+      for (var b = 0; b < ps.length; b++) if (!ps[b].textContent.trim()) ps[b].classList.add("rp-blank");
+      var sec = c.closest("section");
+      var heads = sec ? sec.querySelectorAll(".sqs-html-content") : [];
+      for (var h = 0; h < heads.length; h++) {
+        var first = heads[h].firstElementChild;
+        if (first && /clients say/i.test(first.textContent) && first.textContent.trim().length < 70) first.classList.add("rp-quotes-title");
+      }
+    }
+  }
+  /* Section titles added where a section has none (gallery sections cannot hold text). Keyed by section id. */
+  var TITLES = { "6b04c07154009371916c148c": "Before, during and after" };
+  function titles() {
+    for (var id in TITLES) {
+      var s = document.querySelector('section[data-section-id="' + id + '"] .content-wrapper .content') || document.querySelector('section[data-section-id="' + id + '"] .content-wrapper');
+      if (!s || s.querySelector(".rp-section-title")) continue;
+      var h = document.createElement("h2"); h.className = "rp-section-title"; h.textContent = TITLES[id];
+      s.insertBefore(h, s.firstChild);
+    }
+  }
+  var run0 = run; run = function () { quotes(); titles(); run0(); };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", run); else run();
 })();

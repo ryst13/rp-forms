@@ -224,3 +224,10 @@ article section[data-section-id="6b04bd3276bd735e7c444a69"].page-section > .cont
   .fe-block-faa23544b5292e37a86c::after { content: ""; position: absolute; right: 30px; top: 50%; width: 220px; height: 220px; transform: translateY(-50%); border-radius: 50%;
     background: #fff url("https://images.squarespace-cdn.com/content/v1/67c60c0d4273951496113a1e/8ca5c05b-a3fd-414b-acb0-dbcbcec69a21/RP_Home_Illustrations-1-02.png?format=500w") center / 62% no-repeat; }
 }
+/* Interior testimonials: rows fit the cards; photo centered on the cards (overrides the page's own older rule) */
+@media (min-width: 768px) {
+  section[data-section-id="6afb7785a8874a66682b69ab"] .fluid-engine.fluid-engine { grid-template-rows: repeat(17, minmax(calc(var(--container-width) * var(--row-height-scaling-factor)), auto)) !important; }
+  section[data-section-id="6afb7785a8874a66682b69ab"] .fe-block-bec36d9ea8598ee98647 { grid-row: 4 / 18 !important; }
+  section[data-section-id="6afb7785a8874a66682b69ab"] .fe-block-ba54049cc7eb20582554 { grid-row: 4 / 18 !important; margin-top: -102px !important; }
+}
+.rp-quotes > p.rp-q { font-size: 1.05rem !important; }

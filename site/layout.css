@@ -199,3 +199,35 @@ article section[data-section-id="6b04bd3276bd735e7c444a69"].page-section > .cont
 @media (min-width: 768px) {
   .fe-block-7b314cbc6552560e32a4, .fe-block-ecd1d15abbe86dee3c11, .fe-block-5cde2d0d83ff7a8de88d { position: sticky; top: calc(0px + var(--header-fixed-top-offset, 0px)); align-self: start; height: fit-content; }
 }
+
+/* Testimonials as cards (classes added by layout.js). Ryan 2026-11-24: "formatting is underwhelming". */
+.rp-quotes > p.rp-q { background: #fff; color: #111 !important; margin: 0 !important; padding: 52px 26px 8px; border-radius: 15px 15px 0 0; position: relative; font-size: 1.05rem; line-height: 1.55; }
+.rp-quotes > p.rp-q::before { content: "\201C"; position: absolute; top: 12px; left: 22px; color: #70D44B; font-family: Georgia, serif; font-size: 3.4rem; line-height: 1; }
+.rp-quotes > p.rp-blank { display: none; }
+.rp-quotes > p.rp-q-name { background: #fff; color: #111 !important; margin: 0 0 18px !important; padding: 0 26px 20px; border-radius: 0 0 15px 15px; font-size: .9rem; }
+.rp-quotes > p.rp-q-name strong, .rp-quotes > p.rp-q-name { color: #1A7C39 !important; }
+.rp-quotes > p.rp-q *, .rp-quotes > p.rp-q { color: #111 !important; }
+.rp-quotes > p:last-child { margin-top: 26px; }
+.rp-quotes-title, .rp-quotes-title * { color: #fff !important; font-family: var(--heading-font-font-family); font-size: clamp(1.6rem, 2.4vw, 2.2rem) !important; font-weight: 500 !important; line-height: 1.2 !important; background: none !important; }
+/* Section title injected by layout.js (gallery sections) */
+.rp-section-title { text-align: center; margin: 0 auto; padding: 64px 16px 0; }
+/* Exterior: photo beside "Boston is hard on paint" shortened and centered on the text */
+@media (min-width: 768px) {
+  section[data-section-id="6afb90e4c2a2740ecfc7f8a7"] .fluid-engine { grid-template-rows: repeat(13, minmax(calc(var(--container-width) * var(--row-height-scaling-factor)), auto)) !important; }
+  .fe-block-5c3e006aefd573f9df94 { grid-row: 2 / 13 !important; }
+  .fe-block-d7fc8ea48d8c4dda46dd { grid-row: 2 / 13 !important; align-self: center !important; }
+}
+/* Exterior: house icon beside "Why Boston homeowners choose Ryan Painting" */
+@media (min-width: 992px) {
+  .fe-block-faa23544b5292e37a86c { position: relative; }
+  .fe-block-faa23544b5292e37a86c .sqs-html-content { padding-right: 300px; }
+  .fe-block-faa23544b5292e37a86c::after { content: ""; position: absolute; right: 30px; top: 50%; width: 220px; height: 220px; transform: translateY(-50%); border-radius: 50%;
+    background: #fff url("https://images.squarespace-cdn.com/content/v1/67c60c0d4273951496113a1e/8ca5c05b-a3fd-414b-acb0-dbcbcec69a21/RP_Home_Illustrations-1-02.png?format=500w") center / 62% no-repeat; }
+}
+/* Interior testimonials: rows fit the cards; photo centered on the cards (overrides the page's own older rule) */
+@media (min-width: 768px) {
+  section[data-section-id="6afb7785a8874a66682b69ab"] .fluid-engine.fluid-engine { grid-template-rows: repeat(17, minmax(calc(var(--container-width) * var(--row-height-scaling-factor)), auto)) !important; }
+  section[data-section-id="6afb7785a8874a66682b69ab"] .fe-block-bec36d9ea8598ee98647 { grid-row: 4 / 18 !important; }
+  section[data-section-id="6afb7785a8874a66682b69ab"] .fe-block-ba54049cc7eb20582554 { grid-row: 4 / 18 !important; margin-top: -102px !important; }
+}
+.rp-quotes > p.rp-q { font-size: 1.05rem !important; }
