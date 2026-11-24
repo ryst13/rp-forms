@@ -3,7 +3,7 @@
    site's button look (class rp-cta-btn, styled in layout.css). Links inside a sentence stay links.
    Loaded from the site-wide Code Injection; source of truth is the rp-forms repo. */
 (function () {
-  var HREF = /(\/getquote|#price-online|google\.com\/maps|g\.page\/|maps\.app\.goo\.gl)/i;
+  var HREF = /(\/getquote|#price-online|google\.com\/maps|g\.page\/|maps\.app\.goo\.gl|meetings\.hubspot\.com)/i;
   function visibleText(el) {
     var t = "";
     el.childNodes.forEach(function (n) {
