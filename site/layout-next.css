@@ -201,8 +201,9 @@ article section[data-section-id="6b04bd3276bd735e7c444a69"].page-section > .cont
 }
 
 /* Testimonials as cards (classes added by layout.js). Ryan 2026-11-24: "formatting is underwhelming". */
-.rp-quotes > p.rp-q { background: #fff; color: #111 !important; margin: 0 !important; padding: 44px 26px 8px; border-radius: 15px 15px 0 0; position: relative; font-size: 1.05rem; line-height: 1.55; }
-.rp-quotes > p.rp-q::before { content: "C"; position: absolute; top: 10px; left: 22px; color: #70D44B; font-family: Georgia, serif; font-size: 3.4rem; line-height: 1; }
+.rp-quotes > p.rp-q { background: #fff; color: #111 !important; margin: 0 !important; padding: 52px 26px 8px; border-radius: 15px 15px 0 0; position: relative; font-size: 1.05rem; line-height: 1.55; }
+.rp-quotes > p.rp-q::before { content: "\201C"; position: absolute; top: 12px; left: 22px; color: #70D44B; font-family: Georgia, serif; font-size: 3.4rem; line-height: 1; }
+.rp-quotes > p.rp-blank { display: none; }
 .rp-quotes > p.rp-q-name { background: #fff; color: #111 !important; margin: 0 0 18px !important; padding: 0 26px 20px; border-radius: 0 0 15px 15px; font-size: .9rem; }
 .rp-quotes > p.rp-q-name strong, .rp-quotes > p.rp-q-name { color: #1A7C39 !important; }
 .rp-quotes > p.rp-q *, .rp-quotes > p.rp-q { color: #111 !important; }

@@ -42,6 +42,7 @@
       }
       if (n < 2) continue;
       c.classList.add("rp-quotes");
+      for (var b = 0; b < ps.length; b++) if (!ps[b].textContent.trim()) ps[b].classList.add("rp-blank");
       var sec = c.closest("section");
       var heads = sec ? sec.querySelectorAll(".sqs-html-content") : [];
       for (var h = 0; h < heads.length; h++) {
