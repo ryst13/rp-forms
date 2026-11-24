@@ -231,3 +231,13 @@ article section[data-section-id="6b04bd3276bd735e7c444a69"].page-section > .cont
   section[data-section-id="6afb7785a8874a66682b69ab"] .fe-block-ba54049cc7eb20582554 { grid-row: 4 / 18 !important; margin-top: -102px !important; }
 }
 .rp-quotes > p.rp-q { font-size: 1.05rem !important; }
+/* Neighborhood pages (2026-11-24): the job photo left alone in the second section, after its postcard moved to the top section, is centered on the text beside it */
+@media (min-width: 768px) {
+  .fe-block-3fc3d83c5583a3f45d17 { grid-row: 2 / 17 !important; align-self: center !important; height: calc(10 * var(--container-width) * var(--row-height-scaling-factor) + 99px) !important; translate: 0 -91px; }  /* brookline */
+  .fe-block-43ecf0676ddf7a440e1b { grid-row: 2 / 14 !important; align-self: center !important; height: calc(8 * var(--container-width) * var(--row-height-scaling-factor) + 77px) !important; translate: 0 -50px; }  /* jamaica plain */
+  .fe-block-a56ef587d149cdb5f4e4 { grid-row: 2 / 11 !important; align-self: center !important; height: calc(6 * var(--container-width) * var(--row-height-scaling-factor) + 55px) !important; translate: 0 -49px; }  /* roslindale */
+  .fe-block-0fba78a06c14bb3cdbea { grid-row: 2 / 12 !important; align-self: center !important; height: calc(8 * var(--container-width) * var(--row-height-scaling-factor) + 77px) !important; translate: 0 -45px; }  /* south boston */
+  .fe-block-1d0a6d897b0f0e19873f { grid-row: 2 / 15 !important; align-self: center !important; height: calc(8 * var(--container-width) * var(--row-height-scaling-factor) + 77px) !important; translate: 0 -56px; }  /* dedham */
+  .fe-block-fc7e6054255ec8ee1777 { grid-row: 2 / 15 !important; align-self: center !important; height: calc(8 * var(--container-width) * var(--row-height-scaling-factor) + 77px) !important; translate: 0 -24px; }  /* dorchester */
+  .fe-block-21da0572bea3abe1510b { translate: 0 52px; }  /* back bay: text centered on its taller photo */
+}
