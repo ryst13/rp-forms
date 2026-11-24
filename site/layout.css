@@ -241,3 +241,6 @@ article section[data-section-id="6b04bd3276bd735e7c444a69"].page-section > .cont
   .fe-block-fc7e6054255ec8ee1777 { grid-row: 2 / 15 !important; align-self: center !important; height: calc(8 * var(--container-width) * var(--row-height-scaling-factor) + 77px) !important; translate: 0 -24px; }  /* dorchester */
   .fe-block-21da0572bea3abe1510b { translate: 0 52px; }  /* back bay: text centered on its taller photo */
 }
+/* Light green (Light 1) sections: green links and green bold text are unreadable on the green, so they turn black; links stay underlined (2026-11-24) */
+article section.page-section.light .sqs-html-content :is(a:not(.rp-cta-btn), strong, .sqsrte-text-color--accent) { color: #000 !important; }
+article section.page-section.light .sqs-html-content a:not(.rp-cta-btn) { text-decoration: underline !important; }
