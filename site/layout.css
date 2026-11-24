@@ -186,3 +186,16 @@ section[data-section-id="6afb92136dc86d0a4034be40"] :is(p, li, h1, h2, h3, h4, a
   .fe-block-fdc9e521521ab1ec8748 { grid-row: 1 / 8 !important; align-self: center !important; }  /* /services/exterior-painting-boston: text centered in its shape */
   .fe-block-febc0f3626e89749898c { grid-row: 2 / 18 !important; align-self: center !important; height: calc(9 * var(--container-width) * var(--row-height-scaling-factor) + 88px) !important; translate: 0 -18px; }  /* /neighborhoods-boston/dorchester-painter: photo centered on the text */
 }
+
+/* ===== Hand-written rules (layout_manual.css), appended by build_layout_css.py. Ryan 2026-11-24. ===== */
+/* Home: the four service buttons (Interior, Exterior, Walls, Floors) sit on one row */
+@media (min-width: 768px) {
+  .fe-block-e156fea805eb18294c1b, .fe-block-deeb1381dbd07f690c3d, .fe-block-35daf0093f5625e74b2c, .fe-block-7e930bc877af936fe0b0 { grid-row: 23 / 24 !important; }
+}
+/* Home: "What happens after you say yes" card has the same space above and below as the glossary card above it */
+article section[data-section-id="6b04bd3276bd735e7c444a69"].page-section > .content-wrapper.content-wrapper { padding-top: 78px !important; padding-bottom: 78px !important; }
+/* "How we work / How we do it" text stays pinned while the photo scrolls, as on the Exterior page:
+   Interior, Pressure Washing, Wood Floor Refinishing */
+@media (min-width: 768px) {
+  .fe-block-7b314cbc6552560e32a4, .fe-block-ecd1d15abbe86dee3c11, .fe-block-5cde2d0d83ff7a8de88d { position: sticky; top: calc(0px + var(--header-fixed-top-offset, 0px)); align-self: start; height: fit-content; }
+}
