@@ -1,9 +1,9 @@
 /* Ryan Painting quote form. BUILT FILE, do not edit here.
    Source: estimate-schedule-gate.html in the vault (60-technology/estimate-automation).
-   Build: v3.18 interior start (data-start) | source sha 0e69f92b34b3 | 2026-11-23 */
+   Build: v3.19 interior starts at How big | source sha 8cfbc10fa1d6 | 2026-11-23 */
 (function () {
   if (window.__rpGateBuild) { return; }
-  window.__rpGateBuild = "v3.18 interior start (data-start) 0e69f92b34b3";
+  window.__rpGateBuild = "v3.19 interior starts at How big 8cfbc10fa1d6";
   var d = document, links = [{"rel": "preconnect", "href": "https://fonts.gstatic.com", "crossOrigin": "anonymous"}, {"href": "https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap", "rel": "stylesheet"}];
   links.forEach(function (a) {
     var l = d.createElement("link");
@@ -1671,13 +1671,15 @@
      data-start="interior" on the rp-gate box (the Interior Painting page does). It skips
      "What kind of project?" and "How big?" and opens at the ZIP step. Back from there shows the
      full question list. state.entry tells IQ1 which page the quote started on. */
+  /* v3.19 (Ryan 2026-11-23): the Interior page now opens at "How big is the project?" (interior
+     sizes) instead of the ZIP step, so 7+ room projects are routed to a consultation from there.
+     Back from that question shows the full question list. */
   var START = String((root && root.getAttribute("data-start")) || "").toLowerCase();
   function entryScreen() { return START === "interior" ? startInterior() : q1(); }
   function startInterior() {
-    state.type = "interior"; state.size = "rooms"; state.entry = "interior_page";
-    track("triage_completed", { route: "instant_quote", type: "interior", size: "rooms", entry: "interior_page" });
-    track("quote_started", { type: "interior", size: "rooms", project_id: state.projectId, entry: "interior_page" });
-    zipFirst(roomBuilder, q1);
+    state.type = "interior"; state.size = null; state.entry = "interior_page";
+    track("triage_step", { step: "type", value: "interior", entry: "interior_page" });
+    q2();
   }
 
   function q2() {
@@ -1887,7 +1889,7 @@
     };
 
 
-    backHandler = operator.on ? operatorSummary : (state.entry ? startInterior : q2);
+    backHandler = operator.on ? operatorSummary : q2;
     var addRoomBtn = document.getElementById("rpg-add");
     if (addRoomBtn) addRoomBtn.onclick = function () {
       if (state.rooms.length >= maxRooms()) return;
