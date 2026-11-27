@@ -1,3 +1,6 @@
 User-agent: *
 Allow: /gate/
+Allow: /site/
+Allow: /glossary/
+Allow: /what-to-expect/
 Disallow: /
